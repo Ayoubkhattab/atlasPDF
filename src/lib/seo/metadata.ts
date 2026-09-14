@@ -199,19 +199,6 @@ export function generateToolsListMetadata(locale: Locale, translations?: { title
 }
 
 /**
- * Generate metadata for the about page
- */
-export function generateAboutMetadata(locale: Locale, translations?: { title: string; description: string }): Metadata {
-  return generateBaseMetadata({
-    locale,
-    path: '/about',
-    title: translations?.title || 'About',
-    description: translations?.description || `Learn about ${siteConfig.name} - your free, private, and powerful PDF toolkit. All processing happens in your browser.`,
-    keywords: ['about', 'PDF tools', 'privacy', 'browser-based'],
-  });
-}
-
-/**
  * Generate metadata for the FAQ page
  */
 export function generateFaqMetadata(locale: Locale, translations?: { title: string; description: string }): Metadata {
@@ -225,51 +212,12 @@ export function generateFaqMetadata(locale: Locale, translations?: { title: stri
 }
 
 /**
- * Generate metadata for the privacy page
- */
-export function generatePrivacyMetadata(locale: Locale, translations?: { title: string; description: string }): Metadata {
-  return generateBaseMetadata({
-    locale,
-    path: '/privacy',
-    title: translations?.title || 'Privacy Policy',
-    description: translations?.description || `${siteConfig.name} privacy policy. Your files never leave your device - all processing happens locally in your browser.`,
-    keywords: ['privacy', 'security', 'data protection', 'local processing'],
-  });
-}
-
-/**
- * Generate metadata for the contact page
- */
-export function generateContactMetadata(locale: Locale, translations?: { title: string; description: string }): Metadata {
-  return generateBaseMetadata({
-    locale,
-    path: '/contact',
-    title: translations?.title || 'Contact Us',
-    description: translations?.description || `Get in touch with ${siteConfig.name} team. We'd love to hear from you.`,
-    keywords: ['contact', 'support', 'help', 'feedback'],
-  });
-}
-
-/**
  * Convert locale to Open Graph locale format
  */
 export function getOpenGraphLocale(locale: Locale): string {
   const ogLocaleMap: Record<Locale, string> = {
     en: 'en_US',
-    ja: 'ja_JP',
-    ko: 'ko_KR',
-    es: 'es_ES',
-    fr: 'fr_FR',
-    de: 'de_DE',
-    zh: 'zh_CN',
-    'zh-TW': 'zh_TW',
-    pt: 'pt_BR',
     ar: 'ar_AR',
-    it: 'it_IT',
-    id: 'id_ID',
-    vi: 'vi_VN',
-    ro: 'ro_RO',
-    pl: 'pl_PL',
   };
   return ogLocaleMap[locale] || 'en_US';
 }
