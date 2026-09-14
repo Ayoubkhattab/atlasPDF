@@ -14,30 +14,30 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary: `
-    bg-[hsl(var(--color-primary))] 
-    text-[hsl(var(--color-primary-foreground))] 
-    hover:bg-[hsl(var(--color-primary-hover))]
-    focus-visible:ring-[hsl(var(--color-ring))]
+    bg-[var(--color-primary)] 
+    text-[var(--color-primary-foreground)] 
+    hover:bg-[var(--color-primary-hover)]
+    focus-visible:ring-[var(--color-ring)]
   `,
   secondary: `
-    bg-[hsl(var(--color-secondary))] 
-    text-[hsl(var(--color-secondary-foreground))] 
-    hover:bg-[hsl(var(--color-secondary-hover))]
-    focus-visible:ring-[hsl(var(--color-ring))]
+    bg-[var(--color-secondary)] 
+    text-[var(--color-secondary-foreground)] 
+    hover:bg-[var(--color-secondary-hover)]
+    focus-visible:ring-[var(--color-ring)]
   `,
   outline: `
     border-2 
-    border-[hsl(var(--color-border))] 
+    border-[var(--color-border)] 
     bg-transparent 
-    text-[hsl(var(--color-foreground))]
-    hover:bg-[hsl(var(--color-muted))]
-    focus-visible:ring-[hsl(var(--color-ring))]
+    text-[var(--color-foreground)]
+    hover:bg-[var(--color-muted)]
+    focus-visible:ring-[var(--color-ring)]
   `,
   ghost: `
     bg-transparent 
-    text-[hsl(var(--color-foreground))]
-    hover:bg-[hsl(var(--color-muted))]
-    focus-visible:ring-[hsl(var(--color-ring))]
+    text-[var(--color-foreground)]
+    hover:bg-[var(--color-muted)]
+    focus-visible:ring-[var(--color-ring)]
   `,
 };
 

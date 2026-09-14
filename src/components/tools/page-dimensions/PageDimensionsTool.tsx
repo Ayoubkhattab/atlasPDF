@@ -201,10 +201,10 @@ export function PageDimensionsTool({ className = '' }: PageDimensionsToolProps) 
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                <p className="text-sm font-medium text-[var(--color-foreground)]">
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)}
                 </p>
               </div>
@@ -224,12 +224,12 @@ export function PageDimensionsTool({ className = '' }: PageDimensionsToolProps) 
       {/* Display Options */}
       {file && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('pageDimensions.displayOptions') || 'Display Options'}
           </h3>
           
           <div>
-            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
               {tTools('pageDimensions.unitLabel') || 'Measurement Unit'}
             </label>
             <div className="flex gap-2">
@@ -243,8 +243,8 @@ export function PageDimensionsTool({ className = '' }: PageDimensionsToolProps) 
                     px-4 py-2 rounded-[var(--radius-md)] border text-sm font-medium
                     transition-colors duration-200
                     ${displayUnit === unit 
-                      ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))]' 
-                      : 'border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted)/0.5)]'
+                      ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)]' 
+                      : 'border-[var(--color-border)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)]'
                     }
                     disabled:opacity-50 disabled:cursor-not-allowed
                   `}
@@ -301,32 +301,32 @@ export function PageDimensionsTool({ className = '' }: PageDimensionsToolProps) 
         <div className="space-y-4">
           {/* Summary */}
           <Card variant="outlined">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
               {tTools('pageDimensions.summary') || 'Summary'}
             </h3>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="p-3 rounded-[var(--radius-sm)] bg-[hsl(var(--color-muted)/0.3)]">
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+              <div className="p-3 rounded-[var(--radius-sm)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {tTools('pageDimensions.totalPages') || 'Total Pages'}
                 </p>
-                <p className="text-xl font-semibold text-[hsl(var(--color-foreground))]">
+                <p className="text-xl font-semibold text-[var(--color-foreground)]">
                   {dimensionsResult.pageCount}
                 </p>
               </div>
-              <div className="p-3 rounded-[var(--radius-sm)] bg-[hsl(var(--color-muted)/0.3)]">
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+              <div className="p-3 rounded-[var(--radius-sm)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {tTools('pageDimensions.uniqueSizes') || 'Unique Sizes'}
                 </p>
-                <p className="text-xl font-semibold text-[hsl(var(--color-foreground))]">
+                <p className="text-xl font-semibold text-[var(--color-foreground)]">
                   {dimensionsResult.uniqueSizes.length}
                 </p>
               </div>
-              <div className="p-3 rounded-[var(--radius-sm)] bg-[hsl(var(--color-muted)/0.3)] col-span-2">
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+              <div className="p-3 rounded-[var(--radius-sm)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] col-span-2">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {tTools('pageDimensions.uniformSize') || 'Uniform Size'}
                 </p>
-                <p className="text-xl font-semibold text-[hsl(var(--color-foreground))]">
+                <p className="text-xl font-semibold text-[var(--color-foreground)]">
                   {dimensionsResult.uniformSize 
                     ? (tTools('pageDimensions.yes') || 'Yes') 
                     : (tTools('pageDimensions.no') || 'No')
@@ -339,7 +339,7 @@ export function PageDimensionsTool({ className = '' }: PageDimensionsToolProps) 
           {/* Unique Sizes */}
           {dimensionsResult.uniqueSizes.length > 0 && (
             <Card variant="outlined">
-              <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+              <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
                 {tTools('pageDimensions.sizeDistribution') || 'Size Distribution'}
               </h3>
               
@@ -353,19 +353,19 @@ export function PageDimensionsTool({ className = '' }: PageDimensionsToolProps) 
                   return (
                     <div 
                       key={index}
-                      className="flex items-center justify-between p-3 rounded-[var(--radius-sm)] bg-[hsl(var(--color-muted)/0.2)]"
+                      className="flex items-center justify-between p-3 rounded-[var(--radius-sm)] bg-[color-mix(in_srgb,var(--color-muted)_20%,transparent)]"
                     >
                       <div>
-                        <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                        <p className="text-sm font-medium text-[var(--color-foreground)]">
                           {page?.standardSize || `${sizeInfo.size} pt`}
                         </p>
-                        <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                        <p className="text-xs text-[var(--color-muted-foreground)]">
                           {sizeInfo.count} {sizeInfo.count === 1 ? 'page' : 'pages'}
                           {sizeInfo.pages.length <= 5 && ` (${sizeInfo.pages.join(', ')})`}
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm text-[hsl(var(--color-foreground))]">
+                        <p className="text-sm text-[var(--color-foreground)]">
                           {page && getDimensionValue(page, 'width')} × {page && getDimensionValue(page, 'height')}
                         </p>
                       </div>
@@ -378,27 +378,27 @@ export function PageDimensionsTool({ className = '' }: PageDimensionsToolProps) 
 
           {/* Page Details */}
           <Card variant="outlined">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
               {tTools('pageDimensions.pageDetails') || 'Page Details'}
             </h3>
             
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-[hsl(var(--color-border))]">
-                    <th className="text-left py-2 px-3 font-medium text-[hsl(var(--color-muted-foreground))]">
+                  <tr className="border-b border-[var(--color-border)]">
+                    <th className="text-left py-2 px-3 font-medium text-[var(--color-muted-foreground)]">
                       {tTools('pageDimensions.page') || 'Page'}
                     </th>
-                    <th className="text-left py-2 px-3 font-medium text-[hsl(var(--color-muted-foreground))]">
+                    <th className="text-left py-2 px-3 font-medium text-[var(--color-muted-foreground)]">
                       {tTools('pageDimensions.width') || 'Width'}
                     </th>
-                    <th className="text-left py-2 px-3 font-medium text-[hsl(var(--color-muted-foreground))]">
+                    <th className="text-left py-2 px-3 font-medium text-[var(--color-muted-foreground)]">
                       {tTools('pageDimensions.height') || 'Height'}
                     </th>
-                    <th className="text-left py-2 px-3 font-medium text-[hsl(var(--color-muted-foreground))]">
+                    <th className="text-left py-2 px-3 font-medium text-[var(--color-muted-foreground)]">
                       {tTools('pageDimensions.orientation') || 'Orientation'}
                     </th>
-                    <th className="text-left py-2 px-3 font-medium text-[hsl(var(--color-muted-foreground))]">
+                    <th className="text-left py-2 px-3 font-medium text-[var(--color-muted-foreground)]">
                       {tTools('pageDimensions.standardSize') || 'Standard Size'}
                     </th>
                   </tr>
@@ -407,21 +407,21 @@ export function PageDimensionsTool({ className = '' }: PageDimensionsToolProps) 
                   {dimensionsResult.pages.slice(0, 50).map((page) => (
                     <tr 
                       key={page.pageNumber}
-                      className="border-b border-[hsl(var(--color-border)/0.5)] hover:bg-[hsl(var(--color-muted)/0.2)]"
+                      className="border-b border-[color-mix(in_srgb,var(--color-border)_50%,transparent)] hover:bg-[color-mix(in_srgb,var(--color-muted)_20%,transparent)]"
                     >
-                      <td className="py-2 px-3 text-[hsl(var(--color-foreground))]">
+                      <td className="py-2 px-3 text-[var(--color-foreground)]">
                         {page.pageNumber}
                       </td>
-                      <td className="py-2 px-3 text-[hsl(var(--color-foreground))]">
+                      <td className="py-2 px-3 text-[var(--color-foreground)]">
                         {getDimensionValue(page, 'width')}
                       </td>
-                      <td className="py-2 px-3 text-[hsl(var(--color-foreground))]">
+                      <td className="py-2 px-3 text-[var(--color-foreground)]">
                         {getDimensionValue(page, 'height')}
                       </td>
-                      <td className="py-2 px-3 text-[hsl(var(--color-foreground))] capitalize">
+                      <td className="py-2 px-3 text-[var(--color-foreground)] capitalize">
                         {page.orientation}
                       </td>
-                      <td className="py-2 px-3 text-[hsl(var(--color-foreground))]">
+                      <td className="py-2 px-3 text-[var(--color-foreground)]">
                         {page.standardSize || '-'}
                       </td>
                     </tr>
@@ -430,7 +430,7 @@ export function PageDimensionsTool({ className = '' }: PageDimensionsToolProps) 
               </table>
               
               {dimensionsResult.pages.length > 50 && (
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))] mt-2 text-center">
+                <p className="text-sm text-[var(--color-muted-foreground)] mt-2 text-center">
                   {tTools('pageDimensions.showingFirst50') || 'Showing first 50 pages. Download JSON for complete data.'}
                 </p>
               )}

@@ -63,11 +63,11 @@ export function FavoriteToolsSection({
                     <div>
                         <h2
                             id="favorite-tools-heading"
-                            className="text-2xl font-bold text-[hsl(var(--color-foreground))]"
+                            className="text-2xl font-bold text-[var(--color-foreground)]"
                         >
                             {t('tools.favorite.title')}
                         </h2>
-                        <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                        <p className="text-sm text-[var(--color-muted-foreground)]">
                             {favoritesCount} {favoritesCount === 1 ? 'tool' : 'tools'}
                         </p>
                     </div>
@@ -104,14 +104,14 @@ export function EmptyFavoritesCard({ className = '' }: { className?: string }) {
     return (
         <Card className={`glass-card text-center py-8 px-6 ${className}`}>
             <div className="flex flex-col items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-[hsl(var(--color-secondary)/0.5)] flex items-center justify-center">
-                    <Star className="w-8 h-8 text-[hsl(var(--color-muted-foreground))]" />
+                <div className="w-16 h-16 rounded-2xl bg-[color-mix(in_srgb,var(--color-secondary)_50%,transparent)] flex items-center justify-center">
+                    <Star className="w-8 h-8 text-[var(--color-muted-foreground)]" />
                 </div>
                 <div>
-                    <h3 className="text-lg font-semibold text-[hsl(var(--color-foreground))] mb-2">
+                    <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-2">
                         {t('tools.favorite.empty')}
                     </h3>
-                    <p className="text-sm text-[hsl(var(--color-muted-foreground))] max-w-md">
+                    <p className="text-sm text-[var(--color-muted-foreground)] max-w-md">
                         {t('tools.favorite.hint')}
                     </p>
                 </div>

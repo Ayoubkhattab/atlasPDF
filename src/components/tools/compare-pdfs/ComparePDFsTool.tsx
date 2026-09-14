@@ -152,7 +152,7 @@ export function ComparePDFsTool({ className = '' }: ComparePDFsToolProps) {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        await page.render({ canvasContext: ctx, viewport }).promise;
+        await page.render({ canvasContext: ctx, canvas, viewport }).promise;
         pagesImages.push(canvas.toDataURL('image/jpeg', 0.85));
 
         // 2. Extract Bounding Box coordinates for text items
@@ -411,16 +411,16 @@ export function ComparePDFsTool({ className = '' }: ComparePDFsToolProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* File 1 */}
           <div className="space-y-3">
-            <label className="text-sm font-bold text-[hsl(var(--color-foreground))] block">
+            <label className="text-sm font-bold text-[var(--color-foreground)] block">
               {t('comparePdfs.originalPdfTitle')}
             </label>
             {file1 ? (
-              <Card variant="outlined" className="p-4 flex items-center justify-between border-2 border-[hsl(var(--color-primary)/0.35)] bg-[hsl(var(--color-muted)/0.15)] rounded-2xl">
+              <Card variant="outlined" className="p-4 flex items-center justify-between border-2 border-[color-mix(in_srgb,var(--color-primary)_35%,transparent)] bg-[color-mix(in_srgb,var(--color-muted)_15%,transparent)] rounded-2xl">
                 <div className="flex items-center gap-3">
-                  <FileText className="w-10 h-10 text-[hsl(var(--color-primary))]" />
+                  <FileText className="w-10 h-10 text-[var(--color-primary)]" />
                   <div>
                     <p className="font-semibold text-sm truncate max-w-[200px]" title={file1.file.name}>{file1.file.name}</p>
-                    <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{file1.pageCount} {t('pdfToCbz.pagesLabel') || 'pages'} • {(file1.file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                    <p className="text-xs text-[var(--color-muted-foreground)]">{file1.pageCount} {t('pdfToCbz.pagesLabel') || 'pages'} • {(file1.file.size / (1024 * 1024)).toFixed(2)} MB</p>
                   </div>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => setFile1(null)}>{t('comparePdfs.removeButton')}</Button>
@@ -441,7 +441,7 @@ export function ComparePDFsTool({ className = '' }: ComparePDFsToolProps) {
 
           {/* File 2 */}
           <div className="space-y-3">
-            <label className="text-sm font-bold text-[hsl(var(--color-foreground))] block">
+            <label className="text-sm font-bold text-[var(--color-foreground)] block">
               {t('comparePdfs.modifiedPdfTitle')}
             </label>
             {file2 ? (
@@ -450,7 +450,7 @@ export function ComparePDFsTool({ className = '' }: ComparePDFsToolProps) {
                   <FileText className="w-10 h-10 text-emerald-500" />
                   <div>
                     <p className="font-semibold text-sm truncate max-w-[200px]" title={file2.file.name}>{file2.file.name}</p>
-                    <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{file2.pageCount} {t('pdfToCbz.pagesLabel') || 'pages'} • {(file2.file.size / (1024 * 1024)).toFixed(2)} MB</p>
+                    <p className="text-xs text-[var(--color-muted-foreground)]">{file2.pageCount} {t('pdfToCbz.pagesLabel') || 'pages'} • {(file2.file.size / (1024 * 1024)).toFixed(2)} MB</p>
                   </div>
                 </div>
                 <Button variant="ghost" size="sm" onClick={() => setFile2(null)}>{t('comparePdfs.removeButton')}</Button>
@@ -478,7 +478,7 @@ export function ComparePDFsTool({ className = '' }: ComparePDFsToolProps) {
             variant="primary"
             size="lg"
             onClick={handleCompare}
-            className="px-12 py-4 font-bold shadow-lg shadow-[hsl(var(--color-primary)/0.15)] flex items-center gap-2"
+            className="px-12 py-4 font-bold shadow-lg shadow-[color-mix(in_srgb,var(--color-primary)_15%,transparent)] flex items-center gap-2"
           >
             <Shuffle className="w-5 h-5 animate-pulse" />
             {t('comparePdfs.startCompare')}
@@ -507,10 +507,10 @@ export function ComparePDFsTool({ className = '' }: ComparePDFsToolProps) {
             className="p-5 rounded-2xl flex flex-wrap items-center justify-between gap-4 backdrop-blur-md bg-white/40 dark:bg-black/35 border border-white/20 dark:border-zinc-800/40"
           >
             <div>
-              <h3 className="text-md font-bold text-[hsl(var(--color-foreground))]">
+              <h3 className="text-md font-bold text-[var(--color-foreground)]">
                 {t('comparePdfs.successTitle')}
               </h3>
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">
+              <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
                 {t('comparePdfs.totalAligned', { count: pairedPages.length })} • 
                 {t.rich('comparePdfs.diffSummary', { count: pairedPages.filter(p => p.hasDifference).length, red: (chunks) => <span className="font-bold text-red-500 mx-1">{chunks}</span> })}
               </p>
@@ -587,7 +587,7 @@ export function ComparePDFsTool({ className = '' }: ComparePDFsToolProps) {
             </Button>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-[hsl(var(--color-foreground))]">
+              <span className="text-xs font-bold text-[var(--color-foreground)]">
                 {t('comparePdfs.alignSequence', { current: currentPairIdx + 1, total: pairedPages.length })}
               </span>
               {currentPair && (
@@ -652,7 +652,7 @@ export function ComparePDFsTool({ className = '' }: ComparePDFsToolProps) {
               <div 
                 ref={scrollContainer1Ref}
                 onScroll={handleScroll1}
-                className="border border-[hsl(var(--color-border))] rounded-2xl bg-zinc-950 overflow-auto relative flex items-center justify-center p-4 min-h-[500px] max-h-[720px] shadow-inner custom-scrollbar"
+                className="border border-[var(--color-border)] rounded-2xl bg-zinc-950 overflow-auto relative flex items-center justify-center p-4 min-h-[500px] max-h-[720px] shadow-inner custom-scrollbar"
               >
                 {currentPair?.pageIndex1 !== -1 ? (
                   <div className="relative transform-gpu">
@@ -735,7 +735,7 @@ export function ComparePDFsTool({ className = '' }: ComparePDFsToolProps) {
               <div 
                 ref={scrollContainer2Ref}
                 onScroll={handleScroll2}
-                className="border border-[hsl(var(--color-border))] rounded-2xl bg-zinc-950 overflow-auto relative flex items-center justify-center p-4 min-h-[500px] max-h-[720px] shadow-inner custom-scrollbar"
+                className="border border-[var(--color-border)] rounded-2xl bg-zinc-950 overflow-auto relative flex items-center justify-center p-4 min-h-[500px] max-h-[720px] shadow-inner custom-scrollbar"
               >
                 {currentPair?.pageIndex2 !== -1 ? (
                   <div className="relative transform-gpu">

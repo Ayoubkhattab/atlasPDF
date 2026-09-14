@@ -38,7 +38,6 @@ export const Navigation: React.FC<NavigationProps> = ({ locale, currentPath }) =
   const mainNavItems = [
     { href: `/${locale}`, label: tCommon('navigation.home') },
     { href: `/${locale}/tools`, label: tCommon('navigation.tools'), hasDropdown: true },
-    { href: `/${locale}/about`, label: tCommon('navigation.about') },
     { href: `/${locale}/faq`, label: tCommon('navigation.faq') },
   ];
 
@@ -154,8 +153,8 @@ export const Navigation: React.FC<NavigationProps> = ({ locale, currentPath }) =
                   flex items-center gap-1 px-3 py-2 text-sm font-medium rounded-[var(--radius-md)]
                   transition-colors
                   ${isActive(item.href) 
-                    ? 'text-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.1)]' 
-                    : 'text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-primary))] hover:bg-[hsl(var(--color-muted))]'
+                    ? 'text-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)]' 
+                    : 'text-[var(--color-foreground)] hover:text-[var(--color-primary)] hover:bg-[var(--color-muted)]'
                   }
                 `}
                 aria-expanded={openDropdown === item.href}
@@ -173,7 +172,7 @@ export const Navigation: React.FC<NavigationProps> = ({ locale, currentPath }) =
               {openDropdown === item.href && (
                 <div
                   id={`dropdown-${item.href}`}
-                  className="absolute top-full left-0 mt-1 w-56 py-2 bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] rounded-[var(--radius-lg)] shadow-lg z-50"
+                  className="absolute top-full left-0 mt-1 w-56 py-2 bg-[var(--color-background)] border border-[var(--color-border)] rounded-[var(--radius-lg)] shadow-lg z-50"
                   role="menu"
                   aria-orientation="vertical"
                 >
@@ -182,7 +181,7 @@ export const Navigation: React.FC<NavigationProps> = ({ locale, currentPath }) =
                       key={category.id}
                       ref={(el) => { menuItemRefs.current[index] = el; }}
                       href={category.href}
-                      className="block px-4 py-2 text-sm text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-primary))] focus:bg-[hsl(var(--color-muted))] focus:text-[hsl(var(--color-primary))] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[hsl(var(--color-ring))] transition-colors"
+                      className="block px-4 py-2 text-sm text-[var(--color-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-primary)] focus:bg-[var(--color-muted)] focus:text-[var(--color-primary)] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-ring)] transition-colors"
                       role="menuitem"
                       tabIndex={focusedIndex === index ? 0 : -1}
                       onClick={() => {
@@ -204,8 +203,8 @@ export const Navigation: React.FC<NavigationProps> = ({ locale, currentPath }) =
                 px-3 py-2 text-sm font-medium rounded-[var(--radius-md)]
                 transition-colors
                 ${isActive(item.href) 
-                  ? 'text-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.1)]' 
-                  : 'text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-primary))] hover:bg-[hsl(var(--color-muted))]'
+                  ? 'text-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)]' 
+                  : 'text-[var(--color-foreground)] hover:text-[var(--color-primary)] hover:bg-[var(--color-muted)]'
                 }
               `}
               aria-current={isActive(item.href) ? 'page' : undefined}

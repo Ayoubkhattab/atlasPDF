@@ -18,7 +18,7 @@ describe('Card', () => {
     it('renders with default variant', () => {
       render(<Card>Default</Card>);
       const card = screen.getByText('Default');
-      expect(card).toHaveClass('bg-[hsl(var(--color-card))]');
+      expect(card).toHaveClass('bg-[var(--color-card)]');
       expect(card).toHaveClass('border');
     });
 
@@ -147,7 +147,7 @@ describe('Card Subcomponents', () => {
     it('applies muted foreground color', () => {
       render(<CardContent>Content</CardContent>);
       const content = screen.getByText('Content');
-      expect(content).toHaveClass('text-[hsl(var(--color-muted-foreground))]');
+      expect(content).toHaveClass('text-[var(--color-muted-foreground)]');
     });
   });
 

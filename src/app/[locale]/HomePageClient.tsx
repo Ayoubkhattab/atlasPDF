@@ -9,7 +9,7 @@ import { ToolGrid } from '@/components/tools/ToolGrid';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { getAllTools, getToolsByCategory, getPopularTools } from '@/config/tools';
-import { type Locale } from '@/lib/i18n/config';
+import { type Locale, locales } from '@/lib/i18n/config';
 import { CATEGORY_INFO, type ToolCategory } from '@/types/tool';
 
 interface HomePageClientProps {
@@ -82,7 +82,7 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[hsl(var(--color-background))]">
+    <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
       <Header locale={locale} />
 
       <main id="main-content" className="flex-1 relative" tabIndex={-1}>
@@ -93,30 +93,30 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
         >
           {/* Animated Background Blobs */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-[hsl(var(--color-primary)/0.2)] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
-            <div className="absolute top-0 right-1/4 w-96 h-96 bg-[hsl(var(--color-accent)/0.2)] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
-            <div className="absolute -bottom-32 left-1/2 w-96 h-96 bg-[hsl(var(--color-secondary)/0.3)] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000" />
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-[color-mix(in_srgb,var(--color-primary)_20%,transparent)] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob" />
+            <div className="absolute top-0 right-1/4 w-96 h-96 bg-[color-mix(in_srgb,var(--color-accent)_20%,transparent)] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000" />
+            <div className="absolute -bottom-32 left-1/2 w-96 h-96 bg-[color-mix(in_srgb,var(--color-secondary)_30%,transparent)] rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000" />
           </div>
 
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-4xl mx-auto text-center">
               {/* Brand Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-[hsl(var(--color-background)/0.8)] border border-[hsl(var(--color-primary)/0.2)] shadow-sm backdrop-blur-md transition-all hover:bg-[hsl(var(--color-background))]">
-                <Sparkles className="h-4 w-4 text-[hsl(var(--color-primary))]" aria-hidden="true" />
-                <span className="text-sm font-medium text-[hsl(var(--color-primary))]">
+              <div className="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full bg-[color-mix(in_srgb,var(--color-background)_80%,transparent)] border border-[color-mix(in_srgb,var(--color-primary)_20%,transparent)] shadow-sm backdrop-blur-md transition-all hover:bg-[var(--color-background)]">
+                <Sparkles className="h-4 w-4 text-[var(--color-primary)]" aria-hidden="true" />
+                <span className="text-sm font-medium text-[var(--color-primary)]">
                   {t('common.brand')}
                 </span>
               </div>
 
               {/* Hero Title */}
               <h1 id="hero-title" className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                <span className="text-[hsl(var(--color-foreground))]">{t('home.hero.title')} </span>
+                <span className="text-[var(--color-foreground)]">{t('home.hero.title')} </span>
                 <span className="text-gradient block mt-1 pb-2">{t('home.hero.highlight')}</span>
               </h1>
 
               {/* Hero Subtitle */}
-              <p className="text-lg text-[hsl(var(--color-muted-foreground))] mb-8 max-w-2xl mx-auto leading-relaxed">
-                {t('home.hero.subtitle')}
+              <p className="text-lg text-[var(--color-muted-foreground)] mb-8 max-w-2xl mx-auto leading-relaxed">
+                {t('home.hero.subtitle', { count: 90 })}
               </p>
 
               {/* CTA Buttons */}
@@ -127,7 +127,7 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
                     <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
                   </Button>
                 </Link>
-                <div className="flex items-center gap-2 text-sm text-[hsl(var(--color-muted-foreground))] bg-[hsl(var(--color-background)/0.5)] px-4 py-2 rounded-full border border-[hsl(var(--color-border))] backdrop-blur-sm">
+                <div className="flex items-center gap-2 text-sm text-[var(--color-muted-foreground)] bg-[color-mix(in_srgb,var(--color-background)_50%,transparent)] px-4 py-2 rounded-full border border-[var(--color-border)] backdrop-blur-sm">
                   <Lock className="h-4 w-4 text-green-500" aria-hidden="true" />
                   <span>{t('common.footer.privacyBadge')}</span>
                 </div>
@@ -144,14 +144,14 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
                 const Icon = feature.icon;
                 return (
                   <Card key={index} className="p-6 text-center glass-card border-0 hover:-translate-y-1 transition-transform duration-300" hover={false}>
-                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[hsl(var(--color-primary)/0.1)] mb-4 text-[hsl(var(--color-primary))]">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] mb-4 text-[var(--color-primary)]">
                       <Icon className={`h-6 w-6 ${feature.color}`} aria-hidden="true" />
                     </div>
-                    <h3 className="text-lg font-bold text-[hsl(var(--color-foreground))] mb-2">
+                    <h3 className="text-lg font-bold text-[var(--color-foreground)] mb-2">
                       {t(feature.titleKey)}
                     </h3>
-                    <p className="text-sm text-[hsl(var(--color-muted-foreground))] leading-relaxed">
-                      {t(feature.descriptionKey)}
+                    <p className="text-sm text-[var(--color-muted-foreground)] leading-relaxed">
+                     {t(feature.descriptionKey, { count: 90 })}
                     </p>
                   </Card>
                 );
@@ -161,19 +161,19 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
         </section>
 
         {/* Popular Tools Section */}
-        <section className="py-16 bg-[hsl(var(--color-muted)/0.5)]" aria-labelledby="popular-tools-heading">
+        <section className="py-16 bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)]" aria-labelledby="popular-tools-heading">
           <div className="container mx-auto px-4">
             <div className="text-center mb-10">
-              <div className="inline-flex items-center gap-2 px-3 py-1 mb-3 rounded-full bg-[hsl(var(--color-primary)/0.1)] border border-[hsl(var(--color-primary)/0.2)]">
-                <Star className="h-4 w-4 text-[hsl(var(--color-primary))]" aria-hidden="true" />
-                <span className="text-sm font-medium text-[hsl(var(--color-primary))]">
+              <div className="inline-flex items-center gap-2 px-3 py-1 mb-3 rounded-full bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] border border-[color-mix(in_srgb,var(--color-primary)_20%,transparent)]">
+                <Star className="h-4 w-4 text-[var(--color-primary)]" aria-hidden="true" />
+                <span className="text-sm font-medium text-[var(--color-primary)]">
                   {t('home.popularTools.badge')}
                 </span>
               </div>
-              <h2 id="popular-tools-heading" className="text-3xl font-bold text-[hsl(var(--color-foreground))] mb-3">
+              <h2 id="popular-tools-heading" className="text-3xl font-bold text-[var(--color-foreground)] mb-3">
                 {t('home.popularTools.title')}
               </h2>
-              <p className="text-[hsl(var(--color-muted-foreground))] max-w-2xl mx-auto text-base">
+              <p className="text-[var(--color-muted-foreground)] max-w-2xl mx-auto text-base">
                 {t('home.popularTools.description')}
               </p>
             </div>
@@ -189,10 +189,10 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
           <div className="container mx-auto px-4">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
               <div className="max-w-2xl">
-                <h2 id="featured-tools-heading" className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-2">
+                <h2 id="featured-tools-heading" className="text-2xl font-bold text-[var(--color-foreground)] mb-2">
                   {t(`home.categories.${categoryTranslationKeys['organize-manage']}`)}
                 </h2>
-                <p className="text-[hsl(var(--color-muted-foreground))] text-base">
+                <p className="text-[var(--color-muted-foreground)] text-base">
                   {t(`home.categoriesDescription.${categoryTranslationKeys['organize-manage']}`)}
                 </p>
               </div>
@@ -212,13 +212,13 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
         </section>
 
         {/* Tool Categories Section */}
-        <section className="py-16 bg-[hsl(var(--color-muted)/0.3)]" aria-labelledby="categories-heading">
+        <section className="py-16 bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]" aria-labelledby="categories-heading">
           <div className="container mx-auto px-4">
             <div className="text-center mb-10">
-              <h2 id="categories-heading" className="text-3xl font-bold text-[hsl(var(--color-foreground))] mb-3">
+              <h2 id="categories-heading" className="text-3xl font-bold text-[var(--color-foreground)] mb-3">
                 {t('home.categoriesSection.title')}
               </h2>
-              <p className="text-[hsl(var(--color-muted-foreground))] max-w-2xl mx-auto text-base">
+              <p className="text-[var(--color-muted-foreground)] max-w-2xl mx-auto text-base">
                 {t('home.categoriesSection.description', { count: allTools.length })}
               </p>
             </div>
@@ -236,20 +236,20 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
                     href={`/${locale}/tools?category=${category}`}
                     className="group"
                   >
-                    <Card className="p-5 h-full glass-card hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-[hsl(var(--color-border)/0.6)]">
+                    <Card className="p-5 h-full glass-card hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-[color-mix(in_srgb,var(--color-border)_60%,transparent)]">
                       <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[hsl(var(--color-primary)/0.1)] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                          <Icon className="h-5 w-5 text-[hsl(var(--color-primary))]" aria-hidden="true" />
+                        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                          <Icon className="h-5 w-5 text-[var(--color-primary)]" aria-hidden="true" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-base text-[hsl(var(--color-foreground))] mb-1 group-hover:text-[hsl(var(--color-primary))] transition-colors">
+                          <h3 className="font-semibold text-base text-[var(--color-foreground)] mb-1 group-hover:text-[var(--color-primary)] transition-colors">
                             {categoryName}
                           </h3>
-                          <p className="text-xs text-[hsl(var(--color-muted-foreground))] line-clamp-2 mb-2">
+                          <p className="text-xs text-[var(--color-muted-foreground)] line-clamp-2 mb-2">
                             {categoryDescription}
                           </p>
-                          <div className="flex items-center text-xs font-medium text-[hsl(var(--color-primary))]">
-                            <span className="bg-[hsl(var(--color-primary)/0.1)] px-2 py-0.5 rounded-md">
+                          <div className="flex items-center text-xs font-medium text-[var(--color-primary)]">
+                            <span className="bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] px-2 py-0.5 rounded-md">
                               {t('home.categoriesSection.toolsCount', { count: categoryTools.length })}
                             </span>
                           </div>
@@ -266,12 +266,12 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
         {/* Stats Section */}
         <section className="py-16" aria-label="Statistics">
           <div className="container mx-auto px-4">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center divide-x divide-[hsl(var(--color-border))]">
+            <div className="grid grid-cols-3 gap-8 text-center divide-x divide-[var(--color-border)]">
               <div className="p-4">
                 <div className="text-3xl lg:text-4xl font-bold text-gradient mb-1">
                   {allTools.length}+
                 </div>
-                <div className="text-xs font-medium text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider">
+                <div className="text-xs font-medium text-[var(--color-muted-foreground)] uppercase tracking-wider">
                   {t('home.stats.pdfTools')}
                 </div>
               </div>
@@ -279,24 +279,16 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
                 <div className="text-3xl lg:text-4xl font-bold text-gradient mb-1">
                   100%
                 </div>
-                <div className="text-xs font-medium text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider">
+                <div className="text-xs font-medium text-[var(--color-muted-foreground)] uppercase tracking-wider">
                   {t('home.stats.freeToUse')}
                 </div>
               </div>
               <div className="p-4">
                 <div className="text-3xl lg:text-4xl font-bold text-gradient mb-1">
-                  9
+                  {locales.length}
                 </div>
-                <div className="text-xs font-medium text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider">
+                <div className="text-xs font-medium text-[var(--color-muted-foreground)] uppercase tracking-wider">
                   {t('home.stats.languages')}
-                </div>
-              </div>
-              <div className="p-4">
-                <div className="text-3xl lg:text-4xl font-bold text-gradient mb-1">
-                  0
-                </div>
-                <div className="text-xs font-medium text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider">
-                  {t('home.stats.filesUploaded')}
                 </div>
               </div>
             </div>

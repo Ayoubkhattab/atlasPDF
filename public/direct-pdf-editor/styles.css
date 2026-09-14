@@ -1,8 +1,8 @@
 @import url('./phosphor/style.css');
 
 /* ==========================================================================
-   PDFCraft Direct Editor Design System
-   Matches PDFCraft Global Theme (Light & Dark Adaptive, Clean SaaS Aesthetic)
+   AtlasPDF Direct Editor Design System
+   Matches AtlasPDF Global Theme (Light & Dark Adaptive, Clean SaaS Aesthetic)
    ========================================================================== */
 
 :root,
@@ -2400,7 +2400,7 @@ html.dark #text-editor-app,
 
 
 /* ==========================================================================
-   PDFCraft Tailored Component Styles
+   AtlasPDF Tailored Component Styles
    ========================================================================== */
 
 /* Top Toolbar */

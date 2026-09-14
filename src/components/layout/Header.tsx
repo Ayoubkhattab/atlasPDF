@@ -4,7 +4,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Search, Menu, X, Command, Github } from 'lucide-react';
+import { Search, Menu, X, Command } from 'lucide-react';
 import { type Locale } from '@/lib/i18n/config';
 import { Button } from '@/components/ui/Button';
 import { RecentFilesDropdown } from '@/components/common/RecentFilesDropdown';
@@ -12,7 +12,9 @@ import { searchTools, SearchResult } from '@/lib/utils/search';
 import { getToolContent } from '@/config/tool-content';
 import { getAllTools } from '@/config/tools';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
-import { UpdateCheckButton } from '@/components/common/UpdateCheckButton';
+// Network isolation: the update checker (contacts GitHub) is intentionally not mounted.
+// See docs/PROJECT_STUDY.md §9 before re-enabling this.
+// import { UpdateCheckButton } from '@/components/common/UpdateCheckButton';
 
 export interface HeaderProps {
   locale: Locale;
@@ -160,14 +162,13 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
     { href: `/${locale}`, label: t('navigation.home') },
     { href: `/${locale}/tools`, label: t('navigation.tools') },
     { href: `/${locale}/workflow`, label: t('navigation.workflow') || 'Workflow' },
-    { href: `/${locale}/about`, label: t('navigation.about') },
     { href: `/${locale}/faq`, label: t('navigation.faq') },
   ];
 
   return (
     <header
       className={`fixed top-0 z-50 w-full transition-all duration-300 ${scrolled
-        ? 'bg-[hsl(var(--color-background))]/80 backdrop-blur-md border-b border-[hsl(var(--color-border))/0.5] shadow-sm'
+        ? 'bg-[var(--color-background)]/80 backdrop-blur-md border-b border-[color-mix(in_srgb,var(--color-border)_50%,transparent)] shadow-sm'
         : 'bg-transparent border-transparent'
         }`}
       role="banner"
@@ -178,10 +179,10 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
           <div className="flex flex-1 items-center gap-2">
             <Link
               href={`/${locale}`}
-              className="group flex items-center gap-2.5 text-xl font-bold text-[hsl(var(--color-foreground))] hover:opacity-90 transition-opacity"
+              className="group flex items-center gap-2.5 text-xl font-bold text-[var(--color-foreground)] hover:opacity-90 transition-opacity"
               aria-label={`${t('brand')} - ${t('navigation.home')}`}
             >
-              <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[hsl(var(--color-primary))] to-[hsl(var(--color-accent))] shadow-lg shadow-primary/25 transition-transform group-hover:scale-105">
+              <div className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent)] shadow-lg shadow-primary/25 transition-transform group-hover:scale-105">
                 <svg
                   className="h-5 w-5 text-white"
                   viewBox="0 0 24 24"
@@ -203,7 +204,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
 
           {/* Desktop Navigation */}
           <nav
-            className={`hidden md:flex items-center gap-1 rounded-full border border-[hsl(var(--color-border))/0.4] bg-[hsl(var(--color-background))/0.5] p-1.5 backdrop-blur-sm shadow-sm transition-all duration-300 ${isSearchOpen ? 'opacity-0 translate-y-[-10px] pointer-events-none' : 'opacity-100 translate-y-0'
+            className={`hidden md:flex items-center gap-1 rounded-full border border-[color-mix(in_srgb,var(--color-border)_40%,transparent)] bg-[color-mix(in_srgb,var(--color-background)_50%,transparent)] p-1.5 backdrop-blur-sm shadow-sm transition-all duration-300 ${isSearchOpen ? 'opacity-0 translate-y-[-10px] pointer-events-none' : 'opacity-100 translate-y-0'
               }`}
             role="navigation"
             aria-label="Main navigation"
@@ -212,7 +213,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
               <Link
                 key={item.href}
                 href={item.href}
-                className="px-4 py-1.5 text-sm font-medium text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))/0.5] rounded-full transition-all"
+                className="px-4 py-1.5 text-sm font-medium text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)] rounded-full transition-all"
               >
                 {item.label}
               </Link>
@@ -227,7 +228,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
                 {isSearchOpen ? (
                   <div className="fixed md:absolute left-4 right-4 md:left-auto md:right-0 top-[22px] md:top-1/2 md:-translate-y-1/2 z-50 md:origin-right animate-in fade-in slide-in-from-right-4 duration-200">
                     <div className="relative w-full md:w-96">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[hsl(var(--color-muted-foreground))]" />
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-muted-foreground)]" />
                       <input
                         ref={searchInputRef}
                         type="search"
@@ -235,7 +236,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
                         onChange={(e) => setSearchQuery(e.target.value)}
                         onKeyDown={handleKeyDown}
                         placeholder={t('search.placeholder') || 'Search tools...'}
-                        className="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] shadow-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                        className="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] shadow-lg focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                         aria-label="Search tools"
                         autoComplete="off"
                       />
@@ -246,12 +247,12 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
                         aria-label="Close search"
                         className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-transparent"
                       >
-                        <X className="h-4 w-4 text-[hsl(var(--color-muted-foreground))]" aria-hidden="true" />
+                        <X className="h-4 w-4 text-[var(--color-muted-foreground)]" aria-hidden="true" />
                       </Button>
 
                       {/* Search Results Dropdown */}
                       {searchResults.length > 0 && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] rounded-xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 max-h-[60vh] overflow-y-auto">
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-[var(--color-background)] border border-[var(--color-border)] rounded-xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 max-h-[60vh] overflow-y-auto">
                           <ul className="py-2" role="listbox">
                             {searchResults.map((result, index) => {
                               const localized = localizedTools[result.tool.id];
@@ -266,8 +267,8 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
                                     className={`
                                       w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors
                                       ${index === selectedIndex
-                                        ? 'bg-[hsl(var(--color-primary))/0.1] text-[hsl(var(--color-primary))]'
-                                        : 'hover:bg-[hsl(var(--color-muted))] text-[hsl(var(--color-foreground))]'
+                                        ? 'bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] text-[var(--color-primary)]'
+                                        : 'hover:bg-[var(--color-muted)] text-[var(--color-foreground)]'
                                       }
                                     `}
                                     role="option"
@@ -278,7 +279,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
                                       <div className="font-semibold text-sm truncate">
                                         {toolName}
                                       </div>
-                                      <div className="text-xs text-[hsl(var(--color-muted-foreground))] truncate">
+                                      <div className="text-xs text-[var(--color-muted-foreground)] truncate">
                                         {toolDescription}
                                       </div>
                                     </div>
@@ -297,10 +298,10 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
                     size="sm"
                     onClick={handleSearchToggle}
                     aria-label="Open search"
-                    className="relative text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]"
+                    className="relative text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
                   >
                     <Search className="h-5 w-5" aria-hidden="true" />
-                    <span className="ml-2 hidden lg:inline-block text-xs text-[hsl(var(--color-muted-foreground))/0.5] border border-[hsl(var(--color-border))] rounded px-1.5 py-0.5">⌘K</span>
+                    <span className="ml-2 hidden lg:inline-block text-xs text-[color-mix(in_srgb,var(--color-muted-foreground)_50%,transparent)] border border-[var(--color-border)] rounded px-1.5 py-0.5">⌘K</span>
                   </Button>
                 )}
               </div>
@@ -317,19 +318,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
               }}
             />
 
-            {/* Update Check Button */}
-            <UpdateCheckButton />
-
-            {/* GitHub Repository Link */}
-            <a
-              href="https://github.com/PDFCraftTool/pdfcraft"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden sm:flex items-center justify-center h-9 w-9 rounded-lg text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))/0.5] transition-all"
-              aria-label="GitHub Repository"
-            >
-              <Github className="h-5 w-5" aria-hidden="true" />
-            </a>
+            {/* Update Check Button — disabled for network isolation, see import comment above */}
 
             {/* Theme Toggle */}
             <ThemeToggle />
@@ -360,7 +349,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
         {isMobileMenuOpen && (
           <nav
             id="mobile-menu"
-            className="md:hidden py-4 border-t border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] backdrop-blur-xl shadow-lg"
+            className="md:hidden py-4 border-t border-[var(--color-border)] bg-[var(--color-background)] backdrop-blur-xl shadow-lg"
             role="navigation"
             aria-label="Mobile navigation"
           >
@@ -369,26 +358,13 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="block px-4 py-3 text-base font-medium text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))] rounded-lg transition-colors"
+                    className="block px-4 py-3 text-base font-medium text-[var(--color-foreground)] hover:bg-[var(--color-muted)] rounded-lg transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     {item.label}
                   </Link>
                 </li>
               ))}
-              {/* GitHub Link in Mobile Menu */}
-              <li>
-                <a
-                  href="https://github.com/PDFCraftTool/pdfcraft"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-3 px-4 py-3 text-base font-medium text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))] rounded-lg transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Github className="h-5 w-5" aria-hidden="true" />
-                  GitHub
-                </a>
-              </li>
             </ul>
           </nav>
         )}

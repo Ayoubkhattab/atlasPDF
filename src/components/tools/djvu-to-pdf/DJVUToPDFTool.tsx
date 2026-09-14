@@ -143,15 +143,15 @@ export function DJVUToPDFTool({ className = '' }: DJVUToPDFToolProps) {
                 <Card variant="outlined" size="lg" className="glass-card">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-[hsl(var(--color-primary)/0.1)] flex items-center justify-center text-[hsl(var(--color-primary))]">
+                            <div className="w-12 h-12 rounded-xl bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] flex items-center justify-center text-[var(--color-primary)]">
                                 <FileText className="w-6 h-6" />
                             </div>
                             <div>
-                                <p className="font-semibold text-[hsl(var(--color-foreground))]">{file.file.name}</p>
-                                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">{formatSize(file.file.size)}</p>
+                                <p className="font-semibold text-[var(--color-foreground)]">{file.file.name}</p>
+                                <p className="text-sm text-[var(--color-muted-foreground)]">{formatSize(file.file.size)}</p>
                             </div>
                         </div>
-                        <Button variant="ghost" size="sm" onClick={handleRemoveFile} disabled={isProcessing} className="text-[hsl(var(--color-muted-foreground))] hover:text-red-500 hover:bg-red-50">
+                        <Button variant="ghost" size="sm" onClick={handleRemoveFile} disabled={isProcessing} className="text-[var(--color-muted-foreground)] hover:text-red-500 hover:bg-red-50">
                             <Trash2 className="w-5 h-5" />
                         </Button>
                     </div>
@@ -161,46 +161,46 @@ export function DJVUToPDFTool({ className = '' }: DJVUToPDFToolProps) {
             {/* Options */}
             <Card variant="outlined" size="lg" className="glass-card">
                 <div className="flex items-center gap-2 mb-4">
-                    <Settings2 className="w-5 h-5 text-[hsl(var(--color-primary))]" />
-                    <h3 className="font-semibold text-[hsl(var(--color-foreground))]">
+                    <Settings2 className="w-5 h-5 text-[var(--color-primary)]" />
+                    <h3 className="font-semibold text-[var(--color-foreground)]">
                         {tTools('djvuToPdf.optionsTitle') || 'Conversion Options'}
                     </h3>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                        <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                             {tTools('djvuToPdf.dpiLabel') || 'Output DPI'}
                         </label>
                         <select
                             value={dpi}
                             onChange={(e) => setDpi(Number(e.target.value))}
                             disabled={isProcessing}
-                            className="w-full px-4 py-2.5 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                         >
                             <option value={72}>72 DPI (Web)</option>
                             <option value={150}>150 DPI (Standard)</option>
                             <option value={300}>300 DPI (Print)</option>
                         </select>
-                        <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">
+                        <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
                             {tTools('djvuToPdf.dpiHint') || 'Higher DPI = larger file size, better quality'}
                         </p>
                     </div>
                     <div>
-                        <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                        <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                             {tTools('djvuToPdf.qualityLabel') || 'Image Quality'}
                         </label>
                         <select
                             value={quality}
                             onChange={(e) => setQuality(Number(e.target.value))}
                             disabled={isProcessing}
-                            className="w-full px-4 py-2.5 rounded-xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                            className="w-full px-4 py-2.5 rounded-xl border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                         >
                             <option value={0.7}>70% (Smaller file)</option>
                             <option value={0.85}>85% (Balanced)</option>
                             <option value={0.92}>92% (High quality)</option>
                             <option value={1.0}>100% (Maximum)</option>
                         </select>
-                        <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">
+                        <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
                             {tTools('djvuToPdf.qualityHint') || 'JPEG compression quality for pages'}
                         </p>
                     </div>

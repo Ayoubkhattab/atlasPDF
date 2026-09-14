@@ -266,10 +266,10 @@ export function ChangePermissionsTool({ className = '' }: ChangePermissionsToolP
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                <p className="text-sm font-medium text-[var(--color-foreground)]">
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)}
                 </p>
               </div>
@@ -290,7 +290,7 @@ export function ChangePermissionsTool({ className = '' }: ChangePermissionsToolP
       {file && (
         <Card variant="outlined">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)]">
               {tTools('changePermissions.optionsTitle') || 'Document Permissions'}
             </h3>
             <div className="flex gap-2">
@@ -314,19 +314,19 @@ export function ChangePermissionsTool({ className = '' }: ChangePermissionsToolP
             {/* Permissions List */}
             <div className="space-y-3">
               {permissionFields.map(({ key, label, desc }) => (
-                <label key={key} className="flex items-start gap-3 cursor-pointer p-2 rounded-[var(--radius-sm)] hover:bg-[hsl(var(--color-muted)/0.3)]">
+                <label key={key} className="flex items-start gap-3 cursor-pointer p-2 rounded-[var(--radius-sm)] hover:bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]">
                   <input
                     type="checkbox"
                     checked={permissions[key]}
                     onChange={() => handlePermissionChange(key)}
                     disabled={isProcessing}
-                    className="w-4 h-4 mt-0.5 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                    className="w-4 h-4 mt-0.5 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                   />
                   <div>
-                    <span className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                    <span className="text-sm font-medium text-[var(--color-foreground)]">
                       {label}
                     </span>
-                    <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                    <p className="text-xs text-[var(--color-muted-foreground)]">
                       {desc}
                     </p>
                   </div>
@@ -340,7 +340,7 @@ export function ChangePermissionsTool({ className = '' }: ChangePermissionsToolP
       {/* Password Settings */}
       {file && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('changePermissions.passwordTitle') || 'Password Settings'}
           </h3>
           
@@ -354,7 +354,7 @@ export function ChangePermissionsTool({ className = '' }: ChangePermissionsToolP
 
             {/* Current Password */}
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('changePermissions.currentPasswordLabel') || 'Current Password (if PDF is encrypted)'}
               </label>
               <input
@@ -363,16 +363,16 @@ export function ChangePermissionsTool({ className = '' }: ChangePermissionsToolP
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 placeholder={tTools('changePermissions.currentPasswordPlaceholder') || 'Enter current password'}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-sm)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">
+              <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
                 {tTools('changePermissions.currentPasswordHint') || 'Required if the PDF is already password-protected.'}
               </p>
             </div>
 
             {/* New User Password */}
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('changePermissions.newUserPasswordLabel') || 'New User Password (to open document)'}
               </label>
               <input
@@ -381,16 +381,16 @@ export function ChangePermissionsTool({ className = '' }: ChangePermissionsToolP
                 onChange={(e) => setNewUserPassword(e.target.value)}
                 placeholder={tTools('changePermissions.newUserPasswordPlaceholder') || 'Enter user password'}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-sm)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">
+              <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
                 {tTools('changePermissions.newUserPasswordHint') || 'Users will need this password to open the PDF.'}
               </p>
             </div>
 
             {/* New Owner Password */}
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('changePermissions.newOwnerPasswordLabel') || 'New Owner Password (to change permissions)'}
               </label>
               <input
@@ -399,9 +399,9 @@ export function ChangePermissionsTool({ className = '' }: ChangePermissionsToolP
                 onChange={(e) => setNewOwnerPassword(e.target.value)}
                 placeholder={tTools('changePermissions.newOwnerPasswordPlaceholder') || 'Enter owner password'}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-sm)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-sm)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">
+              <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
                 {tTools('changePermissions.newOwnerPasswordHint') || 'Required to enforce permission restrictions.'}
               </p>
             </div>
@@ -476,7 +476,7 @@ export function ChangePermissionsTool({ className = '' }: ChangePermissionsToolP
               </svg>
             </div>
             <div>
-              <p className="text-sm text-[hsl(var(--color-foreground))]">
+              <p className="text-sm text-[var(--color-foreground)]">
                 {passwordErrorMessage}
               </p>
             </div>

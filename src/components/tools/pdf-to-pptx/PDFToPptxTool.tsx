@@ -180,12 +180,12 @@ export function PDFToPptxTool({ className = '' }: PDFToPptxToolProps) {
                 <Card variant="outlined" size="lg" className="glass-card">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-[hsl(var(--color-primary)/0.1)] flex items-center justify-center text-[hsl(var(--color-primary))]">
+                            <div className="w-12 h-12 rounded-xl bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] flex items-center justify-center text-[var(--color-primary)]">
                                 <Presentation className="w-6 h-6" />
                             </div>
                             <div>
-                                <p className="font-semibold text-[hsl(var(--color-foreground))]">{file.file.name}</p>
-                                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">{formatSize(file.file.size)}</p>
+                                <p className="font-semibold text-[var(--color-foreground)]">{file.file.name}</p>
+                                <p className="text-sm text-[var(--color-muted-foreground)]">{formatSize(file.file.size)}</p>
                             </div>
                         </div>
                         <Button
@@ -193,7 +193,7 @@ export function PDFToPptxTool({ className = '' }: PDFToPptxToolProps) {
                             size="sm"
                             onClick={handleRemoveFile}
                             disabled={isProcessing}
-                            className="text-[hsl(var(--color-muted-foreground))] hover:text-red-500 hover:bg-red-50"
+                            className="text-[var(--color-muted-foreground)] hover:text-red-500 hover:bg-red-50"
                         >
                             <Trash2 className="w-5 h-5" />
                             <span className="sr-only">{t('buttons.remove') || 'Remove'}</span>
@@ -205,27 +205,27 @@ export function PDFToPptxTool({ className = '' }: PDFToPptxToolProps) {
             {/* Options Panel */}
             {file && (
                 <Card variant="outlined">
-                    <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+                    <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
                         {tTools('pdfToPptx.optionsTitle') || 'Conversion Options'}
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('pdfToPptx.dpiLabel') || 'Image Quality (DPI)'}
                             </label>
                             <select
                                 value={dpi}
                                 onChange={(e) => setDpi(Number(e.target.value))}
                                 disabled={isProcessing}
-                                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                             >
                                 <option value="72">{tTools('pdfToPptx.lowSet') || 'Low (72 DPI - smaller file)'}</option>
                                 <option value="150">{tTools('pdfToPptx.mediumSet') || 'Medium (150 DPI - balanced)'}</option>
                                 <option value="200">{tTools('pdfToPptx.highSet') || 'High (200 DPI - better quality)'}</option>
                                 <option value="300">{tTools('pdfToPptx.veryHighSet') || 'Very High (300 DPI - best quality)'}</option>
                             </select>
-                            <p className="mt-1 text-xs text-[hsl(var(--color-muted-foreground))]">
+                            <p className="mt-1 text-xs text-[var(--color-muted-foreground)]">
                                 {tTools('pdfToPptx.dpiHint') || 'Higher DPI produces better quality slides but larger file sizes.'}
                             </p>
                         </div>

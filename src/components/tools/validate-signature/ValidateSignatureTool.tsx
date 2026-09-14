@@ -123,8 +123,8 @@ export function ValidateSignatureTool({ className = '' }: { className?: string }
         <Card variant="outlined" size="lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">{pdfFile.name}</p>
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{(pdfFile.size / 1024).toFixed(1)} KB</p>
+              <p className="text-sm font-medium text-[var(--color-foreground)]">{pdfFile.name}</p>
+              <p className="text-xs text-[var(--color-muted-foreground)]">{(pdfFile.size / 1024).toFixed(1)} KB</p>
             </div>
             <Button variant="ghost" size="sm" onClick={handleClear} disabled={loading}>{t('buttons.remove')}</Button>
           </div>
@@ -134,14 +134,14 @@ export function ValidateSignatureTool({ className = '' }: { className?: string }
       {/* Optional Trusted Certificate */}
       {pdfFile && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-3">{tTool('trustedCertTitle')}</h3>
-          <p className="text-sm text-[hsl(var(--color-muted-foreground))] mb-3">{tTool('trustedCertDescription')}</p>
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-3">{tTool('trustedCertTitle')}</h3>
+          <p className="text-sm text-[var(--color-muted-foreground)] mb-3">{tTool('trustedCertDescription')}</p>
           <input
             type="file"
             accept=".pem,.crt,.cer,.der"
             onChange={handleTrustedCert}
             disabled={loading}
-            className="block w-full text-sm text-[hsl(var(--color-foreground))] file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-medium file:bg-[hsl(var(--color-primary))] file:text-white hover:file:opacity-90 cursor-pointer"
+            className="block w-full text-sm text-[var(--color-foreground)] file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-medium file:bg-[var(--color-primary)] file:text-white hover:file:opacity-90 cursor-pointer"
           />
           {trustedCertName && (
             <p className="text-xs text-green-600 dark:text-green-400 mt-2">{tTool('trustedCertLoaded', { name: trustedCertName })}</p>
@@ -152,8 +152,8 @@ export function ValidateSignatureTool({ className = '' }: { className?: string }
       {/* Loading */}
       {loading && (
         <div className="flex items-center gap-3 p-4">
-          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[hsl(var(--color-primary))]"></div>
-          <p className="text-sm text-[hsl(var(--color-muted-foreground))]">{tTool('analyzing')}</p>
+          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-[var(--color-primary)]"></div>
+          <p className="text-sm text-[var(--color-muted-foreground)]">{tTool('analyzing')}</p>
         </div>
       )}
 
@@ -163,11 +163,11 @@ export function ValidateSignatureTool({ className = '' }: { className?: string }
           {results.length === 0 ? (
             <Card variant="outlined">
               <div className="text-center py-8">
-                <svg className="w-12 h-12 mx-auto mb-4 text-[hsl(var(--color-muted-foreground))]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-12 h-12 mx-auto mb-4 text-[var(--color-muted-foreground)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
-                <h3 className="text-lg font-semibold text-[hsl(var(--color-foreground))] mb-2">{tTool('noSignaturesTitle')}</h3>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">{tTool('noSignaturesDescription')}</p>
+                <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-2">{tTool('noSignaturesTitle')}</h3>
+                <p className="text-sm text-[var(--color-muted-foreground)]">{tTool('noSignaturesDescription')}</p>
               </div>
             </Card>
           ) : (
@@ -175,17 +175,17 @@ export function ValidateSignatureTool({ className = '' }: { className?: string }
               {/* Summary */}
               <Card variant="outlined">
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                  <span className="text-sm font-medium text-[var(--color-foreground)]">
                     {tTool('signaturesFound', { count: results.length })}
                   </span>
-                  <span className="text-[hsl(var(--color-muted-foreground))]">·</span>
+                  <span className="text-[var(--color-muted-foreground)]">·</span>
                   <span className={`text-sm ${results.filter(r => r.isValid && !r.isExpired).length === results.length ? 'text-green-600 dark:text-green-400' : 'text-yellow-600 dark:text-yellow-400'}`}>
                     {tTool('validCount', { count: results.filter(r => r.isValid && !r.isExpired).length })}
                   </span>
                   {trustedCertName && (
                     <>
-                      <span className="text-[hsl(var(--color-muted-foreground))]">·</span>
-                      <span className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                      <span className="text-[var(--color-muted-foreground)]">·</span>
+                      <span className="text-sm text-[var(--color-muted-foreground)]">
                         {tTool('trustedCount', { count: results.filter(r => r.isTrusted).length, total: results.length })}
                       </span>
                     </>
@@ -219,7 +219,7 @@ export function ValidateSignatureTool({ className = '' }: { className?: string }
                       {/* Header */}
                       <div className="flex items-start justify-between">
                         <div>
-                          <h4 className="font-semibold text-[hsl(var(--color-foreground))]">Signature {index + 1}</h4>
+                          <h4 className="font-semibold text-[var(--color-foreground)]">Signature {index + 1}</h4>
                           <p className={`text-sm ${statusColor}`}>{statusText}</p>
                         </div>
                         <div className="flex gap-2">
@@ -240,57 +240,57 @@ export function ValidateSignatureTool({ className = '' }: { className?: string }
                       {/* Details */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="text-[hsl(var(--color-muted-foreground))]">{tTool('signedBy')}</p>
-                          <p className="font-medium text-[hsl(var(--color-foreground))]">{result.signerName}</p>
-                          {result.signerOrg && <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{result.signerOrg}</p>}
-                          {result.signerEmail && <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{result.signerEmail}</p>}
+                          <p className="text-[var(--color-muted-foreground)]">{tTool('signedBy')}</p>
+                          <p className="font-medium text-[var(--color-foreground)]">{result.signerName}</p>
+                          {result.signerOrg && <p className="text-xs text-[var(--color-muted-foreground)]">{result.signerOrg}</p>}
+                          {result.signerEmail && <p className="text-xs text-[var(--color-muted-foreground)]">{result.signerEmail}</p>}
                         </div>
                         <div>
-                          <p className="text-[hsl(var(--color-muted-foreground))]">{tTool('issuer')}</p>
-                          <p className="font-medium text-[hsl(var(--color-foreground))]">{result.issuer}</p>
-                          {result.issuerOrg && <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{result.issuerOrg}</p>}
+                          <p className="text-[var(--color-muted-foreground)]">{tTool('issuer')}</p>
+                          <p className="font-medium text-[var(--color-foreground)]">{result.issuer}</p>
+                          {result.issuerOrg && <p className="text-xs text-[var(--color-muted-foreground)]">{result.issuerOrg}</p>}
                         </div>
                       </div>
 
                       {result.signatureDate && (
                         <div className="text-sm">
-                          <p className="text-[hsl(var(--color-muted-foreground))]">{tTool('signedOn')}</p>
-                          <p className="text-[hsl(var(--color-foreground))]">{formatDate(result.signatureDate)}</p>
+                          <p className="text-[var(--color-muted-foreground)]">{tTool('signedOn')}</p>
+                          <p className="text-[var(--color-foreground)]">{formatDate(result.signatureDate)}</p>
                         </div>
                       )}
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                         <div>
-                          <p className="text-[hsl(var(--color-muted-foreground))]">{tTool('validFrom')}</p>
-                          <p className="text-[hsl(var(--color-foreground))]">{formatDate(result.validFrom)}</p>
+                          <p className="text-[var(--color-muted-foreground)]">{tTool('validFrom')}</p>
+                          <p className="text-[var(--color-foreground)]">{formatDate(result.validFrom)}</p>
                         </div>
                         <div>
-                          <p className="text-[hsl(var(--color-muted-foreground))]">{tTool('validUntil')}</p>
-                          <p className={result.isExpired ? 'text-red-600 dark:text-red-400' : 'text-[hsl(var(--color-foreground))]'}>{formatDate(result.validTo)}</p>
+                          <p className="text-[var(--color-muted-foreground)]">{tTool('validUntil')}</p>
+                          <p className={result.isExpired ? 'text-red-600 dark:text-red-400' : 'text-[var(--color-foreground)]'}>{formatDate(result.validTo)}</p>
                         </div>
                       </div>
 
                       {result.reason && (
                         <div className="text-sm">
-                          <p className="text-[hsl(var(--color-muted-foreground))]">{tTool('reason')}</p>
-                          <p className="text-[hsl(var(--color-foreground))]">{result.reason}</p>
+                          <p className="text-[var(--color-muted-foreground)]">{tTool('reason')}</p>
+                          <p className="text-[var(--color-foreground)]">{result.reason}</p>
                         </div>
                       )}
 
                       {result.location && (
                         <div className="text-sm">
-                          <p className="text-[hsl(var(--color-muted-foreground))]">{tTool('location')}</p>
-                          <p className="text-[hsl(var(--color-foreground))]">{result.location}</p>
+                          <p className="text-[var(--color-muted-foreground)]">{tTool('location')}</p>
+                          <p className="text-[var(--color-foreground)]">{result.location}</p>
                         </div>
                       )}
 
                       {/* Technical Details */}
                       <details className="mt-2">
-                        <summary className="cursor-pointer text-sm text-[hsl(var(--color-primary))] hover:underline">{tTool('technicalDetails')}</summary>
-                        <div className="mt-2 p-3 rounded-[var(--radius-sm)] bg-[hsl(var(--color-muted))] text-xs space-y-1">
-                          <p><span className="text-[hsl(var(--color-muted-foreground))]">{tTool('serialNumber')}</span> <span className="font-mono text-[hsl(var(--color-foreground))]">{result.serialNumber}</span></p>
-                          <p><span className="text-[hsl(var(--color-muted-foreground))]">{tTool('digestAlgorithm')}</span> <span className="text-[hsl(var(--color-foreground))]">{result.algorithms.digest}</span></p>
-                          <p><span className="text-[hsl(var(--color-muted-foreground))]">{tTool('signatureAlgorithm')}</span> <span className="text-[hsl(var(--color-foreground))]">{result.algorithms.signature}</span></p>
+                        <summary className="cursor-pointer text-sm text-[var(--color-primary)] hover:underline">{tTool('technicalDetails')}</summary>
+                        <div className="mt-2 p-3 rounded-[var(--radius-sm)] bg-[var(--color-muted)] text-xs space-y-1">
+                          <p><span className="text-[var(--color-muted-foreground)]">{tTool('serialNumber')}</span> <span className="font-mono text-[var(--color-foreground)]">{result.serialNumber}</span></p>
+                          <p><span className="text-[var(--color-muted-foreground)]">{tTool('digestAlgorithm')}</span> <span className="text-[var(--color-foreground)]">{result.algorithms.digest}</span></p>
+                          <p><span className="text-[var(--color-muted-foreground)]">{tTool('signatureAlgorithm')}</span> <span className="text-[var(--color-foreground)]">{result.algorithms.signature}</span></p>
                           {result.errorMessage && <p className="text-red-600 dark:text-red-400">Error: {result.errorMessage}</p>}
                         </div>
                       </details>

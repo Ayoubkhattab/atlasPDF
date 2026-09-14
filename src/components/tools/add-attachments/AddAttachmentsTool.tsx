@@ -180,7 +180,7 @@ export function AddAttachmentsTool({ className = '' }: AddAttachmentsToolProps) 
     <div className={`space-y-6 ${className}`.trim()}>
       {/* PDF File Upload */}
       <Card variant="outlined" size="lg">
-        <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+        <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
           {tTools('addAttachments.pdfFileTitle') || '1. Select PDF File'}
         </h3>
         <FileUploader
@@ -194,17 +194,17 @@ export function AddAttachmentsTool({ className = '' }: AddAttachmentsToolProps) 
           description={tTools('addAttachments.pdfUploadDescription') || 'Select the PDF file to add attachments to.'}
         />
         {pdfFile && (
-          <div className="mt-4 flex items-center gap-3 p-3 rounded-[var(--radius-md)] bg-[hsl(var(--color-muted)/0.3)]">
+          <div className="mt-4 flex items-center gap-3 p-3 rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]">
             <svg className="w-8 h-8 text-red-500" viewBox="0 0 24 24" fill="currentColor">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
               <path d="M14 2v6h6" fill="white" />
               <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
             </svg>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
+              <p className="text-sm font-medium text-[var(--color-foreground)] truncate">
                 {pdfFile.name}
               </p>
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+              <p className="text-xs text-[var(--color-muted-foreground)]">
                 {formatSize(pdfFile.size)}
               </p>
             </div>
@@ -212,7 +212,7 @@ export function AddAttachmentsTool({ className = '' }: AddAttachmentsToolProps) 
               type="button"
               onClick={() => setPdfFile(null)}
               disabled={isProcessing}
-              className="p-1 rounded hover:bg-red-100 text-[hsl(var(--color-muted-foreground))] hover:text-red-600"
+              className="p-1 rounded hover:bg-red-100 text-[var(--color-muted-foreground)] hover:text-red-600"
               aria-label="Remove PDF"
             >
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -225,7 +225,7 @@ export function AddAttachmentsTool({ className = '' }: AddAttachmentsToolProps) 
 
       {/* Attachment Files Upload */}
       <Card variant="outlined" size="lg">
-        <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+        <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
           {tTools('addAttachments.attachmentsTitle') || '2. Select Files to Attach'}
         </h3>
         <FileUploader
@@ -242,7 +242,7 @@ export function AddAttachmentsTool({ className = '' }: AddAttachmentsToolProps) 
         {attachmentFiles.length > 0 && (
           <div className="mt-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-[hsl(var(--color-muted-foreground))]">
+              <span className="text-sm text-[var(--color-muted-foreground)]">
                 {attachmentFiles.length} file(s) selected
               </span>
               <Button
@@ -258,16 +258,16 @@ export function AddAttachmentsTool({ className = '' }: AddAttachmentsToolProps) 
               {attachmentFiles.map((item) => (
                 <li
                   key={item.id}
-                  className="flex items-center gap-3 p-2 rounded-[var(--radius-md)] bg-[hsl(var(--color-muted)/0.3)]"
+                  className="flex items-center gap-3 p-2 rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]"
                 >
-                  <svg className="w-6 h-6 text-[hsl(var(--color-muted-foreground))]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <svg className="w-6 h-6 text-[var(--color-muted-foreground)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                   </svg>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-[hsl(var(--color-foreground))] truncate">
+                    <p className="text-sm text-[var(--color-foreground)] truncate">
                       {item.file.name}
                     </p>
-                    <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                    <p className="text-xs text-[var(--color-muted-foreground)]">
                       {formatSize(item.file.size)}
                     </p>
                   </div>
@@ -275,7 +275,7 @@ export function AddAttachmentsTool({ className = '' }: AddAttachmentsToolProps) 
                     type="button"
                     onClick={() => handleRemoveAttachment(item.id)}
                     disabled={isProcessing}
-                    className="p-1 rounded hover:bg-red-100 text-[hsl(var(--color-muted-foreground))] hover:text-red-600"
+                    className="p-1 rounded hover:bg-red-100 text-[var(--color-muted-foreground)] hover:text-red-600"
                     aria-label={`Remove ${item.file.name}`}
                   >
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -292,13 +292,13 @@ export function AddAttachmentsTool({ className = '' }: AddAttachmentsToolProps) 
       {/* Options Panel */}
       {pdfFile && attachmentFiles.length > 0 && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('addAttachments.optionsTitle') || 'Attachment Options'}
           </h3>
           
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTools('addAttachments.attachmentLevel') || 'Attachment Level'}
               </label>
               <div className="flex gap-4">
@@ -331,7 +331,7 @@ export function AddAttachmentsTool({ className = '' }: AddAttachmentsToolProps) 
 
             {attachmentLevel === 'page' && (
               <div>
-                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                   {tTools('addAttachments.pageRange') || 'Page Range'}
                 </label>
                 <input
@@ -340,9 +340,9 @@ export function AddAttachmentsTool({ className = '' }: AddAttachmentsToolProps) 
                   onChange={(e) => setPageRange(e.target.value)}
                   placeholder="e.g., 1-3, 5, 7-9"
                   disabled={isProcessing}
-                  className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-sm"
+                  className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-sm"
                 />
-                <p className="mt-1 text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="mt-1 text-xs text-[var(--color-muted-foreground)]">
                   {tTools('addAttachments.pageRangeHint') || 'Specify which pages to attach files to.'}
                 </p>
               </div>

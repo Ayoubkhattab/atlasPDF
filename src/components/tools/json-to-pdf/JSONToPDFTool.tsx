@@ -227,7 +227,7 @@ export function JSONToPDFTool({ className = '' }: JSONToPDFToolProps) {
       {files.length > 0 && (
         <Card variant="outlined" size="lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)]">
               {tTools('jsonToPdf.filesTitle') || 'JSON Files'} ({files.length})
             </h3>
             <Button
@@ -244,7 +244,7 @@ export function JSONToPDFTool({ className = '' }: JSONToPDFToolProps) {
             {files.map((file) => (
               <li
                 key={file.id}
-                className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-white"
+                className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white"
               >
                 {/* File Icon */}
                 <div className="flex-shrink-0">
@@ -257,10 +257,10 @@ export function JSONToPDFTool({ className = '' }: JSONToPDFToolProps) {
 
                 {/* File Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
+                  <p className="text-sm font-medium text-[var(--color-foreground)] truncate">
                     {file.file.name}
                   </p>
-                  <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                  <p className="text-xs text-[var(--color-muted-foreground)]">
                     {formatSize(file.file.size)}
                   </p>
                 </div>
@@ -270,7 +270,7 @@ export function JSONToPDFTool({ className = '' }: JSONToPDFToolProps) {
                   type="button"
                   onClick={() => handleRemoveFile(file.id)}
                   disabled={isProcessing}
-                  className="flex-shrink-0 p-1 rounded hover:bg-red-100 text-[hsl(var(--color-muted-foreground))] hover:text-red-600 disabled:opacity-30"
+                  className="flex-shrink-0 p-1 rounded hover:bg-red-100 text-[var(--color-muted-foreground)] hover:text-red-600 disabled:opacity-30"
                   aria-label={`Remove ${file.file.name}`}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -284,10 +284,10 @@ export function JSONToPDFTool({ className = '' }: JSONToPDFToolProps) {
           {/* JSON Preview */}
           {jsonPreview && !parseError && (
             <div className="mt-4">
-              <h4 className="text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <h4 className="text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTools('jsonToPdf.preview') || 'Preview'}
               </h4>
-              <pre className="p-3 rounded-[var(--radius-md)] bg-[hsl(var(--color-muted)/0.3)] text-xs font-mono text-[hsl(var(--color-foreground))] overflow-auto max-h-64 whitespace-pre">
+              <pre className="p-3 rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] text-xs font-mono text-[var(--color-foreground)] overflow-auto max-h-64 whitespace-pre">
                 {jsonPreview}
               </pre>
             </div>
@@ -299,21 +299,21 @@ export function JSONToPDFTool({ className = '' }: JSONToPDFToolProps) {
       {/* Options Panel */}
       {files.length >= 1 && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('jsonToPdf.optionsTitle') || 'PDF Options'}
           </h3>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Page Size */}
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTools('jsonToPdf.pageSize') || 'Page Size'}
               </label>
               <select
                 value={pageSize}
                 onChange={(e) => setPageSize(e.target.value as JSONPageSizeType)}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               >
                 <option value="A4">A4</option>
                 <option value="LETTER">Letter</option>
@@ -324,14 +324,14 @@ export function JSONToPDFTool({ className = '' }: JSONToPDFToolProps) {
 
             {/* Font Size */}
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTools('jsonToPdf.fontSize') || 'Font Size'}
               </label>
               <select
                 value={fontSize}
                 onChange={(e) => setFontSize(Number(e.target.value))}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               >
                 <option value="8">8pt</option>
                 <option value="9">9pt</option>
@@ -343,14 +343,14 @@ export function JSONToPDFTool({ className = '' }: JSONToPDFToolProps) {
 
             {/* Indent Spaces */}
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTools('jsonToPdf.indentSpaces') || 'Indentation'}
               </label>
               <select
                 value={indentSpaces}
                 onChange={(e) => setIndentSpaces(Number(e.target.value))}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               >
                 <option value="2">2 spaces</option>
                 <option value="4">4 spaces</option>
@@ -366,9 +366,9 @@ export function JSONToPDFTool({ className = '' }: JSONToPDFToolProps) {
                 checked={prettyPrint}
                 onChange={(e) => setPrettyPrint(e.target.checked)}
                 disabled={isProcessing}
-                className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
               />
-              <span className="text-sm text-[hsl(var(--color-foreground))]">
+              <span className="text-sm text-[var(--color-foreground)]">
                 {tTools('jsonToPdf.prettyPrint') || 'Format JSON (pretty print)'}
               </span>
             </label>
@@ -379,9 +379,9 @@ export function JSONToPDFTool({ className = '' }: JSONToPDFToolProps) {
                 checked={showLineNumbers}
                 onChange={(e) => setShowLineNumbers(e.target.checked)}
                 disabled={isProcessing}
-                className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
               />
-              <span className="text-sm text-[hsl(var(--color-foreground))]">
+              <span className="text-sm text-[var(--color-foreground)]">
                 {tTools('jsonToPdf.showLineNumbers') || 'Show line numbers'}
               </span>
             </label>

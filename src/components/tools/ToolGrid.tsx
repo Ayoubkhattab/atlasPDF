@@ -105,7 +105,7 @@ export function ToolGrid({
         className={`text-center py-12 ${className}`}
         data-testid="tool-grid-empty"
       >
-        <p className="text-[hsl(var(--color-muted-foreground))]">
+        <p className="text-[var(--color-muted-foreground)]">
           No tools found
         </p>
       </div>
@@ -125,10 +125,10 @@ export function ToolGrid({
           return (
             <section key={cat} data-testid={`tool-grid-category-${cat}`}>
               <div className="mb-4">
-                <h2 className="text-xl font-semibold text-[hsl(var(--color-foreground))]">
+                <h2 className="text-xl font-semibold text-[var(--color-foreground)]">
                   {categoryName}
                 </h2>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {categoryInfo.description}
                 </p>
               </div>

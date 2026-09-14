@@ -89,6 +89,7 @@ export function OrganizePDFTool({ className = '' }: OrganizePDFToolProps) {
 
           await page.render({
             canvasContext: context,
+            canvas,
             viewport: viewport,
           }).promise;
 
@@ -377,8 +378,8 @@ export function OrganizePDFTool({ className = '' }: OrganizePDFToolProps) {
                 <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
               </svg>
               <div>
-                <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)} • {totalPages} {totalPages === 1 ? 'page' : 'pages'}
                 </p>
               </div>
@@ -399,7 +400,7 @@ export function OrganizePDFTool({ className = '' }: OrganizePDFToolProps) {
       {file && pagePreviews.length > 0 && (
         <Card variant="outlined" size="lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)]">
               {tTools('organizePdf.reorderTitle') || 'Drag to Reorder Pages'}
             </h3>
             <div className="flex gap-2">
@@ -422,15 +423,15 @@ export function OrganizePDFTool({ className = '' }: OrganizePDFToolProps) {
             </div>
           </div>
 
-          <p className="text-sm text-[hsl(var(--color-muted-foreground))] mb-4">
+          <p className="text-sm text-[var(--color-muted-foreground)] mb-4">
             {tTools('organizePdf.reorderHint') || 'Drag and drop pages to reorder them. Use the arrows to move pages up or down.'}
           </p>
 
           {isLoadingPreviews ? (
             <div className="flex items-center justify-center py-12">
               <div className="flex flex-col items-center gap-3">
-                <div className="w-8 h-8 border-2 border-[hsl(var(--color-primary))] border-t-transparent rounded-full animate-spin" />
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {t('status.loading') || 'Loading previews...'}
                 </p>
               </div>
@@ -450,8 +451,8 @@ export function OrganizePDFTool({ className = '' }: OrganizePDFToolProps) {
                     className={`
                       relative aspect-[3/4] rounded-[var(--radius-md)] border-2 overflow-hidden transition-all
                       ${draggedIndex === index ? 'opacity-50 border-dashed scale-95' : ''}
-                      ${dragOverIndex === index ? 'border-[hsl(var(--color-primary))] ring-2 ring-[hsl(var(--color-primary)/0.3)]' : 'border-[hsl(var(--color-border))]'}
-                      ${!isProcessing ? 'cursor-grab hover:border-[hsl(var(--color-primary)/0.5)]' : ''}
+                      ${dragOverIndex === index ? 'border-[var(--color-primary)] ring-2 ring-[color-mix(in_srgb,var(--color-primary)_30%,transparent)]' : 'border-[var(--color-border)]'}
+                      ${!isProcessing ? 'cursor-grab hover:border-[color-mix(in_srgb,var(--color-primary)_50%,transparent)]' : ''}
                     `}
                   >
                     {preview?.thumbnail ? (
@@ -462,8 +463,8 @@ export function OrganizePDFTool({ className = '' }: OrganizePDFToolProps) {
                         draggable={false}
                       />
                     ) : (
-                      <div className="w-full h-full bg-[hsl(var(--color-muted))] flex items-center justify-center">
-                        <span className="text-lg font-medium text-[hsl(var(--color-muted-foreground))]">
+                      <div className="w-full h-full bg-[var(--color-muted)] flex items-center justify-center">
+                        <span className="text-lg font-medium text-[var(--color-muted-foreground)]">
                           {pageNum}
                         </span>
                       </div>
@@ -475,7 +476,7 @@ export function OrganizePDFTool({ className = '' }: OrganizePDFToolProps) {
                     </div>
 
                     {/* Position indicator */}
-                    <div className="absolute top-1 left-1 w-5 h-5 bg-[hsl(var(--color-primary))] rounded-full flex items-center justify-center text-[10px] font-bold text-white">
+                    <div className="absolute top-1 left-1 w-5 h-5 bg-[var(--color-primary)] rounded-full flex items-center justify-center text-[10px] font-bold text-white">
                       {index + 1}
                     </div>
 

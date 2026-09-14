@@ -285,8 +285,8 @@ export function DigitalSignPDFTool({ className = '' }: { className?: string }) {
         <Card variant="outlined" size="lg">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">{pdfFile.name}</p>
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{(pdfFile.size / 1024).toFixed(1)} KB</p>
+              <p className="text-sm font-medium text-[var(--color-foreground)]">{pdfFile.name}</p>
+              <p className="text-xs text-[var(--color-muted-foreground)]">{(pdfFile.size / 1024).toFixed(1)} KB</p>
             </div>
             <Button variant="ghost" size="sm" onClick={handleClear} disabled={isProcessing}>{t('buttons.remove')}</Button>
           </div>
@@ -296,11 +296,11 @@ export function DigitalSignPDFTool({ className = '' }: { className?: string }) {
       {/* Certificate Upload */}
       {pdfFile && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">{tTool('certificateTitle')}</h3>
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">{tTool('certificateTitle')}</h3>
 
           <div className="space-y-4">
             <div>
-              <label htmlFor="cert-input" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <label htmlFor="cert-input" className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTool('uploadCertificateLabel')}
               </label>
               <input
@@ -309,19 +309,19 @@ export function DigitalSignPDFTool({ className = '' }: { className?: string }) {
                 accept=".pfx,.p12,.pem"
                 onChange={handleCertSelected}
                 disabled={isProcessing}
-                className="block w-full text-sm text-[hsl(var(--color-foreground))] file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-medium file:bg-[hsl(var(--color-primary))] file:text-white hover:file:opacity-90 cursor-pointer"
+                className="block w-full text-sm text-[var(--color-foreground)] file:mr-4 file:py-2 file:px-4 file:rounded-[var(--radius-md)] file:border-0 file:text-sm file:font-medium file:bg-[var(--color-primary)] file:text-white hover:file:opacity-90 cursor-pointer"
               />
             </div>
 
             {certFile && (
-              <div className="p-3 rounded-[var(--radius-sm)] bg-[hsl(var(--color-muted))]">
-                <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">{certFile.name}</p>
+              <div className="p-3 rounded-[var(--radius-sm)] bg-[var(--color-muted)]">
+                <p className="text-sm font-medium text-[var(--color-foreground)]">{certFile.name}</p>
                 {certInfo ? (
                   <p className="text-xs text-green-600 dark:text-green-400 mt-1">{tTool('certificateLoaded')}</p>
                 ) : certError ? (
                   <p className="text-xs text-red-600 dark:text-red-400 mt-1">{certError}</p>
                 ) : (
-                  <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">{tTool('enterPassword')}</p>
+                  <p className="text-xs text-[var(--color-muted-foreground)] mt-1">{tTool('enterPassword')}</p>
                 )}
               </div>
             )}
@@ -334,7 +334,7 @@ export function DigitalSignPDFTool({ className = '' }: { className?: string }) {
 
             {needsPassword && !certData && (
               <div>
-                <label htmlFor="cert-password" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                <label htmlFor="cert-password" className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                   {tTool('certificatePasswordLabel')}
                 </label>
                 <div className="flex gap-2">
@@ -346,13 +346,13 @@ export function DigitalSignPDFTool({ className = '' }: { className?: string }) {
                       onChange={(e) => setPassword(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handlePasswordSubmit()}
                       placeholder={tTool('enterPassword')}
-                      className="w-full px-3 py-2 pr-10 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                      className="w-full px-3 py-2 pr-10 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))] transition-colors duration-200"
+                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors duration-200"
                     >
                       <EyeIcon open={showPassword} />
                     </button>
@@ -367,9 +367,9 @@ export function DigitalSignPDFTool({ className = '' }: { className?: string }) {
             {/* Certificate Info */}
             {certInfo && (
               <div className={`p-3 rounded-[var(--radius-sm)] space-y-1 ${certExpired ? 'bg-yellow-50 border border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800' : 'bg-green-50 border border-green-200 dark:bg-green-950 dark:border-green-800'}`}>
-                <p className="text-sm"><span className="text-[hsl(var(--color-muted-foreground))]">{tTool('subject')}:</span> <span className="font-medium text-[hsl(var(--color-foreground))]">{certInfo.subject}</span></p>
-                <p className="text-sm"><span className="text-[hsl(var(--color-muted-foreground))]">{tTool('issuer')}:</span> <span className="font-medium text-[hsl(var(--color-foreground))]">{certInfo.issuer}</span></p>
-                <p className="text-sm"><span className="text-[hsl(var(--color-muted-foreground))]">{tTool('valid')}:</span> <span className={`font-medium ${certExpired ? 'text-red-600 dark:text-red-400' : 'text-[hsl(var(--color-foreground))]'}`}>{formatDate(certInfo.validFrom)} — {formatDate(certInfo.validTo)}</span></p>
+                <p className="text-sm"><span className="text-[var(--color-muted-foreground)]">{tTool('subject')}:</span> <span className="font-medium text-[var(--color-foreground)]">{certInfo.subject}</span></p>
+                <p className="text-sm"><span className="text-[var(--color-muted-foreground)]">{tTool('issuer')}:</span> <span className="font-medium text-[var(--color-foreground)]">{certInfo.issuer}</span></p>
+                <p className="text-sm"><span className="text-[var(--color-muted-foreground)]">{tTool('valid')}:</span> <span className={`font-medium ${certExpired ? 'text-red-600 dark:text-red-400' : 'text-[var(--color-foreground)]'}`}>{formatDate(certInfo.validFrom)} — {formatDate(certInfo.validTo)}</span></p>
                 {certExpired && (
                   <p className="text-xs text-yellow-700 dark:text-yellow-300 mt-1">{tTool('warningExpired')}</p>
                 )}
@@ -384,52 +384,52 @@ export function DigitalSignPDFTool({ className = '' }: { className?: string }) {
       {
         certData && (
           <Card variant="outlined">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">{tTool('signatureOptionsTitle')}</h3>
+            <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">{tTool('signatureOptionsTitle')}</h3>
             <div className="space-y-4">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="sign-reason" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">{tTool('reasonLabel')}</label>
-                  <input id="sign-reason" type="text" value={reason} onChange={(e) => setReason(e.target.value)} placeholder={tTool('reasonPlaceholder')} className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]" />
+                  <label htmlFor="sign-reason" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">{tTool('reasonLabel')}</label>
+                  <input id="sign-reason" type="text" value={reason} onChange={(e) => setReason(e.target.value)} placeholder={tTool('reasonPlaceholder')} className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
                 </div>
                 <div>
-                  <label htmlFor="sign-location" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">{tTool('locationLabel')}</label>
-                  <input id="sign-location" type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder={tTool('locationPlaceholder')} className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]" />
+                  <label htmlFor="sign-location" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">{tTool('locationLabel')}</label>
+                  <input id="sign-location" type="text" value={location} onChange={(e) => setLocation(e.target.value)} placeholder={tTool('locationPlaceholder')} className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
                 </div>
               </div>
               <div>
-                <label htmlFor="sign-contact" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">{tTool('contactInfoLabel')}</label>
-                <input id="sign-contact" type="text" value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} placeholder={tTool('contactInfoPlaceholder')} className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]" />
+                <label htmlFor="sign-contact" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">{tTool('contactInfoLabel')}</label>
+                <input id="sign-contact" type="text" value={contactInfo} onChange={(e) => setContactInfo(e.target.value)} placeholder={tTool('contactInfoPlaceholder')} className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]" />
               </div>
 
               {/* Visible Signature Toggle */}
               <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" checked={enableVisible} onChange={(e) => setEnableVisible(e.target.checked)} className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]" />
-                <span className="text-sm font-medium text-[hsl(var(--color-foreground))]">{tTool('visibleSignatureLabel')}</span>
+                <input type="checkbox" checked={enableVisible} onChange={(e) => setEnableVisible(e.target.checked)} className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]" />
+                <span className="text-sm font-medium text-[var(--color-foreground)]">{tTool('visibleSignatureLabel')}</span>
               </label>
 
               {enableVisible && (
                 <div className="space-y-3 pl-7">
                   <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                     <div>
-                      <label className="block text-xs text-[hsl(var(--color-muted-foreground))] mb-1">{tTool('xPosition')}</label>
-                      <input type="number" value={sigX} onChange={(e) => setSigX(Number(e.target.value))} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))]" />
+                      <label className="block text-xs text-[var(--color-muted-foreground)] mb-1">{tTool('xPosition')}</label>
+                      <input type="number" value={sigX} onChange={(e) => setSigX(Number(e.target.value))} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)]" />
                     </div>
                     <div>
-                      <label className="block text-xs text-[hsl(var(--color-muted-foreground))] mb-1">{tTool('yPosition')}</label>
-                      <input type="number" value={sigY} onChange={(e) => setSigY(Number(e.target.value))} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))]" />
+                      <label className="block text-xs text-[var(--color-muted-foreground)] mb-1">{tTool('yPosition')}</label>
+                      <input type="number" value={sigY} onChange={(e) => setSigY(Number(e.target.value))} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)]" />
                     </div>
                     <div>
-                      <label className="block text-xs text-[hsl(var(--color-muted-foreground))] mb-1">{tTool('width')}</label>
-                      <input type="number" value={sigWidth} onChange={(e) => setSigWidth(Number(e.target.value))} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))]" />
+                      <label className="block text-xs text-[var(--color-muted-foreground)] mb-1">{tTool('width')}</label>
+                      <input type="number" value={sigWidth} onChange={(e) => setSigWidth(Number(e.target.value))} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)]" />
                     </div>
                     <div>
-                      <label className="block text-xs text-[hsl(var(--color-muted-foreground))] mb-1">{tTool('height')}</label>
-                      <input type="number" value={sigHeight} onChange={(e) => setSigHeight(Number(e.target.value))} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))]" />
+                      <label className="block text-xs text-[var(--color-muted-foreground)] mb-1">{tTool('height')}</label>
+                      <input type="number" value={sigHeight} onChange={(e) => setSigHeight(Number(e.target.value))} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)]" />
                     </div>
                   </div>
                   <div>
-                    <label className="block text-xs text-[hsl(var(--color-muted-foreground))] mb-1">{tTool('pageLabel')}</label>
-                    <select value={sigPage} onChange={(e) => setSigPage(e.target.value)} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))]">
+                    <label className="block text-xs text-[var(--color-muted-foreground)] mb-1">{tTool('pageLabel')}</label>
+                    <select value={sigPage} onChange={(e) => setSigPage(e.target.value)} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)]">
                       <option value="first">{tTool('firstPage')}</option>
                       <option value="last">{tTool('lastPage')}</option>
                       <option value="all">{tTool('allPages')}</option>
@@ -438,12 +438,12 @@ export function DigitalSignPDFTool({ className = '' }: { className?: string }) {
 
                   {/* Signature Image */}
                   <div>
-                    <label className="block text-xs text-[hsl(var(--color-muted-foreground))] mb-1">{tTool('signatureImageLabel')}</label>
+                    <label className="block text-xs text-[var(--color-muted-foreground)] mb-1">{tTool('signatureImageLabel')}</label>
                     <input
                       type="file"
                       accept=".png,.jpg,.jpeg"
                       onChange={handleImageSelected}
-                      className="block w-full text-xs text-[hsl(var(--color-foreground))] file:mr-2 file:py-1 file:px-3 file:rounded-[var(--radius-sm)] file:border-0 file:text-xs file:bg-[hsl(var(--color-muted))] file:text-[hsl(var(--color-foreground))] hover:file:opacity-80 cursor-pointer"
+                      className="block w-full text-xs text-[var(--color-foreground)] file:mr-2 file:py-1 file:px-3 file:rounded-[var(--radius-sm)] file:border-0 file:text-xs file:bg-[var(--color-muted)] file:text-[var(--color-foreground)] hover:file:opacity-80 cursor-pointer"
                     />
                     {sigImageFile && (
                       <div className="flex items-center gap-2 mt-1">
@@ -455,17 +455,17 @@ export function DigitalSignPDFTool({ className = '' }: { className?: string }) {
 
                   {/* Text options */}
                   <div>
-                    <label className="block text-xs text-[hsl(var(--color-muted-foreground))] mb-1">{tTool('signatureTextLabel')}</label>
-                    <input type="text" value={sigText} onChange={(e) => setSigText(e.target.value)} placeholder={tTool('signatureTextPlaceholder')} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))]" />
+                    <label className="block text-xs text-[var(--color-muted-foreground)] mb-1">{tTool('signatureTextLabel')}</label>
+                    <input type="text" value={sigText} onChange={(e) => setSigText(e.target.value)} placeholder={tTool('signatureTextPlaceholder')} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)]" />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <label className="block text-xs text-[hsl(var(--color-muted-foreground))] mb-1">{tTool('textColorLabel')}</label>
-                      <input type="color" value={sigTextColor} onChange={(e) => setSigTextColor(e.target.value)} className="w-full h-8 rounded-[var(--radius-sm)] border border-[hsl(var(--color-border))] cursor-pointer" />
+                      <label className="block text-xs text-[var(--color-muted-foreground)] mb-1">{tTool('textColorLabel')}</label>
+                      <input type="color" value={sigTextColor} onChange={(e) => setSigTextColor(e.target.value)} className="w-full h-8 rounded-[var(--radius-sm)] border border-[var(--color-border)] cursor-pointer" />
                     </div>
                     <div>
-                      <label className="block text-xs text-[hsl(var(--color-muted-foreground))] mb-1">{tTool('textSizeLabel')}</label>
-                      <input type="number" min={6} max={36} value={sigTextSize} onChange={(e) => setSigTextSize(Number(e.target.value))} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))]" />
+                      <label className="block text-xs text-[var(--color-muted-foreground)] mb-1">{tTool('textSizeLabel')}</label>
+                      <input type="number" min={6} max={36} value={sigTextSize} onChange={(e) => setSigTextSize(Number(e.target.value))} className="w-full px-2 py-1.5 text-sm rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)]" />
                     </div>
                   </div>
                 </div>

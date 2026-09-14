@@ -207,7 +207,7 @@ export function ExtractAttachmentsTool({ className = '' }: ExtractAttachmentsToo
       {files.length > 0 && (
         <Card variant="outlined" size="lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)]">
               {tTools('extractAttachments.filesTitle') || 'Selected Files'} ({files.length})
             </h3>
             <Button
@@ -224,7 +224,7 @@ export function ExtractAttachmentsTool({ className = '' }: ExtractAttachmentsToo
             {files.map((item) => (
               <li
                 key={item.id}
-                className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))]"
+                className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[var(--color-border)]"
               >
                 <svg className="w-8 h-8 text-red-500" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
@@ -232,10 +232,10 @@ export function ExtractAttachmentsTool({ className = '' }: ExtractAttachmentsToo
                   <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
                 </svg>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
+                  <p className="text-sm font-medium text-[var(--color-foreground)] truncate">
                     {item.file.name}
                   </p>
-                  <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                  <p className="text-xs text-[var(--color-muted-foreground)]">
                     {formatSize(item.file.size)}
                   </p>
                 </div>
@@ -243,7 +243,7 @@ export function ExtractAttachmentsTool({ className = '' }: ExtractAttachmentsToo
                   type="button"
                   onClick={() => handleRemoveFile(item.id)}
                   disabled={isProcessing}
-                  className="p-1 rounded hover:bg-red-100 text-[hsl(var(--color-muted-foreground))] hover:text-red-600"
+                  className="p-1 rounded hover:bg-red-100 text-[var(--color-muted-foreground)] hover:text-red-600"
                   aria-label={`Remove ${item.file.name}`}
                 >
                   <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -287,7 +287,7 @@ export function ExtractAttachmentsTool({ className = '' }: ExtractAttachmentsToo
       {extractedAttachments.length > 0 && (
         <Card variant="outlined" size="lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)]">
               {tTools('extractAttachments.extractedTitle') || 'Extracted Attachments'} ({extractedAttachments.length})
             </h3>
             <Button
@@ -303,16 +303,16 @@ export function ExtractAttachmentsTool({ className = '' }: ExtractAttachmentsToo
             {extractedAttachments.map((attachment, index) => (
               <li
                 key={`${attachment.name}-${index}`}
-                className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted)/0.3)]"
+                className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[var(--color-border)] hover:bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]"
               >
-                <svg className="w-6 h-6 text-[hsl(var(--color-muted-foreground))]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg className="w-6 h-6 text-[var(--color-muted-foreground)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48" />
                 </svg>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
+                  <p className="text-sm font-medium text-[var(--color-foreground)] truncate">
                     {attachment.name}
                   </p>
-                  <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                  <p className="text-xs text-[var(--color-muted-foreground)]">
                     {formatSize(attachment.data.byteLength)}
                     {attachment.page > 0 && ` • Page ${attachment.page}`}
                   </p>

@@ -142,8 +142,8 @@ export function RasterizePDFTool({ className = '' }: RasterizePDFToolProps) {
                 <Card variant="outlined">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                            <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                            <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                            <p className="text-sm text-[var(--color-muted-foreground)]">
                                 {(file.size / 1024 / 1024).toFixed(2)} MB
                             </p>
                         </div>
@@ -157,14 +157,14 @@ export function RasterizePDFTool({ className = '' }: RasterizePDFToolProps) {
             {/* Rasterize Options */}
             {hasFile && (
                 <Card variant="outlined">
-                    <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+                    <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
                         {tTools('rasterizePdf.optionsTitle') || 'Output Options'}
                     </h3>
 
                     <div className="space-y-4">
                         {/* DPI Preset */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('rasterizePdf.dpiLabel') || 'Resolution (DPI)'}
                             </label>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -178,8 +178,8 @@ export function RasterizePDFTool({ className = '' }: RasterizePDFToolProps) {
                       px-4 py-2 rounded-[var(--radius-md)] border text-sm font-medium
                       transition-colors duration-200
                       ${dpi === value
-                                                ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))]'
-                                                : 'border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted)/0.5)]'
+                                                ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)]'
+                                                : 'border-[var(--color-border)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)]'
                                             }
                       disabled:opacity-50 disabled:cursor-not-allowed
                     `}
@@ -193,7 +193,7 @@ export function RasterizePDFTool({ className = '' }: RasterizePDFToolProps) {
 
                         {/* Output Format */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('rasterizePdf.formatLabel') || 'Output Format'}
                             </label>
                             <div className="grid grid-cols-4 gap-2">
@@ -207,8 +207,8 @@ export function RasterizePDFTool({ className = '' }: RasterizePDFToolProps) {
                       px-4 py-2 rounded-[var(--radius-md)] border text-sm font-medium uppercase
                       transition-colors duration-200
                       ${format === fmt
-                                                ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))]'
-                                                : 'border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted)/0.5)]'
+                                                ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)]'
+                                                : 'border-[var(--color-border)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)]'
                                             }
                       disabled:opacity-50 disabled:cursor-not-allowed
                     `}
@@ -222,7 +222,7 @@ export function RasterizePDFTool({ className = '' }: RasterizePDFToolProps) {
                         {/* Quality (for JPEG/WebP) */}
                         {(format === 'jpeg' || format === 'webp' || format === 'pdf') && (
                             <div>
-                                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                                <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                     {tTools('rasterizePdf.qualityLabel') || 'Quality'}: {quality}%
                                 </label>
                                 <input
@@ -232,14 +232,14 @@ export function RasterizePDFTool({ className = '' }: RasterizePDFToolProps) {
                                     value={quality}
                                     onChange={(e) => setQuality(Number(e.target.value))}
                                     disabled={isProcessing}
-                                    className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-[hsl(var(--color-muted))]"
+                                    className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-[var(--color-muted)]"
                                 />
                             </div>
                         )}
 
                         {/* Page Range */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('rasterizePdf.pageRangeLabel') || 'Page Range (optional)'}
                             </label>
                             <input
@@ -248,16 +248,16 @@ export function RasterizePDFTool({ className = '' }: RasterizePDFToolProps) {
                                 onChange={(e) => setPageRange(e.target.value)}
                                 disabled={isProcessing}
                                 placeholder="e.g., 1-5, 8, 10-15"
-                                className="w-full px-3 py-2 border border-[hsl(var(--color-border))] rounded-[var(--radius-md)] text-sm"
+                                className="w-full px-3 py-2 border border-[var(--color-border)] rounded-[var(--radius-md)] text-sm"
                             />
-                            <p className="mt-1 text-xs text-[hsl(var(--color-muted-foreground))]">
+                            <p className="mt-1 text-xs text-[var(--color-muted-foreground)]">
                                 {tTools('rasterizePdf.pageRangeDesc') || 'Leave empty to convert all pages.'}
                             </p>
                         </div>
 
                         {/* Background Color */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('rasterizePdf.bgColorLabel') || 'Background Color'}
                             </label>
                             <div className="flex items-center gap-3">
@@ -273,7 +273,7 @@ export function RasterizePDFTool({ className = '' }: RasterizePDFToolProps) {
                                     value={backgroundColor}
                                     onChange={(e) => setBackgroundColor(e.target.value)}
                                     disabled={isProcessing}
-                                    className="flex-1 px-3 py-2 border border-[hsl(var(--color-border))] rounded-[var(--radius-md)] text-sm font-mono"
+                                    className="flex-1 px-3 py-2 border border-[var(--color-border)] rounded-[var(--radius-md)] text-sm font-mono"
                                 />
                             </div>
                         </div>

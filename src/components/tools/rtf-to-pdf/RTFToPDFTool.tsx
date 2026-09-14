@@ -196,15 +196,15 @@ export function RTFToPDFTool({ className = '' }: RTFToPDFToolProps) {
                 <Card variant="outlined" size="lg" className="glass-card">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-[hsl(var(--color-primary)/0.1)] flex items-center justify-center text-[hsl(var(--color-primary))]">
+                            <div className="w-12 h-12 rounded-xl bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] flex items-center justify-center text-[var(--color-primary)]">
                                 <FileType className="w-6 h-6" />
                             </div>
                             <div>
-                                <p className="font-semibold text-[hsl(var(--color-foreground))]">{file.file.name}</p>
-                                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">{formatSize(file.file.size)}</p>
+                                <p className="font-semibold text-[var(--color-foreground)]">{file.file.name}</p>
+                                <p className="text-sm text-[var(--color-muted-foreground)]">{formatSize(file.file.size)}</p>
                             </div>
                         </div>
-                        <Button variant="ghost" size="sm" onClick={handleRemoveFile} disabled={isProcessing} className="text-[hsl(var(--color-muted-foreground))] hover:text-red-500 hover:bg-red-50">
+                        <Button variant="ghost" size="sm" onClick={handleRemoveFile} disabled={isProcessing} className="text-[var(--color-muted-foreground)] hover:text-red-500 hover:bg-red-50">
                             <Trash2 className="w-5 h-5" />
                         </Button>
                     </div>

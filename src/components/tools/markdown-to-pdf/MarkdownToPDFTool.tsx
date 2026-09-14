@@ -177,7 +177,7 @@ Enjoy converting your Markdown to PDF!
     return (
         <div className={`space-y-6 ${className}`.trim()}>
             {/* Input Mode Tabs */}
-            <div className="flex gap-2 p-1 bg-[hsl(var(--color-muted)/0.3)] rounded-[var(--radius-lg)]">
+            <div className="flex gap-2 p-1 bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] rounded-[var(--radius-lg)]">
                 <button
                     type="button"
                     onClick={() => setInputMode('manual')}
@@ -185,8 +185,8 @@ Enjoy converting your Markdown to PDF!
                         flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-[var(--radius-md)] 
                         text-sm font-medium transition-all duration-200
                         ${inputMode === 'manual'
-                            ? 'bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] shadow-sm'
-                            : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                            ? 'bg-[var(--color-background)] text-[var(--color-foreground)] shadow-sm'
+                            : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                         }
                     `}
                 >
@@ -200,8 +200,8 @@ Enjoy converting your Markdown to PDF!
                         flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-[var(--radius-md)] 
                         text-sm font-medium transition-all duration-200
                         ${inputMode === 'upload'
-                            ? 'bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] shadow-sm'
-                            : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                            ? 'bg-[var(--color-background)] text-[var(--color-foreground)] shadow-sm'
+                            : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                         }
                     `}
                 >
@@ -232,8 +232,8 @@ Enjoy converting your Markdown to PDF!
                         <Card variant="outlined">
                             <div className="flex items-center justify-between">
                                 <div>
-                                    <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                                    <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                                    <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                                    <p className="text-sm text-[var(--color-muted-foreground)]">
                                         {(file.size / 1024).toFixed(2)} KB
                                     </p>
                                 </div>
@@ -249,7 +249,7 @@ Enjoy converting your Markdown to PDF!
                         <button
                             type="button"
                             onClick={() => setShowPreview(!showPreview)}
-                            className="flex items-center gap-2 px-3 py-1.5 text-sm text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))] transition-colors"
+                            className="flex items-center gap-2 px-3 py-1.5 text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors"
                         >
                             {showPreview ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                             {showPreview
@@ -263,7 +263,7 @@ Enjoy converting your Markdown to PDF!
                     <div className={`grid gap-4 ${showPreview ? 'lg:grid-cols-2' : 'grid-cols-1'}`}>
                         {/* Markdown Editor */}
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)]">
                                 {tTools('markdownToPdf.editorLabel') || 'Markdown Editor'}
                             </label>
                             <textarea
@@ -277,12 +277,12 @@ Enjoy converting your Markdown to PDF!
                                 className="
                                     w-full h-[400px] p-4 
                                     font-mono text-sm
-                                    border border-[hsl(var(--color-border))] 
+                                    border border-[var(--color-border)] 
                                     rounded-[var(--radius-md)]
-                                    bg-[hsl(var(--color-background))]
-                                    text-[hsl(var(--color-foreground))]
-                                    placeholder:text-[hsl(var(--color-muted-foreground))]
-                                    focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary)/0.3)] focus:border-[hsl(var(--color-primary))]
+                                    bg-[var(--color-background)]
+                                    text-[var(--color-foreground)]
+                                    placeholder:text-[var(--color-muted-foreground)]
+                                    focus:outline-none focus:ring-2 focus:ring-[color-mix(in_srgb,var(--color-primary)_30%,transparent)] focus:border-[var(--color-primary)]
                                     resize-none
                                     disabled:opacity-50 disabled:cursor-not-allowed
                                 "
@@ -292,13 +292,13 @@ Enjoy converting your Markdown to PDF!
                         {/* Live Preview */}
                         {showPreview && (
                             <div className="space-y-2">
-                                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
+                                <label className="block text-sm font-medium text-[var(--color-foreground)]">
                                     {tTools('markdownToPdf.previewLabel') || 'Preview'}
                                 </label>
                                 <div
                                     className={`
                                         h-[400px] p-4 overflow-auto
-                                        border border-[hsl(var(--color-border))]
+                                        border border-[var(--color-border)]
                                         rounded-[var(--radius-md)]
                                         prose prose-sm max-w-none
                                         ${theme === 'dark' ? 'bg-gray-900 text-white prose-invert' : 'bg-white'}
@@ -323,14 +323,14 @@ Enjoy converting your Markdown to PDF!
 
             {/* Conversion Options */}
             <Card variant="outlined">
-                <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+                <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
                     {tTools('markdownToPdf.optionsTitle') || 'Conversion Options'}
                 </h3>
 
                 <div className="space-y-4">
                     {/* Theme */}
                     <div>
-                        <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                        <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                             {tTools('markdownToPdf.themeLabel') || 'Theme'}
                         </label>
                         <div className="grid grid-cols-3 gap-2">
@@ -344,8 +344,8 @@ Enjoy converting your Markdown to PDF!
                                         px-4 py-2 rounded-[var(--radius-md)] border text-sm font-medium capitalize
                                         transition-colors duration-200
                                         ${theme === th
-                                            ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))]'
-                                            : 'border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted)/0.5)]'
+                                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)]'
+                                            : 'border-[var(--color-border)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)]'
                                         }
                                         disabled:opacity-50 disabled:cursor-not-allowed
                                     `}
@@ -358,7 +358,7 @@ Enjoy converting your Markdown to PDF!
 
                     {/* Page Size */}
                     <div>
-                        <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                        <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                             {tTools('markdownToPdf.pageSizeLabel') || 'Page Size'}
                         </label>
                         <div className="grid grid-cols-3 gap-2">
@@ -372,8 +372,8 @@ Enjoy converting your Markdown to PDF!
                                         px-4 py-2 rounded-[var(--radius-md)] border text-sm font-medium uppercase
                                         transition-colors duration-200
                                         ${pageSize === size
-                                            ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))]'
-                                            : 'border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted)/0.5)]'
+                                            ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)]'
+                                            : 'border-[var(--color-border)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)]'
                                         }
                                         disabled:opacity-50 disabled:cursor-not-allowed
                                     `}
@@ -391,9 +391,9 @@ Enjoy converting your Markdown to PDF!
                             checked={gfm}
                             onChange={(e) => setGfm(e.target.checked)}
                             disabled={isProcessing}
-                            className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                            className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                         />
-                        <span className="text-sm text-[hsl(var(--color-foreground))]">
+                        <span className="text-sm text-[var(--color-foreground)]">
                             {tTools('markdownToPdf.gfmLabel') || 'Enable GitHub Flavored Markdown (tables, task lists, etc.)'}
                         </span>
                     </label>
@@ -405,9 +405,9 @@ Enjoy converting your Markdown to PDF!
                             checked={syntaxHighlight}
                             onChange={(e) => setSyntaxHighlight(e.target.checked)}
                             disabled={isProcessing}
-                            className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                            className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                         />
-                        <span className="text-sm text-[hsl(var(--color-foreground))]">
+                        <span className="text-sm text-[var(--color-foreground)]">
                             {tTools('markdownToPdf.syntaxHighlightLabel') || 'Enable syntax highlighting for code blocks'}
                         </span>
                     </label>

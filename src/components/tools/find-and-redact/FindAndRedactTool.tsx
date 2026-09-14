@@ -116,6 +116,7 @@ export function FindAndRedactTool({ className = '' }: FindAndRedactToolProps) {
                     context.clearRect(0, 0, canvas.width, canvas.height);
                     await page.render({
                         canvasContext: context,
+                        canvas,
                         viewport: viewport,
                     }).promise;
 

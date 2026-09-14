@@ -1,55 +1,108 @@
 @import "tailwindcss";
 
-/* PDFCraft Design System - CSS Variables for Theming */
+/* ============================================
+   Font
+   ============================================ */
+@font-face {
+  font-family: 'QomraArabic';
+  src: url('/fonts/itfQomraArabic-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* ════════════════════════════════════════════
+   ☀️ LIGHT MODE — كريمي · Forest · Charcoal
+   ════════════════════════════════════════════ */
 :root {
-  /* Primary Colors - Deep Blue/Indigo for trust and modern tech feel */
-  --color-primary: 226 71% 55%; /* #3b82f6 - slightly more vibrant */
-  --color-primary-foreground: 0 0% 100%;
-  --color-primary-hover: 226 71% 45%;
-  
-  /* Secondary Colors - Slate for neutral elements */
-  --color-secondary: 215 20% 90%;
-  --color-secondary-foreground: 215 25% 15%;
-  --color-secondary-hover: 215 20% 80%;
-  
-  /* Accent Colors - Teal/Cyan for highlights */
-  --color-accent: 172 66% 50%;
-  --color-accent-foreground: 0 0% 100%;
-  
-  /* Background Colors */
-  --color-background: 210 40% 98%; /* Slightly off-white for depth */
-  --color-foreground: 222 47% 11%;
-  
-  /* Muted Colors */
-  --color-muted: 210 40% 96%;
-  --color-muted-foreground: 215 16% 47%;
-  
-  /* Card Colors */
-  --color-card: 0 0% 100%;
-  --color-card-foreground: 222 47% 11%;
-  
-  /* Border Colors */
-  --color-border: 214 32% 91%;
-  --color-input: 214 32% 91%;
-  --color-ring: 226 71% 55%;
-  
-  /* Destructive Colors */
-  --color-destructive: 0 84% 60%;
-  --color-destructive-foreground: 0 0% 100%;
-  
-  /* Success Colors */
-  --color-success: 142 76% 36%;
-  --color-success-foreground: 0 0% 100%;
-  
-  /* Warning Colors */
-  --color-warning: 38 92% 50%;
-  --color-warning-foreground: 0 0% 100%;
-  
-  /* Typography */
-  --font-sans: var(--font-inter, 'Inter'), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-mono: var(--font-jetbrains-mono, 'JetBrains Mono'), 'Fira Code', Consolas, monospace;
-  
-  /* Spacing Scale */
+  /* ─── Core Colors ─── */
+  --bg:        #fefdfa;   /* خلفية الصفحة — كريمي شبه أبيض */
+  --fg:        #1a1a1a;   /* النص الأساسي — Charcoal */
+  --brand:       #2d5f57;   /* Forest — الأزرار والروابط */
+  --brand-fg:    #fefdfa;   /* النص على Forest */
+  --brand-hover: color-mix(in srgb, var(--brand) 85%, black);
+
+  /* ─── Surfaces (تدرج واضح) ─── */
+  --card:      #ffffff;   /* بطاقة مرتفعة — أبيض نقي */
+  --card-fg:   #1a1a1a;
+  --muted:       #f7f4ec;   /* منطقة ثانوية — كريمي أعمق */
+  --muted-fg:    #5a5548;   /* نص ثانوي — Charcoal فاتح */
+  --muted-hover: color-mix(in srgb, var(--muted) 85%, black);
+  --input:     #ffffff;
+  --border:    #ebe6d6;   /* فاصل ناعم دافئ */
+  --ring:      #2d5f57;
+
+  /* ─── Status ─── */
+  --danger:     #8b2635;
+  --danger-fg:  #fefdfa;
+  --success:    #2d5f57;
+  --success-fg: #fefdfa;
+  --warning:    #988561;
+  --warning-fg: #1a1a1a;
+
+  /* ─── Glassmorphism ─── */
+  --glass-bg:        rgba(254, 253, 250, 0.75);
+  --glass-border:    rgba(45, 95, 87, 0.10);
+  --glass-from:      rgba(255, 255, 255, 0.92);
+  --glass-to:        rgba(254, 253, 250, 0.60);
+
+  /* ─── Shadows (soft, warm) ─── */
+  --shadow-sm:  0 1px 2px 0 rgb(26 26 26 / 0.04);
+  --shadow-md:  0 4px 8px -2px rgb(26 26 26 / 0.06), 0 2px 4px -2px rgb(26 26 26 / 0.04);
+  --shadow-lg:  0 12px 20px -6px rgb(26 26 26 / 0.08), 0 4px 8px -4px rgb(26 26 26 / 0.05);
+  --shadow-xl:  0 24px 32px -10px rgb(26 26 26 / 0.10), 0 8px 16px -8px rgb(26 26 26 / 0.06);
+}
+
+/* ════════════════════════════════════════════
+   🌙 DARK MODE — Charcoal · Wheat · Forest
+   ════════════════════════════════════════════ */
+.dark {
+  color-scheme: dark;
+
+  /* ─── Core Colors ─── */
+  --bg:        #1a1a1a;   /* خلفية — Charcoal */
+  --fg:        #edebe0;   /* النص الأساسي — Wheat */
+  --brand:       #428177;   /* Forest أفتح ليبرز على الداكن */
+  --brand-fg:    #edebe0;
+  --brand-hover: color-mix(in srgb, var(--brand) 85%, white);
+
+  /* ─── Surfaces ─── */
+  --card:      #222222;   /* بطاقة مرتفعة */
+  --card-fg:   #edebe0;
+  --muted:       #282828;   /* منطقة ثانوية */
+  --muted-fg:    #9b9585;   /* نص ثانوي — Wheat باهت */
+  --muted-hover: color-mix(in srgb, var(--muted) 85%, white);
+  --input:     #222222;
+  --border:    #343434;   /* فاصل */
+  --ring:      #428177;
+
+  /* ─── Status ─── */
+  --danger:     #a3283a;
+  --danger-fg:  #edebe0;
+  --success:    #428177;
+  --success-fg: #edebe0;
+  --warning:    #b9a779;
+  --warning-fg: #1a1a1a;
+
+  /* ─── Glassmorphism ─── */
+  --glass-bg:        rgba(34, 34, 34, 0.65);
+  --glass-border:    rgba(237, 235, 224, 0.08);
+  --glass-from:      rgba(38, 38, 38, 0.85);
+  --glass-to:        rgba(26, 26, 26, 0.60);
+
+  /* ─── Shadows (أعمق للداكن) ─── */
+  --shadow-sm:  0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-md:  0 4px 8px -2px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.3);
+  --shadow-lg:  0 12px 20px -6px rgb(0 0 0 / 0.55), 0 4px 8px -4px rgb(0 0 0 / 0.35);
+  --shadow-xl:  0 24px 32px -10px rgb(0 0 0 / 0.6), 0 8px 16px -8px rgb(0 0 0 / 0.4);
+}
+
+/* ════════════════════════════════════════════
+   φ Scale (Typography · Spacing · Radius)
+   ════════════════════════════════════════════ */
+:root {
+  --font-sans: 'QomraArabic', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', Consolas, monospace;
+
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -57,189 +110,243 @@
   --spacing-xl: 2rem;
   --spacing-2xl: 3rem;
   --spacing-3xl: 4rem;
-  
-  /* Border Radius */
-  --radius-sm: 0.375rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.5rem;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 26px;
   --radius-full: 9999px;
-  
-  /* Shadows - Layered, smoother shadows for depth */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-  --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
-  
-  /* Transitions */
-  --transition-fast: 150ms;
-  --transition-normal: 250ms;
-  --transition-slow: 350ms;
+
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Dark Mode Theme */
-.dark {
-  color-scheme: dark;
-  --color-primary: 226 71% 60%;
-  --color-primary-foreground: 222 47% 11%;
-  --color-primary-hover: 226 71% 70%;
-  
-  --color-secondary: 215 20% 20%;
-  --color-secondary-foreground: 210 40% 98%;
-  --color-secondary-hover: 215 20% 30%;
-  
-  --color-accent: 172 66% 50%;
-  --color-accent-foreground: 222 47% 11%;
-  
-  --color-background: 222 47% 7%; /* Darker background for more contrast */
-  --color-foreground: 210 40% 98%;
-  
-  --color-muted: 217 33% 13%;
-  --color-muted-foreground: 215 20% 65%;
-  
-  --color-card: 222 47% 10%;
-  --color-card-foreground: 210 40% 98%;
-  
-  --color-border: 217 33% 15%;
-  --color-input: 217 33% 15%;
-  --color-ring: 226 71% 60%;
-}
+/* ════════════════════════════════════════════
+   Tailwind 4 Tokens
+   ════════════════════════════════════════════ */
+@theme inline {
+  --color-background:             var(--bg);
+  --color-foreground:             var(--fg);
+  --color-primary:                var(--brand);
+  --color-primary-foreground:     var(--brand-fg);
+  --color-primary-hover:          var(--brand-hover);
+  --color-secondary:              var(--muted);
+  --color-secondary-foreground:   var(--fg);
+  --color-secondary-hover:        var(--muted-hover);
+  --color-accent:                 var(--brand);
+  --color-accent-foreground:      var(--brand-fg);
+  --color-muted:                  var(--muted);
+  --color-muted-foreground:       var(--muted-fg);
+  --color-card:                   var(--card);
+  --color-card-foreground:        var(--card-fg);
+  --color-border:                 var(--border);
+  --color-input:                  var(--input);
+  --color-ring:                   var(--ring);
+  --color-destructive:            var(--danger);
+  --color-destructive-foreground: var(--danger-fg);
+  --color-success:                var(--success);
+  --color-success-foreground:     var(--success-fg);
+  --color-warning:                var(--warning);
+  --color-warning-foreground:     var(--warning-fg);
 
-/* Base Styles */
-* {
-  border-color: hsl(var(--color-border));
-}
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
 
-body {
-  background-color: hsl(var(--color-background));
-  color: hsl(var(--color-foreground));
-  font-family: var(--font-sans);
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* Base Styles for Form Elements */
-select, input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), textarea {
-  background-color: hsl(var(--color-background));
-  color: hsl(var(--color-foreground));
-}
-
-select option {
-  background-color: hsl(var(--color-background));
-  color: hsl(var(--color-foreground));
-}
-
-/* Utility Classes using CSS Variables */
-@theme {
-  /* Colors */
-  --color-primary: hsl(var(--color-primary));
-  --color-primary-foreground: hsl(var(--color-primary-foreground));
-  --color-secondary: hsl(var(--color-secondary));
-  --color-secondary-foreground: hsl(var(--color-secondary-foreground));
-  --color-accent: hsl(var(--color-accent));
-  --color-accent-foreground: hsl(var(--color-accent-foreground));
-  --color-background: hsl(var(--color-background));
-  --color-foreground: hsl(var(--color-foreground));
-  --color-muted: hsl(var(--color-muted));
-  --color-muted-foreground: hsl(var(--color-muted-foreground));
-  --color-card: hsl(var(--color-card));
-  --color-card-foreground: hsl(var(--color-card-foreground));
-  --color-border: hsl(var(--color-border));
-  --color-destructive: hsl(var(--color-destructive));
-  --color-destructive-foreground: hsl(var(--color-destructive-foreground));
-  --color-success: hsl(var(--color-success));
-  --color-success-foreground: hsl(var(--color-success-foreground));
-  --color-warning: hsl(var(--color-warning));
-  --color-warning-foreground: hsl(var(--color-warning-foreground));
-  
-  /* Border Radius */
   --radius-sm: var(--radius-sm);
   --radius-md: var(--radius-md);
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
-  
-  /* Font Family */
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-mono);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
 }
 
-/* Focus Ring Utility */
-.focus-ring {
-  outline: 2px solid transparent;
-  outline-offset: 2px;
+/* ════════════════════════════════════════════
+   Base
+   ════════════════════════════════════════════ */
+* {
+  border-color: var(--border);
 }
 
-.focus-ring:focus-visible {
-  outline: 2px solid hsl(var(--color-ring));
-  box-shadow: 0 0 0 2px hsl(var(--color-background)), 0 0 0 4px hsl(var(--color-ring));
+html {
+  background-color: var(--bg);
 }
 
-/* Global focus-visible styles */
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  line-height: 1.618;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  transition: background-color var(--transition-base),
+              color var(--transition-base);
+}
+
+/* ════════════════════════════════════════════
+   Form Elements
+   ════════════════════════════════════════════ */
+select,
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea {
+  background-color: var(--input);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.5rem 0.8rem;
+  transition: border-color var(--transition-fast),
+              box-shadow var(--transition-fast),
+              background-color var(--transition-fast);
+}
+
+select:hover,
+input:hover,
+textarea:hover {
+  border-color: color-mix(in srgb, var(--brand) 30%, var(--border));
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 20%, transparent);
+}
+
+select option {
+  background-color: var(--bg);
+  color: var(--fg);
+}
+
+/* ════════════════════════════════════════════
+   Focus Ring
+   ════════════════════════════════════════════ */
 :focus-visible {
-  outline: 2px solid hsl(var(--color-ring));
+  outline: 2px solid var(--ring);
   outline-offset: 2px;
+  border-radius: var(--radius-sm);
 }
-
 :focus:not(:focus-visible) {
   outline: none;
 }
 
-/* Glassmorphism Utilities */
-.glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+.focus-ring {
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.focus-ring:focus-visible {
+  outline: 2px solid var(--ring);
+  box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--ring);
 }
 
-.dark .glass {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+/* ════════════════════════════════════════════
+   Links
+   ════════════════════════════════════════════ */
+a {
+  color: var(--brand);
+  text-decoration: none;
+  transition: opacity var(--transition-fast);
+}
+a:hover { opacity: 0.8; }
+
+/* ════════════════════════════════════════════
+   Glassmorphism
+   ════════════════════════════════════════════ */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
+  border: 1px solid var(--glass-border);
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
-  backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  background: linear-gradient(135deg, var(--glass-from), var(--glass-to));
+  backdrop-filter: blur(10px) saturate(130%);
+  -webkit-backdrop-filter: blur(10px) saturate(130%);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--transition-base),
+              transform var(--transition-base);
 }
 
-.dark .glass-card {
-  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.4));
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+.glass-card:hover {
+  box-shadow: var(--shadow-md);
 }
 
-/* Animations */
+/* ════════════════════════════════════════════
+   Animations
+   ════════════════════════════════════════════ */
 @keyframes blob {
-  0% { transform: translate(0px, 0px) scale(1); }
-  33% { transform: translate(30px, -50px) scale(1.1); }
-  66% { transform: translate(-20px, 20px) scale(0.9); }
+  0%   { transform: translate(0px, 0px) scale(1); }
+  33%  { transform: translate(30px, -50px) scale(1.1); }
+  66%  { transform: translate(-20px, 20px) scale(0.9); }
   100% { transform: translate(0px, 0px) scale(1); }
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .animate-blob {
   animation: blob 7s infinite;
 }
-
-.animation-delay-2000 {
-  animation-delay: 2s;
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
 }
+.animation-delay-2000 { animation-delay: 2s; }
+.animation-delay-4000 { animation-delay: 4s; }
 
-.animation-delay-4000 {
-  animation-delay: 4s;
-}
-
-/* Gradient Text */
+/* ════════════════════════════════════════════
+   Gradient Text
+   ════════════════════════════════════════════ */
 .text-gradient {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-image: linear-gradient(to right, hsl(var(--color-primary)), hsl(var(--color-accent)));
+  background-image: linear-gradient(
+    135deg,
+    var(--fg) 0%,
+    var(--brand) 100%
+  );
 }
 
-/* Screen reader only utility */
+/* ════════════════════════════════════════════
+   Scrollbar
+   ════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brand);
+  background-clip: padding-box;
+}
+
+/* ════════════════════════════════════════════
+   Selection
+   ════════════════════════════════════════════ */
+::selection {
+  background: color-mix(in srgb, var(--brand) 90%, transparent);
+  color: var(--brand-fg);
+}
+
+/* ════════════════════════════════════════════
+   Screen Reader Only
+   ════════════════════════════════════════════ */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -251,7 +358,6 @@ select option {
   white-space: nowrap;
   border-width: 0;
 }
-
 .sr-only:focus,
 .sr-only:focus-visible {
   position: static;
@@ -264,7 +370,21 @@ select option {
   white-space: normal;
 }
 
-/* Reduced motion preference */
+/* ════════════════════════════════════════════
+   Utilities
+   ════════════════════════════════════════════ */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scroll-smooth { scroll-behavior: smooth; }
+
+/* ════════════════════════════════════════════
+   Reduced Motion
+   ════════════════════════════════════════════ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -274,36 +394,10 @@ select option {
   }
 }
 
-/* RTL Support - Simplified */
+/* ════════════════════════════════════════════
+   RTL
+   ════════════════════════════════════════════ */
 [dir="rtl"] { text-align: right; }
 [dir="rtl"] .rtl\:flip { transform: scaleX(-1); }
 [dir="rtl"] .me-2 { margin-inline-end: 0.5rem; }
 [dir="rtl"] .ms-2 { margin-inline-start: 0.5rem; }
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: hsl(var(--color-secondary) / 0.8);
-  border-radius: var(--radius-full);
-}
-::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--color-secondary-foreground) / 0.5);
-}
-
-/* Shimmer */
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-.animate-shimmer {
-  animation: shimmer 1.5s infinite;
-}
-.scroll-smooth { scroll-behavior: smooth; }
-.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
-.scrollbar-hide::-webkit-scrollbar { display: none; }

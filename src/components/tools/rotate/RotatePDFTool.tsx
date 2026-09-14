@@ -103,6 +103,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
 
           await page.render({
             canvasContext: context,
+            canvas,
             viewport: viewport,
           }).promise;
 
@@ -540,8 +541,8 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                 <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
               </svg>
               <div>
-                <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)} • {totalPages} {totalPages === 1 ? 'page' : 'pages'}
                 </p>
               </div>
@@ -569,34 +570,34 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
               className="backdrop-blur-md border border-white/20 dark:border-zinc-800/40 shadow-xl overflow-hidden"
             >
               {/* Header */}
-              <div className="p-5 border-b border-[hsl(var(--color-border))]">
-                <h3 className="text-lg font-bold tracking-tight text-[hsl(var(--color-foreground))] flex items-center gap-2">
-                  <svg className="w-5 h-5 text-[hsl(var(--color-primary))]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="p-5 border-b border-[var(--color-border)]">
+                <h3 className="text-lg font-bold tracking-tight text-[var(--color-foreground)] flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   {t('rotate.optionsTitle')}
                 </h3>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">
+                <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
                   {t('rotate.optionsHelp')}
                 </p>
               </div>
 
               {/* Selection Summary Block */}
-              <div className="px-5 py-3 bg-[hsl(var(--color-muted)/0.3)] border-b border-[hsl(var(--color-border))] flex items-center justify-between">
-                <span className="text-xs font-semibold text-[hsl(var(--color-foreground))]">
+              <div className="px-5 py-3 bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border-b border-[var(--color-border)] flex items-center justify-between">
+                <span className="text-xs font-semibold text-[var(--color-foreground)]">
                   {t('rotate.selectedPages', { selected: selectedPages.size, total: totalPages })}
                 </span>
                 <div className="flex gap-1.5">
                   <button
                     onClick={handleSelectAll}
-                    className="text-[10px] px-2 py-1 rounded bg-[hsl(var(--color-card))] border border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted))] text-[hsl(var(--color-foreground))] font-medium transition-colors"
+                    className="text-[10px] px-2 py-1 rounded bg-[var(--color-card)] border border-[var(--color-border)] hover:bg-[var(--color-muted)] text-[var(--color-foreground)] font-medium transition-colors"
                   >
                     {t('buttons.selectAll')}
                   </button>
                   <button
                     onClick={handleClearSelection}
-                    className="text-[10px] px-2 py-1 rounded bg-[hsl(var(--color-card))] border border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted))] text-[hsl(var(--color-foreground))] font-medium transition-colors"
+                    className="text-[10px] px-2 py-1 rounded bg-[var(--color-card)] border border-[var(--color-border)] hover:bg-[var(--color-muted)] text-[var(--color-foreground)] font-medium transition-colors"
                   >
                     {t('buttons.clear')}
                   </button>
@@ -606,12 +607,12 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
               {/* Tabs Panel */}
               <div className="p-5 space-y-6">
                 {/* Mode Selector Tab buttons */}
-                <div className="flex bg-[hsl(var(--color-muted)/0.5)] p-1 rounded-[var(--radius-md)]">
+                <div className="flex bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)] p-1 rounded-[var(--radius-md)]">
                   <button
                     onClick={() => setCalibrationTab('preset')}
                     className={`flex-1 py-1.5 text-xs font-semibold rounded-[var(--radius-sm)] transition-all ${calibrationTab === 'preset'
-                        ? 'bg-[hsl(var(--card-background, var(--color-card)))] text-[hsl(var(--color-foreground))] shadow-sm'
-                        : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                        ? 'bg-[hsl(var(--card-background, var(--color-card)))] text-[var(--color-foreground)] shadow-sm'
+                        : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                       }`}
                   >
                     {t('rotate.quickRotate')}
@@ -619,8 +620,8 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                   <button
                     onClick={() => setCalibrationTab('stepless')}
                     className={`flex-1 py-1.5 text-xs font-semibold rounded-[var(--radius-sm)] transition-all ${calibrationTab === 'stepless'
-                        ? 'bg-[hsl(var(--card-background, var(--color-card)))] text-[hsl(var(--color-foreground))] shadow-sm'
-                        : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                        ? 'bg-[hsl(var(--card-background, var(--color-card)))] text-[var(--color-foreground)] shadow-sm'
+                        : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                       }`}
                   >
                     {t('rotate.fineRotate')}
@@ -638,7 +639,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                         disabled={isProcessing || selectedPages.size === 0}
                         className="py-3 flex flex-col items-center gap-1.5 text-xs font-medium"
                       >
-                        <svg className="w-5 h-5 text-[hsl(var(--color-primary))]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
                         </svg>
                         {t('rotate.rotateLeft90')}
@@ -650,7 +651,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                         disabled={isProcessing || selectedPages.size === 0}
                         className="py-3 flex flex-col items-center gap-1.5 text-xs font-medium"
                       >
-                        <svg className="w-5 h-5 text-[hsl(var(--color-primary))]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5 text-[var(--color-primary)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 10H11a8 8 0 00-8 8v2m18-10l-6 6m6-6l-6-6" />
                         </svg>
                         {t('rotate.rotateRight90')}
@@ -672,7 +673,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                         size="sm"
                         onClick={handleResetAll}
                         disabled={isProcessing || !hasRotations}
-                        className="py-3 flex flex-col items-center gap-1.5 text-xs font-medium border border-dashed border-[hsl(var(--color-border))]"
+                        className="py-3 flex flex-col items-center gap-1.5 text-xs font-medium border border-dashed border-[var(--color-border)]"
                       >
                         <svg className="w-5 h-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -682,20 +683,20 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                     </div>
 
                     {/* Pre-defined Range Selection Quick Filters */}
-                    <div className="pt-2 border-t border-[hsl(var(--color-border))]">
-                      <p className="text-[11px] font-semibold text-[hsl(var(--color-muted-foreground))] mb-2">{t('rotate.quickSelectLabel')}</p>
+                    <div className="pt-2 border-t border-[var(--color-border)]">
+                      <p className="text-[11px] font-semibold text-[var(--color-muted-foreground)] mb-2">{t('rotate.quickSelectLabel')}</p>
                       <div className="flex gap-1.5">
                         <button
                           type="button"
                           onClick={handleSelectOdd}
-                          className="flex-1 text-[11px] py-1 rounded bg-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-muted-foreground)/0.2)] text-[hsl(var(--color-foreground))] transition-colors font-medium"
+                          className="flex-1 text-[11px] py-1 rounded bg-[var(--color-muted)] hover:bg-[color-mix(in_srgb,var(--color-muted-foreground)_20%,transparent)] text-[var(--color-foreground)] transition-colors font-medium"
                         >
                           {t('rotate.selectOdd')}
                         </button>
                         <button
                           type="button"
                           onClick={handleSelectEven}
-                          className="flex-1 text-[11px] py-1 rounded bg-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-muted-foreground)/0.2)] text-[hsl(var(--color-foreground))] transition-colors font-medium"
+                          className="flex-1 text-[11px] py-1 rounded bg-[var(--color-muted)] hover:bg-[color-mix(in_srgb,var(--color-muted-foreground)_20%,transparent)] text-[var(--color-foreground)] transition-colors font-medium"
                         >
                           {t('rotate.selectEven')}
                         </button>
@@ -712,13 +713,13 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                             }
                           }}
                           placeholder="e.g. 1, 3-5"
-                          className="flex-1 text-[11px] px-2 py-1 rounded bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-muted-foreground))]/50 focus:outline-none focus:ring-1 focus:ring-[hsl(var(--color-primary))]"
+                          className="flex-1 text-[11px] px-2 py-1 rounded bg-[var(--color-background)] border border-[var(--color-border)] text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)]/50 focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)]"
                         />
                         <button
                           type="button"
                           onClick={handleApplyCustomPages}
                           disabled={!customPageInput.trim()}
-                          className="text-[11px] px-3 py-1 rounded bg-[hsl(var(--color-primary))] text-white hover:bg-[hsl(var(--color-primary))/0.9] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                          className="text-[11px] px-3 py-1 rounded bg-[var(--color-primary)] text-white hover:bg-[color-mix(in_srgb,var(--color-primary)_90%,transparent)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
                         >
                           Select
                         </button>
@@ -740,7 +741,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                         onPointerUp={handleDialPointerUp}
                         onPointerCancel={handleDialPointerUp}
                         onWheel={handleDialWheel}
-                        className="relative w-36 h-36 rounded-full border-2 border-[hsl(var(--color-primary)/0.25)] dark:border-zinc-700/60 bg-[hsl(var(--color-card))] shadow-inner flex items-center justify-center cursor-grab active:cursor-grabbing select-none"
+                        className="relative w-36 h-36 rounded-full border-2 border-[color-mix(in_srgb,var(--color-primary)_25%,transparent)] dark:border-zinc-700/60 bg-[var(--color-card)] shadow-inner flex items-center justify-center cursor-grab active:cursor-grabbing select-none"
                         style={{ touchAction: 'none' }}
                       >
                         {/* Angular Scale marks background */}
@@ -758,7 +759,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                                 y1={y1}
                                 x2={x2}
                                 y2={y2}
-                                stroke={i % 3 === 0 ? 'hsl(var(--color-primary)/0.5)' : 'hsl(var(--color-muted-foreground)/0.3)'}
+                                stroke={i % 3 === 0 ? 'color-mix(in_srgb,var(--color-primary)_50%,transparent)' : 'color-mix(in_srgb,var(--color-muted-foreground)_30%,transparent)'}
                                 strokeWidth={i % 3 === 0 ? 1 : 0.6}
                               />
                             );
@@ -771,27 +772,27 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                           style={{ transform: `rotate(${parseFloat(steplessAngle) || 0}deg)` }}
                         >
                           {/* Radial indicator line */}
-                          <div className="absolute top-1 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-[hsl(var(--color-primary))] rounded-full" />
+                          <div className="absolute top-1 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-[var(--color-primary)] rounded-full" />
                           {/* Dial Knob Handle */}
-                          <div className="absolute top-5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-[hsl(var(--color-primary))] border-2 border-white dark:border-black shadow-md" />
+                          <div className="absolute top-5 left-1/2 -translate-x-1/2 w-3.5 h-3.5 rounded-full bg-[var(--color-primary)] border-2 border-white dark:border-black shadow-md" />
                         </div>
 
                         {/* Inner readout display */}
                         <div className="text-center z-10 pointer-events-none">
-                          <p className="text-[10px] uppercase font-bold tracking-widest text-[hsl(var(--color-muted-foreground))]">{t('rotate.correctionLabel')}</p>
-                          <p className="text-2xl font-black text-[hsl(var(--color-foreground))] tracking-tighter">
+                          <p className="text-[10px] uppercase font-bold tracking-widest text-[var(--color-muted-foreground)]">{t('rotate.correctionLabel')}</p>
+                          <p className="text-2xl font-black text-[var(--color-foreground)] tracking-tighter">
                             {parseFloat(steplessAngle) > 0 ? `+${steplessAngle}` : steplessAngle}°
                           </p>
-                          <p className="text-[9px] text-[hsl(var(--color-primary))] font-semibold">{t('rotate.wheelHelp')}</p>
+                          <p className="text-[9px] text-[var(--color-primary)] font-semibold">{t('rotate.wheelHelp')}</p>
                         </div>
                       </div>
                     </div>
 
                     {/* Stepless Smooth Slider */}
                     <div className="space-y-2">
-                      <div className="flex justify-between items-center text-xs font-semibold text-[hsl(var(--color-muted-foreground))]">
+                      <div className="flex justify-between items-center text-xs font-semibold text-[var(--color-muted-foreground)]">
                         <span>{t('rotate.sliderLeft')}</span>
-                        <span className="text-[hsl(var(--color-primary))] font-bold">{t('rotate.sliderTitle')}</span>
+                        <span className="text-[var(--color-primary)] font-bold">{t('rotate.sliderTitle')}</span>
                         <span>{t('rotate.sliderRight')}</span>
                       </div>
                       <input
@@ -802,15 +803,15 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                         value={parseFloat(steplessAngle) || 0}
                         onChange={handleSliderChange}
                         disabled={isProcessing || selectedPages.size === 0}
-                        className="w-full h-1.5 rounded-lg appearance-none bg-[hsl(var(--color-muted))] accent-[hsl(var(--color-primary))] outline-none cursor-pointer"
+                        className="w-full h-1.5 rounded-lg appearance-none bg-[var(--color-muted)] accent-[var(--color-primary)] outline-none cursor-pointer"
                       />
                     </div>
 
                     {/* Numeric Precision Input Block with quick -0.5 and +0.5 */}
-                    <div className="pt-2 border-t border-[hsl(var(--color-border))] flex items-center justify-between gap-4">
-                      <span className="text-xs font-semibold text-[hsl(var(--color-muted-foreground))]">{t('rotate.preciseInput')}</span>
+                    <div className="pt-2 border-t border-[var(--color-border)] flex items-center justify-between gap-4">
+                      <span className="text-xs font-semibold text-[var(--color-muted-foreground)]">{t('rotate.preciseInput')}</span>
 
-                      <div className="flex items-center bg-[hsl(var(--color-muted)/0.4)] border border-[hsl(var(--color-input))] rounded-[var(--radius-md)] overflow-hidden pr-2">
+                      <div className="flex items-center bg-[color-mix(in_srgb,var(--color-muted)_40%,transparent)] border border-[var(--color-input)] rounded-[var(--radius-md)] overflow-hidden pr-2">
                         <button
                           type="button"
                           onClick={() => {
@@ -819,7 +820,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                             handleApplyAbsoluteRotation(val);
                           }}
                           disabled={isProcessing || selectedPages.size === 0}
-                          className="w-8 h-8 font-bold text-sm flex items-center justify-center hover:bg-[hsl(var(--color-muted))] text-[hsl(var(--color-foreground))] transition-colors"
+                          className="w-8 h-8 font-bold text-sm flex items-center justify-center hover:bg-[var(--color-muted)] text-[var(--color-foreground)] transition-colors"
                         >
                           -
                         </button>
@@ -832,9 +833,9 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                             onBlur={handleTextInputBlur}
                             onKeyDown={handleTextInputKeyDown}
                             disabled={isProcessing || selectedPages.size === 0}
-                            className="w-full text-center bg-transparent font-bold text-sm text-[hsl(var(--color-foreground))] border-none outline-none py-1 focus:ring-0"
+                            className="w-full text-center bg-transparent font-bold text-sm text-[var(--color-foreground)] border-none outline-none py-1 focus:ring-0"
                           />
-                          <span className="absolute right-0.5 text-xs text-[hsl(var(--color-muted-foreground))] select-none">°</span>
+                          <span className="absolute right-0.5 text-xs text-[var(--color-muted-foreground)] select-none">°</span>
                         </div>
 
                         <button
@@ -845,7 +846,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                             handleApplyAbsoluteRotation(val);
                           }}
                           disabled={isProcessing || selectedPages.size === 0}
-                          className="w-8 h-8 font-bold text-sm flex items-center justify-center hover:bg-[hsl(var(--color-muted))] text-[hsl(var(--color-foreground))] transition-colors"
+                          className="w-8 h-8 font-bold text-sm flex items-center justify-center hover:bg-[var(--color-muted)] text-[var(--color-foreground)] transition-colors"
                         >
                           +
                         </button>
@@ -853,7 +854,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                     </div>
 
                     {/* Range Alert Message */}
-                    <div className="text-[10px] text-[hsl(var(--color-muted-foreground))] bg-[hsl(var(--color-muted)/0.25)] p-2.5 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] leading-relaxed">
+                    <div className="text-[10px] text-[var(--color-muted-foreground)] bg-[color-mix(in_srgb,var(--color-muted)_25%,transparent)] p-2.5 rounded-[var(--radius-md)] border border-[var(--color-border)] leading-relaxed">
                       {t.rich('rotate.inputTip', { b: (chunks) => <strong>{chunks}</strong>, code: (chunks) => <code>{chunks}</code> })}
                     </div>
 
@@ -870,7 +871,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                 onClick={handleRotate}
                 disabled={!canRotate}
                 loading={isProcessing}
-                className="w-full py-4 font-bold shadow-lg shadow-[hsl(var(--color-primary)/0.15)] flex gap-2 items-center justify-center"
+                className="w-full py-4 font-bold shadow-lg shadow-[color-mix(in_srgb,var(--color-primary)_15%,transparent)] flex gap-2 items-center justify-center"
               >
                 {!isProcessing && (
                   <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -889,7 +890,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                   filename={file.name.replace('.pdf', '_rotated.pdf')}
                   variant="secondary"
                   size="lg"
-                  className="w-full py-4 border-2 border-[hsl(var(--color-secondary-hover))]"
+                  className="w-full py-4 border-2 border-[var(--color-secondary-hover)]"
                   showFileSize
                 />
               )}
@@ -910,27 +911,27 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
 
           {/* RIGHT: Live Physics Preview Grid */}
           <div className="lg:col-span-8 space-y-4">
-            <div className="flex items-center justify-between bg-[hsl(var(--color-card))] px-4 py-3 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))]">
+            <div className="flex items-center justify-between bg-[var(--color-card)] px-4 py-3 rounded-[var(--radius-md)] border border-[var(--color-border)]">
               <div className="flex items-center gap-2">
-                <div className="w-2.5 h-2.5 rounded-full bg-[hsl(var(--color-primary))] animate-pulse" />
-                <span className="text-sm font-semibold text-[hsl(var(--color-foreground))]">{t('rotate.previewTitle')}</span>
+                <div className="w-2.5 h-2.5 rounded-full bg-[var(--color-primary)] animate-pulse" />
+                <span className="text-sm font-semibold text-[var(--color-foreground)]">{t('rotate.previewTitle')}</span>
               </div>
-              <span className="text-xs text-[hsl(var(--color-muted-foreground))]">
+              <span className="text-xs text-[var(--color-muted-foreground)]">
                 {t('rotate.previewHelp')}
               </span>
             </div>
 
             {isLoadingPreviews ? (
-              <div className="flex items-center justify-center py-32 bg-[hsl(var(--color-card))] rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))]">
+              <div className="flex items-center justify-center py-32 bg-[var(--color-card)] rounded-[var(--radius-lg)] border border-[var(--color-border)]">
                 <div className="flex flex-col items-center gap-3">
-                  <div className="w-10 h-10 border-4 border-[hsl(var(--color-primary))] border-t-transparent rounded-full animate-spin" />
-                  <p className="text-sm font-semibold text-[hsl(var(--color-muted-foreground))]">
+                  <div className="w-10 h-10 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+                  <p className="text-sm font-semibold text-[var(--color-muted-foreground)]">
                     {t('rotate.loadingPreview')}
                   </p>
                 </div>
               </div>
             ) : (
-              <div className="bg-[hsl(var(--color-card))] rounded-[var(--radius-lg)] border border-[hsl(var(--color-border))] p-5 max-h-[640px] overflow-y-auto shadow-inner">
+              <div className="bg-[var(--color-card)] rounded-[var(--radius-lg)] border border-[var(--color-border)] p-5 max-h-[640px] overflow-y-auto shadow-inner">
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-1">
                   {pagePreviews.map((preview) => {
                     const isSelected = selectedPages.has(preview.pageNumber);
@@ -940,14 +941,14 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                       <div
                         key={preview.pageNumber}
                         onClick={() => handleToggleSelectPage(preview.pageNumber)}
-                        className={`group relative flex flex-col items-center rounded-[var(--radius-lg)] border-2 bg-[hsl(var(--color-muted)/0.25)] overflow-hidden transition-all duration-300 cursor-pointer select-none ${isSelected
-                            ? 'border-[hsl(var(--color-primary))] shadow-[0_0_12px_hsl(var(--color-primary)/0.2)]'
-                            : 'border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-muted-foreground)/0.4)]'
+                        className={`group relative flex flex-col items-center rounded-[var(--radius-lg)] border-2 bg-[color-mix(in_srgb,var(--color-muted)_25%,transparent)] overflow-hidden transition-all duration-300 cursor-pointer select-none ${isSelected
+                            ? 'border-[var(--color-primary)] shadow-[0_0_12px_color-mix(in_srgb,var(--color-primary)_20%,transparent)]'
+                            : 'border-[var(--color-border)] hover:border-[color-mix(in_srgb,var(--color-muted-foreground)_40%,transparent)]'
                           }`}
                       >
                         {/* Selection Checkbox corner Badge */}
                         <div className={`absolute top-2.5 right-2.5 z-20 w-5 h-5 rounded-full flex items-center justify-center transition-all ${isSelected
-                            ? 'bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))] scale-100'
+                            ? 'bg-[var(--color-primary)] text-[var(--color-primary-foreground)] scale-100'
                             : 'bg-black/40 text-transparent scale-90 group-hover:scale-100 group-hover:bg-black/60'
                           }`}>
                           <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
@@ -963,7 +964,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                         )}
 
                         {/* Thumbnail View Frame */}
-                        <div className="relative aspect-[3/4] w-full p-4 flex items-center justify-center overflow-hidden bg-[hsl(var(--color-muted)/0.15)] border-b border-[hsl(var(--color-border))]">
+                        <div className="relative aspect-[3/4] w-full p-4 flex items-center justify-center overflow-hidden bg-[color-mix(in_srgb,var(--color-muted)_15%,transparent)] border-b border-[var(--color-border)]">
                           {/* Rotated Container applying Smooth Damping CSS Spring */}
                           <div
                             className="w-full h-full flex items-center justify-center transition-transform duration-[400ms]"
@@ -979,7 +980,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                                 className="max-w-full max-h-full object-contain shadow-[var(--shadow-sm)] rounded-[var(--radius-sm)] pointer-events-none"
                               />
                             ) : (
-                              <div className="w-16 h-20 rounded border border-dashed border-[hsl(var(--color-border))] flex items-center justify-center text-sm font-semibold text-[hsl(var(--color-muted-foreground))]">
+                              <div className="w-16 h-20 rounded border border-dashed border-[var(--color-border)] flex items-center justify-center text-sm font-semibold text-[var(--color-muted-foreground)]">
                                 Page {preview.pageNumber}
                               </div>
                             )}
@@ -987,8 +988,8 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                         </div>
 
                         {/* Footer details & micro quick rotation buttons */}
-                        <div className="w-full px-3 py-2.5 bg-[hsl(var(--color-card))] flex items-center justify-between">
-                          <span className="text-xs font-extrabold text-[hsl(var(--color-foreground))]">
+                        <div className="w-full px-3 py-2.5 bg-[var(--color-card)] flex items-center justify-between">
+                          <span className="text-xs font-extrabold text-[var(--color-foreground)]">
                             {t('rotate.pageNumber', { page: preview.pageNumber })}
                           </span>
 
@@ -1001,7 +1002,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                               type="button"
                               onClick={() => updateRotationOnPages([preview.pageNumber], current => current - 90)}
                               disabled={isProcessing}
-                              className="w-6 h-6 flex items-center justify-center rounded bg-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-muted-foreground)/0.2)] text-[hsl(var(--color-foreground))] transition-colors disabled:opacity-50"
+                              className="w-6 h-6 flex items-center justify-center rounded bg-[var(--color-muted)] hover:bg-[color-mix(in_srgb,var(--color-muted-foreground)_20%,transparent)] text-[var(--color-foreground)] transition-colors disabled:opacity-50"
                               aria-label={`Rotate page ${preview.pageNumber} left`}
                             >
                               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -1013,7 +1014,7 @@ export function RotatePDFTool({ className = '' }: RotatePDFToolProps) {
                               type="button"
                               onClick={() => updateRotationOnPages([preview.pageNumber], current => current + 90)}
                               disabled={isProcessing}
-                              className="w-6 h-6 flex items-center justify-center rounded bg-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-muted-foreground)/0.2)] text-[hsl(var(--color-foreground))] transition-colors disabled:opacity-50"
+                              className="w-6 h-6 flex items-center justify-center rounded bg-[var(--color-muted)] hover:bg-[color-mix(in_srgb,var(--color-muted-foreground)_20%,transparent)] text-[var(--color-foreground)] transition-colors disabled:opacity-50"
                               aria-label={`Rotate page ${preview.pageNumber} right`}
                             >
                               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

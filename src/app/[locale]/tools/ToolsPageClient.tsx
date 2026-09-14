@@ -106,7 +106,7 @@ export default function ToolsPageClient({ locale, localizedToolContent }: ToolsP
   }, []);
 
   return (
-    <div className="min-h-screen flex flex-col bg-[hsl(var(--color-background))]">
+    <div className="min-h-screen flex flex-col bg-[var(--color-background)]">
       <Header locale={locale} />
 
       <main className="flex-1">
@@ -114,38 +114,38 @@ export default function ToolsPageClient({ locale, localizedToolContent }: ToolsP
         <section className="relative pt-36 pb-20 overflow-hidden">
           {/* Animated Background Blobs (Subtle) */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[hsl(var(--color-primary)/0.05)] rounded-full mix-blend-multiply filter blur-3xl opacity-50" />
-            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[hsl(var(--color-accent)/0.05)] rounded-full mix-blend-multiply filter blur-3xl opacity-50" />
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[color-mix(in_srgb,var(--color-primary)_5%,transparent)] rounded-full mix-blend-multiply filter blur-3xl opacity-50" />
+            <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[color-mix(in_srgb,var(--color-accent)_5%,transparent)] rounded-full mix-blend-multiply filter blur-3xl opacity-50" />
           </div>
 
           <div className="container mx-auto px-4 relative z-10">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl font-bold text-[hsl(var(--color-foreground))] mb-6">
+              <h1 className="text-4xl md:text-5xl font-bold text-[var(--color-foreground)] mb-6">
                 <span className="text-gradient">{t('toolsPage.title')}</span>
               </h1>
-              <p className="text-lg text-[hsl(var(--color-muted-foreground))] mb-10 leading-relaxed">
+              <p className="text-lg text-[var(--color-muted-foreground)] mb-10 leading-relaxed">
                 {t('toolsPage.subtitle', { count: allTools.length })}
               </p>
 
               {/* Search Bar */}
               <div className="relative max-w-2xl mx-auto">
                 <div className="relative group">
-                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[hsl(var(--color-primary))] group-focus-within:text-[hsl(var(--color-primary))] transition-colors z-10" aria-hidden="true" />
+                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--color-primary)] group-focus-within:text-[var(--color-primary)] transition-colors z-10" aria-hidden="true" />
                   <input
                     type="search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={t('tools.search.placeholder')}
-                    className="w-full pl-14 pr-12 py-4 text-lg rounded-2xl border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] dark:bg-[hsl(var(--color-card))] text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-muted-foreground))] shadow-md focus:outline-none focus:ring-4 focus:ring-[hsl(var(--color-primary)/0.15)] focus:border-[hsl(var(--color-primary))] transition-all"
+                    className="w-full pl-14 pr-12 py-4 text-lg rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] dark:bg-[var(--color-card)] text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)] shadow-md focus:outline-none focus:ring-4 focus:ring-[color-mix(in_srgb,var(--color-primary)_15%,transparent)] focus:border-[var(--color-primary)] transition-all"
                     aria-label="Search tools"
                   />
                   {searchQuery && (
                     <button
                       onClick={handleClearSearch}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-[hsl(var(--color-muted))] rounded-full transition-colors"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 p-2 hover:bg-[var(--color-muted)] rounded-full transition-colors"
                       aria-label="Clear search"
                     >
-                      <X className="h-5 w-5 text-[hsl(var(--color-muted-foreground))]" aria-hidden="true" />
+                      <X className="h-5 w-5 text-[var(--color-muted-foreground)]" aria-hidden="true" />
                     </button>
                   )}
                 </div>
@@ -155,7 +155,7 @@ export default function ToolsPageClient({ locale, localizedToolContent }: ToolsP
         </section>
 
         {/* Filters and Tools */}
-        <section className="py-8 bg-[hsl(var(--color-muted)/0.3)] min-h-[500px]">
+        <section className="py-8 bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] min-h-[500px]">
           <div className="container mx-auto px-4">
             {/* Filter Bar */}
             <div className="flex flex-col md:flex-row items-center gap-6 mb-10 sticky top-20 z-40 py-4 px-6 rounded-2xl glass-card transition-all">
@@ -187,8 +187,8 @@ export default function ToolsPageClient({ locale, localizedToolContent }: ToolsP
                       ${selectedCategory === cat.value
                         ? cat.value === 'favorites'
                           ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 shadow-md'
-                          : 'bg-[hsl(var(--color-primary))] text-white shadow-md shadow-primary/25'
-                        : 'bg-transparent text-[hsl(var(--color-muted-foreground))] hover:bg-[hsl(var(--color-muted))] hover:text-[hsl(var(--color-foreground))]'
+                          : 'bg-[var(--color-primary)] text-white shadow-md shadow-primary/25'
+                        : 'bg-transparent text-[var(--color-muted-foreground)] hover:bg-[var(--color-muted)] hover:text-[var(--color-foreground)]'
                       }
                     `}
                   >
@@ -214,7 +214,7 @@ export default function ToolsPageClient({ locale, localizedToolContent }: ToolsP
                   variant="ghost"
                   size="sm"
                   onClick={handleClearFilters}
-                  className="ml-auto text-sm text-[hsl(var(--color-muted-foreground))]"
+                  className="ml-auto text-sm text-[var(--color-muted-foreground)]"
                 >
                   {t('toolsPage.clearAll')}
                 </Button>
@@ -223,7 +223,7 @@ export default function ToolsPageClient({ locale, localizedToolContent }: ToolsP
 
             {/* Results Count */}
             <div className="mb-6 px-2">
-              <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+              <p className="text-sm text-[var(--color-muted-foreground)]">
                 {selectedCategory === 'favorites'
                   ? `${filteredTools.length} ${t('tools.favorite.title').toLowerCase()}`
                   : filteredTools.length === allTools.length
@@ -259,10 +259,10 @@ export default function ToolsPageClient({ locale, localizedToolContent }: ToolsP
                   <div className="w-20 h-20 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mb-6">
                     <Star className="h-10 w-10 text-amber-500" aria-hidden="true" />
                   </div>
-                  <h3 className="text-xl font-bold text-[hsl(var(--color-foreground))] mb-2">
+                  <h3 className="text-xl font-bold text-[var(--color-foreground)] mb-2">
                     {t('tools.favorite.empty')}
                   </h3>
-                  <p className="text-[hsl(var(--color-muted-foreground))] mb-8">
+                  <p className="text-[var(--color-muted-foreground)] mb-8">
                     {t('tools.favorite.hint')}
                   </p>
                   <Button variant="outline" onClick={() => setSelectedCategory('all')} className="px-8">
@@ -274,13 +274,13 @@ export default function ToolsPageClient({ locale, localizedToolContent }: ToolsP
               // No results
               <Card className="p-16 text-center glass-card border-dashed border-2">
                 <div className="max-w-md mx-auto flex flex-col items-center">
-                  <div className="w-20 h-20 bg-[hsl(var(--color-muted))] rounded-full flex items-center justify-center mb-6">
-                    <Search className="h-10 w-10 text-[hsl(var(--color-muted-foreground))]" aria-hidden="true" />
+                  <div className="w-20 h-20 bg-[var(--color-muted)] rounded-full flex items-center justify-center mb-6">
+                    <Search className="h-10 w-10 text-[var(--color-muted-foreground)]" aria-hidden="true" />
                   </div>
-                  <h3 className="text-xl font-bold text-[hsl(var(--color-foreground))] mb-2">
+                  <h3 className="text-xl font-bold text-[var(--color-foreground)] mb-2">
                     {t('toolsPage.noToolsFound')}
                   </h3>
-                  <p className="text-[hsl(var(--color-muted-foreground))] mb-8">
+                  <p className="text-[var(--color-muted-foreground)] mb-8">
                     {t('tools.search.noResults', { query: searchQuery })}
                   </p>
                   <Button variant="outline" onClick={handleClearFilters} className="px-8">

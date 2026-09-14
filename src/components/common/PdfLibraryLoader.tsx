@@ -30,8 +30,8 @@ export interface PdfLibraryLoaderProps {
  */
 const DefaultLoading: React.FC<{ message?: string }> = ({ message }) => (
   <div className="flex flex-col items-center justify-center p-8 gap-4">
-    <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--color-primary))]" />
-    <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+    <Loader2 className="h-8 w-8 animate-spin text-[var(--color-primary)]" />
+    <p className="text-sm text-[var(--color-muted-foreground)]">
       {message || 'Loading PDF tools...'}
     </p>
   </div>
@@ -42,20 +42,20 @@ const DefaultLoading: React.FC<{ message?: string }> = ({ message }) => (
  */
 const DefaultError: React.FC<{ error: Error; retry: () => void }> = ({ error, retry }) => (
   <div className="flex flex-col items-center justify-center p-8 gap-4 text-center">
-    <div className="w-12 h-12 rounded-full bg-[hsl(var(--color-destructive)/0.1)] flex items-center justify-center">
+    <div className="w-12 h-12 rounded-full bg-[color-mix(in_srgb,var(--color-destructive)_10%,transparent)] flex items-center justify-center">
       <span className="text-2xl">⚠️</span>
     </div>
     <div>
-      <h3 className="font-semibold text-[hsl(var(--color-foreground))]">
+      <h3 className="font-semibold text-[var(--color-foreground)]">
         Failed to load PDF tools
       </h3>
-      <p className="text-sm text-[hsl(var(--color-muted-foreground))] mt-1">
+      <p className="text-sm text-[var(--color-muted-foreground)] mt-1">
         {error.message}
       </p>
     </div>
     <button
       onClick={retry}
-      className="px-4 py-2 text-sm font-medium rounded-[var(--radius-md)] bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))] hover:bg-[hsl(var(--color-primary-hover))] transition-colors"
+      className="px-4 py-2 text-sm font-medium rounded-[var(--radius-md)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)] hover:bg-[var(--color-primary-hover)] transition-colors"
     >
       Try Again
     </button>

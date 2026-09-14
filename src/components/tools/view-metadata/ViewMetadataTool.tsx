@@ -287,11 +287,11 @@ export function ViewMetadataTool({ className = '' }: ViewMetadataToolProps) {
     const isNotSet = displayValue === '- Not Set -';
     
     return (
-      <div className="flex flex-col sm:flex-row py-2 border-b border-[hsl(var(--color-border)/0.5)] last:border-b-0">
-        <span className="w-full sm:w-48 flex-shrink-0 font-medium text-[hsl(var(--color-muted-foreground))]">
+      <div className="flex flex-col sm:flex-row py-2 border-b border-[color-mix(in_srgb,var(--color-border)_50%,transparent)] last:border-b-0">
+        <span className="w-full sm:w-48 flex-shrink-0 font-medium text-[var(--color-muted-foreground)]">
           {label}
         </span>
-        <span className={`flex-grow ${isNotSet ? 'text-[hsl(var(--color-muted-foreground))] italic' : 'text-[hsl(var(--color-foreground))]'} break-all`}>
+        <span className={`flex-grow ${isNotSet ? 'text-[var(--color-muted-foreground)] italic' : 'text-[var(--color-foreground)]'} break-all`}>
           {displayValue}
         </span>
       </div>
@@ -335,8 +335,8 @@ export function ViewMetadataTool({ className = '' }: ViewMetadataToolProps) {
                 <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
               </svg>
               <div>
-                <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)}
                 </p>
               </div>
@@ -370,7 +370,7 @@ export function ViewMetadataTool({ className = '' }: ViewMetadataToolProps) {
           {/* Document Properties */}
           <Card variant="outlined" size="lg">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+              <h3 className="text-lg font-medium text-[var(--color-foreground)]">
                 {tTools('viewMetadata.documentProperties') || 'Document Properties'}
               </h3>
             </div>
@@ -387,7 +387,7 @@ export function ViewMetadataTool({ className = '' }: ViewMetadataToolProps) {
 
           {/* Dates */}
           <Card variant="outlined" size="lg">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
               {tTools('viewMetadata.dates') || 'Dates'}
             </h3>
             
@@ -399,7 +399,7 @@ export function ViewMetadataTool({ className = '' }: ViewMetadataToolProps) {
 
           {/* Document Info */}
           <Card variant="outlined" size="lg">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
               {tTools('viewMetadata.documentInfo') || 'Document Information'}
             </h3>
             
@@ -414,7 +414,7 @@ export function ViewMetadataTool({ className = '' }: ViewMetadataToolProps) {
           {/* Custom Metadata */}
           {metadata.customMetadata && Object.keys(metadata.customMetadata).length > 0 && (
             <Card variant="outlined" size="lg">
-              <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+              <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
                 {tTools('viewMetadata.customMetadata') || 'Additional Metadata'}
               </h3>
               

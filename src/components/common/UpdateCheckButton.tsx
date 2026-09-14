@@ -145,7 +145,7 @@ export const UpdateCheckButton: React.FC<UpdateCheckButtonProps> = ({ className 
         <button
           type="button"
           onClick={handleManualCheck}
-          className={`relative flex items-center justify-center h-9 w-9 rounded-lg text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))/0.5] transition-all ${className}`}
+          className={`relative flex items-center justify-center h-9 w-9 rounded-lg text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)] transition-all ${className}`}
           aria-label={checkBtnLabel}
           title={checkBtnLabel}
         >

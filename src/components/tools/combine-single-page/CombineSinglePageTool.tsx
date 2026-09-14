@@ -211,8 +211,8 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
                 <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
               </svg>
               <div>
-                <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)} • {totalPages} {totalPages === 1 ? 'page' : 'pages'}
                 </p>
               </div>
@@ -233,14 +233,14 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
       {/* Options */}
       {file && totalPages > 0 && (
         <Card variant="outlined" size="lg">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('combineSinglePage.optionsTitle') || 'Combine Options'}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Orientation */}
             <div>
-              <label htmlFor="orientation" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label htmlFor="orientation" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('combineSinglePage.orientation') || 'Orientation'}
               </label>
               <select
@@ -248,7 +248,7 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
                 value={orientation}
                 onChange={(e) => setOrientation(e.target.value as CombineOrientation)}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               >
                 <option value="vertical">{tTools('combineSinglePage.vertical') || 'Vertical (Top to Bottom)'}</option>
                 <option value="horizontal">{tTools('combineSinglePage.horizontal') || 'Horizontal (Left to Right)'}</option>
@@ -257,7 +257,7 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
 
             {/* Spacing */}
             <div>
-              <label htmlFor="spacing" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label htmlFor="spacing" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('combineSinglePage.spacing') || 'Page Spacing (points)'}
               </label>
               <input
@@ -268,13 +268,13 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
                 min={0}
                 max={200}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
             </div>
 
             {/* Background Color */}
             <div>
-              <label htmlFor="backgroundColor" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label htmlFor="backgroundColor" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('combineSinglePage.backgroundColor') || 'Background Color'}
               </label>
               <div className="flex gap-2">
@@ -284,14 +284,14 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
                   value={backgroundColor}
                   onChange={(e) => setBackgroundColor(e.target.value)}
                   disabled={isProcessing}
-                  className="w-12 h-10 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] cursor-pointer"
+                  className="w-12 h-10 rounded-[var(--radius-md)] border border-[var(--color-border)] cursor-pointer"
                 />
                 <input
                   type="text"
                   value={backgroundColor}
                   onChange={(e) => setBackgroundColor(e.target.value)}
                   disabled={isProcessing}
-                  className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                  className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
               </div>
             </div>
@@ -304,9 +304,9 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
                 checked={addSeparator}
                 onChange={(e) => setAddSeparator(e.target.checked)}
                 disabled={isProcessing}
-                className="w-4 h-4 rounded border-[hsl(var(--color-border))]"
+                className="w-4 h-4 rounded border-[var(--color-border)]"
               />
-              <label htmlFor="addSeparator" className="text-sm text-[hsl(var(--color-foreground))]">
+              <label htmlFor="addSeparator" className="text-sm text-[var(--color-foreground)]">
                 {tTools('combineSinglePage.addSeparator') || 'Add separator lines between pages'}
               </label>
             </div>
@@ -315,7 +315,7 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
             {addSeparator && (
               <>
                 <div>
-                  <label htmlFor="separatorThickness" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                  <label htmlFor="separatorThickness" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                     {tTools('combineSinglePage.separatorThickness') || 'Separator Thickness (points)'}
                   </label>
                   <input
@@ -327,12 +327,12 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
                     max={10}
                     step={0.1}
                     disabled={isProcessing}
-                    className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                    className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="separatorColor" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                  <label htmlFor="separatorColor" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                     {tTools('combineSinglePage.separatorColor') || 'Separator Color'}
                   </label>
                   <div className="flex gap-2">
@@ -342,14 +342,14 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
                       value={separatorColor}
                       onChange={(e) => setSeparatorColor(e.target.value)}
                       disabled={isProcessing}
-                      className="w-12 h-10 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] cursor-pointer"
+                      className="w-12 h-10 rounded-[var(--radius-md)] border border-[var(--color-border)] cursor-pointer"
                     />
                     <input
                       type="text"
                       value={separatorColor}
                       onChange={(e) => setSeparatorColor(e.target.value)}
                       disabled={isProcessing}
-                      className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                      className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                     />
                   </div>
                 </div>
@@ -358,8 +358,8 @@ export function CombineSinglePageTool({ className = '' }: CombineSinglePageToolP
           </div>
 
           {/* Preview info */}
-          <div className="mt-4 p-3 rounded-[var(--radius-md)] bg-[hsl(var(--color-muted))]">
-            <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+          <div className="mt-4 p-3 rounded-[var(--radius-md)] bg-[var(--color-muted)]">
+            <p className="text-sm text-[var(--color-muted-foreground)]">
               {tTools('combineSinglePage.previewInfo', { pages: totalPages, orientation: orientation === 'vertical' ? tTools('combineSinglePage.vertical') : tTools('combineSinglePage.horizontal') }) || 
                 `${totalPages} pages will be combined into 1 continuous ${orientation === 'vertical' ? 'vertical' : 'horizontal'} page.`
               }

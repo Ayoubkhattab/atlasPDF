@@ -197,8 +197,8 @@ export function ReversePagesTool({ className = '' }: ReversePagesToolProps) {
                 <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
               </svg>
               <div>
-                <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)} • {totalPages} {totalPages === 1 ? 'page' : 'pages'}
                 </p>
               </div>
@@ -218,10 +218,10 @@ export function ReversePagesTool({ className = '' }: ReversePagesToolProps) {
       {/* Info Card */}
       {file && totalPages > 0 && (
         <Card variant="outlined" size="lg">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-2">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-2">
             {tTools('reversePages.infoTitle') || 'Reverse Page Order'}
           </h3>
-          <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+          <p className="text-sm text-[var(--color-muted-foreground)]">
             {tTools('reversePages.infoDescription') || 
               `This will reverse the order of all ${totalPages} pages in your PDF. Page 1 will become page ${totalPages}, page 2 will become page ${totalPages - 1}, and so on.`
             }
@@ -231,19 +231,19 @@ export function ReversePagesTool({ className = '' }: ReversePagesToolProps) {
           <div className="mt-4 flex items-center justify-center gap-4">
             <div className="flex items-center gap-1">
               {[1, 2, 3].map(n => (
-                <div key={n} className="w-8 h-10 bg-[hsl(var(--color-muted))] rounded flex items-center justify-center text-xs font-medium">
+                <div key={n} className="w-8 h-10 bg-[var(--color-muted)] rounded flex items-center justify-center text-xs font-medium">
                   {n}
                 </div>
               ))}
-              <span className="text-[hsl(var(--color-muted-foreground))]">...</span>
+              <span className="text-[var(--color-muted-foreground)]">...</span>
             </div>
-            <svg className="w-6 h-6 text-[hsl(var(--color-primary))]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-6 h-6 text-[var(--color-primary)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
             <div className="flex items-center gap-1">
-              <span className="text-[hsl(var(--color-muted-foreground))]">...</span>
+              <span className="text-[var(--color-muted-foreground)]">...</span>
               {[3, 2, 1].map(n => (
-                <div key={n} className="w-8 h-10 bg-[hsl(var(--color-primary)/0.2)] rounded flex items-center justify-center text-xs font-medium text-[hsl(var(--color-primary))]">
+                <div key={n} className="w-8 h-10 bg-[color-mix(in_srgb,var(--color-primary)_20%,transparent)] rounded flex items-center justify-center text-xs font-medium text-[var(--color-primary)]">
                   {n}
                 </div>
               ))}

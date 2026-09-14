@@ -518,7 +518,7 @@ export default async function ToolPageRoute({ params }: ToolPageParams) {
       // Add more tool cases here as they are implemented
       default:
         return (
-          <div className="p-8 text-center text-[hsl(var(--color-muted-foreground))]">
+          <div className="p-8 text-center text-[var(--color-muted-foreground)]">
             <p>{t('tools.comingSoon')}</p>
           </div>
         );

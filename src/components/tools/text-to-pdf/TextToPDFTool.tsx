@@ -166,11 +166,11 @@ export function TextToPDFTool({ className = '' }: TextToPDFToolProps) {
       {/* Mode Selector */}
       <div className="flex gap-2">
         <button type="button" onClick={() => setInputMode('upload')}
-          className={`px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${inputMode === 'upload' ? 'bg-[hsl(var(--color-primary))] text-white' : 'bg-[hsl(var(--color-muted))] text-[hsl(var(--color-muted-foreground))] hover:bg-[hsl(var(--color-muted)/0.8)]'}`}>
+          className={`px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${inputMode === 'upload' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--color-muted)] text-[var(--color-muted-foreground)] hover:bg-[color-mix(in_srgb,var(--color-muted)_80%,transparent)]'}`}>
           {tTools('txtToPdf.modeUpload') || 'Upload Files'}
         </button>
         <button type="button" onClick={() => setInputMode('text')}
-          className={`px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${inputMode === 'text' ? 'bg-[hsl(var(--color-primary))] text-white' : 'bg-[hsl(var(--color-muted))] text-[hsl(var(--color-muted-foreground))] hover:bg-[hsl(var(--color-muted)/0.8)]'}`}>
+          className={`px-4 py-2 rounded-[var(--radius-md)] text-sm font-medium transition-colors ${inputMode === 'text' ? 'bg-[var(--color-primary)] text-white' : 'bg-[var(--color-muted)] text-[var(--color-muted-foreground)] hover:bg-[color-mix(in_srgb,var(--color-muted)_80%,transparent)]'}`}>
           {tTools('txtToPdf.modeText') || 'Enter Text'}
         </button>
       </div>
@@ -190,17 +190,17 @@ export function TextToPDFTool({ className = '' }: TextToPDFToolProps) {
               </div>
               <ul className="space-y-2" role="list">
                 {files.map((file) => (
-                  <li key={file.id} className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))]">
+                  <li key={file.id} className="flex items-center gap-3 p-3 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-card)]">
                     <svg className="w-8 h-8 text-blue-500 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
                       <path d="M14 2v6h6" fill="white" />
                     </svg>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium truncate">{file.file.name}</p>
-                      <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{formatSize(file.file.size)}</p>
+                      <p className="text-xs text-[var(--color-muted-foreground)]">{formatSize(file.file.size)}</p>
                     </div>
                     <button type="button" onClick={() => handleRemoveFile(file.id)} disabled={isProcessing}
-                      className="flex-shrink-0 p-1 rounded hover:bg-red-100 text-[hsl(var(--color-muted-foreground))] hover:text-red-600 disabled:opacity-30">
+                      className="flex-shrink-0 p-1 rounded hover:bg-red-100 text-[var(--color-muted-foreground)] hover:text-red-600 disabled:opacity-30">
                       <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12" /></svg>
                     </button>
                   </li>
@@ -209,7 +209,7 @@ export function TextToPDFTool({ className = '' }: TextToPDFToolProps) {
               {textPreview && (
                 <div className="mt-4">
                   <h4 className="text-sm font-medium mb-2">{tTools('txtToPdf.preview') || 'Preview'}</h4>
-                  <pre className="p-3 rounded-[var(--radius-md)] bg-[hsl(var(--color-muted)/0.3)] text-xs font-mono overflow-auto max-h-48 whitespace-pre-wrap">{textPreview}</pre>
+                  <pre className="p-3 rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] text-xs font-mono overflow-auto max-h-48 whitespace-pre-wrap">{textPreview}</pre>
                 </div>
               )}
             </Card>
@@ -223,8 +223,8 @@ export function TextToPDFTool({ className = '' }: TextToPDFToolProps) {
           <h3 className="text-lg font-medium mb-4">{tTools('txtToPdf.enterText') || 'Enter Text'}</h3>
           <textarea value={directText} onChange={(e) => setDirectText(e.target.value)}
             placeholder={tTools('txtToPdf.textPlaceholder') || 'Type or paste your text here...'} disabled={isProcessing}
-            className="w-full h-64 px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] resize-y" />
-          <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-2">{directText.length} {tTools('txtToPdf.characters') || 'characters'}</p>
+            className="w-full h-64 px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] resize-y" />
+          <p className="text-xs text-[var(--color-muted-foreground)] mt-2">{directText.length} {tTools('txtToPdf.characters') || 'characters'}</p>
         </Card>
       )}
 
@@ -247,12 +247,12 @@ export function TextToPDFTool({ className = '' }: TextToPDFToolProps) {
                 <div>
                   <label className="block text-sm font-medium mb-2">{tTools('txtToPdf.width') || 'Width (pt)'}</label>
                   <input type="number" value={customWidth} onChange={(e) => setCustomWidth(Number(e.target.value))} disabled={isProcessing} min={72} max={2000}
-                    className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] text-sm" />
+                    className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] text-sm" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">{tTools('txtToPdf.height') || 'Height (pt)'}</label>
                   <input type="number" value={customHeight} onChange={(e) => setCustomHeight(Number(e.target.value))} disabled={isProcessing} min={72} max={2000}
-                    className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] text-sm" />
+                    className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] text-sm" />
                 </div>
               </>
             )}
@@ -291,7 +291,7 @@ export function TextToPDFTool({ className = '' }: TextToPDFToolProps) {
               <div className="flex gap-2">
                 <input type="color" value={textColor} onChange={(e) => setTextColor(e.target.value)} disabled={isProcessing} className="w-10 h-10 rounded border cursor-pointer" />
                 <input type="text" value={textColor} onChange={(e) => setTextColor(e.target.value)} disabled={isProcessing}
-                  className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] text-sm" />
+                  className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] text-sm" />
               </div>
             </div>
           </div>

@@ -63,30 +63,30 @@ export function ToolPage({ tool, content, locale, children, localizedRelatedTool
         <main id="main-content" className="flex-1" tabIndex={-1}>
           <div className="max-w-7xl mx-auto px-4 pt-24 pb-8">
             {/* Breadcrumb Navigation */}
-            <nav aria-label="Breadcrumb" className="mb-4 flex items-center text-sm text-[hsl(var(--color-muted-foreground))] animate-in fade-in slide-in-from-top-4 duration-500 delay-100">
+            <nav aria-label="Breadcrumb" className="mb-4 flex items-center text-sm text-[var(--color-muted-foreground)] animate-in fade-in slide-in-from-top-4 duration-500 delay-100">
               <Link
                 href={`/${locale}`}
-                className="flex items-center hover:text-[hsl(var(--color-primary))] transition-colors"
+                className="flex items-center hover:text-[var(--color-primary)] transition-colors"
                 title={t('common.navigation.home')}
               >
                 <Home className="w-4 h-4" />
               </Link>
-              <ChevronRight className="w-4 h-4 mx-2 text-[hsl(var(--color-border))]" />
+              <ChevronRight className="w-4 h-4 mx-2 text-[var(--color-border)]" />
               <Link
                 href={`/${locale}/tools`}
-                className="hover:text-[hsl(var(--color-primary))] transition-colors"
+                className="hover:text-[var(--color-primary)] transition-colors"
               >
                 {t('common.navigation.tools')}
               </Link>
-              <ChevronRight className="w-4 h-4 mx-2 text-[hsl(var(--color-border))]" />
+              <ChevronRight className="w-4 h-4 mx-2 text-[var(--color-border)]" />
               <Link
                 href={`/${locale}/tools/category/${tool.category}`}
-                className="hover:text-[hsl(var(--color-primary))] transition-colors"
+                className="hover:text-[var(--color-primary)] transition-colors"
               >
                 {t(`home.categories.${categoryTranslationKeys[tool.category]}`)}
               </Link>
-              <ChevronRight className="w-4 h-4 mx-2 text-[hsl(var(--color-border))]" />
-              <span className="font-medium text-[hsl(var(--color-foreground))] truncate max-w-[200px] sm:max-w-md" aria-current="page">
+              <ChevronRight className="w-4 h-4 mx-2 text-[var(--color-border)]" />
+              <span className="font-medium text-[var(--color-foreground)] truncate max-w-[200px] sm:max-w-md" aria-current="page">
                 {content.title || toolDisplayName}
               </span>
             </nav>
@@ -154,20 +154,20 @@ function ToolHeader({ tool, content }: ToolHeaderProps) {
       <meta itemProp="price" content="0" />
       <meta itemProp="priceCurrency" content="USD" />
       <div
-        className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[hsl(var(--color-primary)/0.1)] to-[hsl(var(--color-accent)/0.1)] mb-4 shadow-inner"
+        className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] to-[color-mix(in_srgb,var(--color-accent)_10%,transparent)] mb-4 shadow-inner"
         aria-hidden="true"
       >
-        <IconComponent className="w-8 h-8 text-[hsl(var(--color-primary))]" />
+        <IconComponent className="w-8 h-8 text-[var(--color-primary)]" />
       </div>
       <h1
-        className="text-3xl font-bold text-[hsl(var(--color-foreground))] mb-2"
+        className="text-3xl font-bold text-[var(--color-foreground)] mb-2"
         data-testid="tool-page-title"
         itemProp="name"
       >
         {content.title || toolName}
       </h1>
       <p
-        className="text-lg text-[hsl(var(--color-muted-foreground))] max-w-2xl mx-auto leading-relaxed mb-4"
+        className="text-lg text-[var(--color-muted-foreground)] max-w-2xl mx-auto leading-relaxed mb-4"
         data-testid="tool-page-subtitle"
         itemProp="description"
       >
@@ -200,13 +200,13 @@ function DescriptionSection({ description }: DescriptionSectionProps) {
     >
       <h2
         id="description-heading"
-        className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-6"
+        className="text-2xl font-bold text-[var(--color-foreground)] mb-6"
       >
         {t('tools.about')}
       </h2>
       <Card variant="outlined" size="lg" className="glass-card">
         <div
-          className="prose prose-sm max-w-none text-[hsl(var(--color-foreground))/0.8]"
+          className="prose prose-sm max-w-none text-[color-mix(in_srgb,var(--color-foreground)_80%,transparent)]"
           dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
         />
       </Card>
@@ -235,7 +235,7 @@ function HowToUseSection({ steps }: HowToUseSectionProps) {
     >
       <h2
         id="how-to-use-heading"
-        className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-6"
+        className="text-2xl font-bold text-[var(--color-foreground)] mb-6"
         itemProp="name"
       >
         {t('tools.howToUse')}
@@ -252,17 +252,17 @@ function HowToUseSection({ steps }: HowToUseSectionProps) {
             itemType="https://schema.org/HowToStep"
           >
             <meta itemProp="position" content={String(step.step)} />
-            <Card className="flex-1 h-full glass-card border-[hsl(var(--color-border))/0.6] hover:border-[hsl(var(--color-primary)/0.3)] transition-colors">
+            <Card className="flex-1 h-full glass-card border-[color-mix(in_srgb,var(--color-border)_60%,transparent)] hover:border-[color-mix(in_srgb,var(--color-primary)_30%,transparent)] transition-colors">
               <div
-                className="w-10 h-10 rounded-xl bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))] flex items-center justify-center font-bold text-lg mb-4"
+                className="w-10 h-10 rounded-xl bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] text-[var(--color-primary)] flex items-center justify-center font-bold text-lg mb-4"
                 aria-hidden="true"
               >
                 {step.step}
               </div>
-              <h3 className="text-lg font-semibold text-[hsl(var(--color-foreground))] mb-2" itemProp="name">
+              <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-2" itemProp="name">
                 {step.title}
               </h3>
-              <p className="text-sm text-[hsl(var(--color-muted-foreground))]" itemProp="text">
+              <p className="text-sm text-[var(--color-muted-foreground)]" itemProp="text">
                 {step.description}
               </p>
             </Card>
@@ -292,7 +292,7 @@ function UseCasesSection({ useCases }: UseCasesSectionProps) {
     >
       <h2
         id="use-cases-heading"
-        className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-6"
+        className="text-2xl font-bold text-[var(--color-foreground)] mb-6"
       >
         {t('tools.useCases')}
       </h2>
@@ -309,19 +309,19 @@ function UseCasesSection({ useCases }: UseCasesSectionProps) {
           >
             <div className="flex items-start gap-4">
               <div
-                className="flex-shrink-0 w-12 h-12 rounded-xl bg-[hsl(var(--color-secondary)/0.5)] flex items-center justify-center"
+                className="flex-shrink-0 w-12 h-12 rounded-xl bg-[color-mix(in_srgb,var(--color-secondary)_50%,transparent)] flex items-center justify-center"
                 aria-hidden="true"
               >
                 {/* We can map icons here too if needed, for now using a generic check */}
-                <div className="w-6 h-6 text-[hsl(var(--color-secondary-foreground))] flex items-center justify-center">
+                <div className="w-6 h-6 text-[var(--color-secondary-foreground)] flex items-center justify-center">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 </div>
               </div>
               <div>
-                <h3 className="font-semibold text-[hsl(var(--color-foreground))] mb-1">
+                <h3 className="font-semibold text-[var(--color-foreground)] mb-1">
                   {useCase.title}
                 </h3>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {useCase.description}
                 </p>
               </div>
@@ -354,7 +354,7 @@ function FAQSection({ faq }: FAQSectionProps) {
     >
       <h2
         id="faq-heading"
-        className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-6"
+        className="text-2xl font-bold text-[var(--color-foreground)] mb-6"
       >
         {t('tools.faq')}
       </h2>
@@ -369,11 +369,11 @@ function FAQSection({ faq }: FAQSectionProps) {
             itemProp="mainEntity"
             itemType="https://schema.org/Question"
           >
-            <h3 className="font-semibold text-[hsl(var(--color-foreground))]" itemProp="name">
+            <h3 className="font-semibold text-[var(--color-foreground)]" itemProp="name">
               {item.question}
             </h3>
             <div itemScope itemProp="acceptedAnswer" itemType="https://schema.org/Answer">
-              <p className="mt-2 text-sm text-[hsl(var(--color-muted-foreground))]" itemProp="text">
+              <p className="mt-2 text-sm text-[var(--color-muted-foreground)]" itemProp="text">
                 {item.answer}
               </p>
             </div>
@@ -405,7 +405,7 @@ function RelatedToolsSection({ tools, locale, localizedRelatedTools }: RelatedTo
     >
       <h2
         id="related-tools-heading"
-        className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-6"
+        className="text-2xl font-bold text-[var(--color-foreground)] mb-6"
       >
         {t('tools.relatedTools')}
       </h2>
@@ -432,16 +432,16 @@ function RelatedToolsSection({ tools, locale, localizedRelatedTools }: RelatedTo
               <Card hover clickable className="h-full glass-card transition-all duration-300 group-hover:-translate-y-1">
                 <div className="flex items-center gap-4">
                   <div
-                    className="flex-shrink-0 w-12 h-12 rounded-xl bg-[hsl(var(--color-primary)/0.1)] flex items-center justify-center group-hover:bg-[hsl(var(--color-primary))] transition-colors duration-300"
+                    className="flex-shrink-0 w-12 h-12 rounded-xl bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] flex items-center justify-center group-hover:bg-[var(--color-primary)] transition-colors duration-300"
                     aria-hidden="true"
                   >
-                    <IconComponent className="w-6 h-6 text-[hsl(var(--color-primary))] group-hover:text-white transition-colors duration-300" />
+                    <IconComponent className="w-6 h-6 text-[var(--color-primary)] group-hover:text-white transition-colors duration-300" />
                   </div>
                   <div>
-                    <span className="font-semibold text-[hsl(var(--color-foreground))] block mb-1">
+                    <span className="font-semibold text-[var(--color-foreground)] block mb-1">
                       {toolName}
                     </span>
-                    <span className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                    <span className="text-xs text-[var(--color-muted-foreground)]">
                       {categoryName}
                     </span>
                   </div>

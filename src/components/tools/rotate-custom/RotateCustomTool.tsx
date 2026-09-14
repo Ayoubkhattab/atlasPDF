@@ -81,6 +81,7 @@ export function RotateCustomTool({ className = '' }: RotateCustomToolProps) {
 
                     await page.render({
                         canvasContext: context,
+                        canvas,
                         viewport: viewport,
                     }).promise;
 
@@ -308,8 +309,8 @@ export function RotateCustomTool({ className = '' }: RotateCustomToolProps) {
                                 <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
                             </svg>
                             <div>
-                                <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                                <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                                <p className="text-sm text-[var(--color-muted-foreground)]">
                                     {formatSize(file.size)} • {totalPages} {totalPages === 1 ? 'page' : 'pages'}
                                 </p>
                             </div>
@@ -329,18 +330,18 @@ export function RotateCustomTool({ className = '' }: RotateCustomToolProps) {
             {/* Rotation Controls */}
             {file && totalPages > 0 && (
                 <Card variant="outlined" size="lg">
-                    <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-[hsl(var(--color-border))]">
-                        <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+                    <div className="flex flex-wrap items-center justify-between gap-4 mb-4 pb-4 border-b border-[var(--color-border)]">
+                        <h3 className="text-lg font-medium text-[var(--color-foreground)]">
                             Custom Rotation
                             {rotatedCount > 0 && (
-                                <span className="ml-2 text-[hsl(var(--color-primary))] text-sm">
+                                <span className="ml-2 text-[var(--color-primary)] text-sm">
                                     ({rotatedCount} page{rotatedCount !== 1 ? 's' : ''} set)
                                 </span>
                             )}
                         </h3>
 
                         <div className="flex items-center gap-2">
-                            <span className="text-sm text-[hsl(var(--color-muted-foreground))]">Set all pages to:</span>
+                            <span className="text-sm text-[var(--color-muted-foreground)]">Set all pages to:</span>
                             <div className="flex items-center">
                                 <Button
                                     variant="outline"
@@ -352,7 +353,7 @@ export function RotateCustomTool({ className = '' }: RotateCustomToolProps) {
                                 </Button>
                                 <input
                                     type="number"
-                                    className="h-9 w-16 text-center border-y border-[hsl(var(--color-input))] bg-[hsl(var(--color-background))] text-sm"
+                                    className="h-9 w-16 text-center border-y border-[var(--color-input)] bg-[var(--color-background)] text-sm"
                                     value={batchAngle}
                                     onChange={(e) => setBatchAngle(e.target.value)}
                                 />
@@ -377,8 +378,8 @@ export function RotateCustomTool({ className = '' }: RotateCustomToolProps) {
                     {isLoadingPreviews ? (
                         <div className="flex items-center justify-center py-12">
                             <div className="flex flex-col items-center gap-3">
-                                <div className="w-8 h-8 border-2 border-[hsl(var(--color-primary))] border-t-transparent rounded-full animate-spin" />
-                                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                                <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+                                <p className="text-sm text-[var(--color-muted-foreground)]">
                                     {t('status.loading') || 'Loading previews...'}
                                 </p>
                             </div>
@@ -388,9 +389,9 @@ export function RotateCustomTool({ className = '' }: RotateCustomToolProps) {
                             {pagePreviews.map((preview) => (
                                 <div
                                     key={preview.pageNumber}
-                                    className="bg-[hsl(var(--color-card))] rounded-lg border border-[hsl(var(--color-border))] overflow-hidden flex flex-col"
+                                    className="bg-[var(--color-card)] rounded-lg border border-[var(--color-border)] overflow-hidden flex flex-col"
                                 >
-                                    <div className="relative aspect-[3/4] bg-[hsl(var(--color-muted))] overflow-hidden flex items-center justify-center p-2">
+                                    <div className="relative aspect-[3/4] bg-[var(--color-muted)] overflow-hidden flex items-center justify-center p-2">
                                         <div
                                             className="w-full h-full flex items-center justify-center transition-transform duration-300 origin-center"
                                             style={{ transform: `rotate(${preview.rotation}deg)` }}
@@ -402,7 +403,7 @@ export function RotateCustomTool({ className = '' }: RotateCustomToolProps) {
                                                     className="max-w-full max-h-full object-contain shadow-sm"
                                                 />
                                             ) : (
-                                                <span className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                                                <span className="text-sm text-[var(--color-muted-foreground)]">
                                                     {preview.pageNumber}
                                                 </span>
                                             )}
@@ -413,24 +414,24 @@ export function RotateCustomTool({ className = '' }: RotateCustomToolProps) {
                                     </div>
 
                                     {/* Per-page rotation controls */}
-                                    <div className="p-2 flex items-center justify-center gap-1 border-t border-[hsl(var(--color-border))] bg-[hsl(var(--color-muted)/0.3)]">
+                                    <div className="p-2 flex items-center justify-center gap-1 border-t border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]">
                                         <button
                                             type="button"
                                             onClick={() => adjustPageRotation(preview.pageNumber, -1)}
-                                            className="w-6 h-6 flex items-center justify-center rounded hover:bg-[hsl(var(--color-muted))]"
+                                            className="w-6 h-6 flex items-center justify-center rounded hover:bg-[var(--color-muted)]"
                                         >
                                             -
                                         </button>
                                         <input
                                             type="number"
-                                            className="w-12 h-6 text-center text-xs bg-transparent border border-[hsl(var(--color-input))] rounded"
+                                            className="w-12 h-6 text-center text-xs bg-transparent border border-[var(--color-input)] rounded"
                                             value={preview.rotation}
                                             onChange={(e) => updatePageRotation(preview.pageNumber, parseFloat(e.target.value) || 0)}
                                         />
                                         <button
                                             type="button"
                                             onClick={() => adjustPageRotation(preview.pageNumber, 1)}
-                                            className="w-6 h-6 flex items-center justify-center rounded hover:bg-[hsl(var(--color-muted))]"
+                                            className="w-6 h-6 flex items-center justify-center rounded hover:bg-[var(--color-muted)]"
                                         >
                                             +
                                         </button>

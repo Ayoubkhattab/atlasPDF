@@ -82,6 +82,7 @@ export function DeletePagesTool({ className = '' }: DeletePagesToolProps) {
           
           await page.render({
             canvasContext: context,
+            canvas,
             viewport: viewport,
           }).promise;
           
@@ -312,8 +313,8 @@ export function DeletePagesTool({ className = '' }: DeletePagesToolProps) {
                 <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
               </svg>
               <div>
-                <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)} • {totalPages} {totalPages === 1 ? 'page' : 'pages'}
                 </p>
               </div>
@@ -334,7 +335,7 @@ export function DeletePagesTool({ className = '' }: DeletePagesToolProps) {
       {file && totalPages > 0 && (
         <Card variant="outlined" size="lg">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)]">
               {tTools('deletePages.selectTitle') || 'Select Pages to Delete'}
               {selectedPages.size > 0 && (
                 <span className="ml-2 text-red-600">
@@ -368,7 +369,7 @@ export function DeletePagesTool({ className = '' }: DeletePagesToolProps) {
               onChange={(e) => setPageInput(e.target.value)}
               placeholder="e.g., 1-5, 8, 10-15"
               disabled={isProcessing}
-              className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-muted-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+              className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
             />
             <Button
               variant="secondary"
@@ -380,15 +381,15 @@ export function DeletePagesTool({ className = '' }: DeletePagesToolProps) {
             </Button>
           </div>
 
-          <p className="text-sm text-[hsl(var(--color-muted-foreground))] mb-4">
+          <p className="text-sm text-[var(--color-muted-foreground)] mb-4">
             {tTools('deletePages.selectHint') || 'Click pages to select them for deletion, or enter page numbers/ranges above.'}
           </p>
 
           {isLoadingPreviews ? (
             <div className="flex items-center justify-center py-12">
               <div className="flex flex-col items-center gap-3">
-                <div className="w-8 h-8 border-2 border-[hsl(var(--color-primary))] border-t-transparent rounded-full animate-spin" />
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {t('status.loading') || 'Loading previews...'}
                 </p>
               </div>
@@ -404,7 +405,7 @@ export function DeletePagesTool({ className = '' }: DeletePagesToolProps) {
                   className={`relative aspect-[3/4] rounded-[var(--radius-md)] border-2 overflow-hidden transition-all ${
                     selectedPages.has(preview.pageNumber)
                       ? 'border-red-500 ring-2 ring-red-300 opacity-60'
-                      : 'border-[hsl(var(--color-border))] hover:border-red-300'
+                      : 'border-[var(--color-border)] hover:border-red-300'
                   }`}
                   aria-label={`Page ${preview.pageNumber}${selectedPages.has(preview.pageNumber) ? ' (selected for deletion)' : ''}`}
                 >
@@ -415,8 +416,8 @@ export function DeletePagesTool({ className = '' }: DeletePagesToolProps) {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full bg-[hsl(var(--color-muted))] flex items-center justify-center">
-                      <span className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                    <div className="w-full h-full bg-[var(--color-muted)] flex items-center justify-center">
+                      <span className="text-xs text-[var(--color-muted-foreground)]">
                         {preview.pageNumber}
                       </span>
                     </div>

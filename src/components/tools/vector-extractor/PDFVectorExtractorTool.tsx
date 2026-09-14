@@ -270,7 +270,7 @@ export function PDFVectorExtractorTool({ className = '' }: PDFVectorExtractorToo
 
       {/* Metadata bar */}
       {file && (
-        <Card variant="outlined" className="p-4 flex items-center justify-between border-2 border-[hsl(var(--color-primary)/0.25)] rounded-2xl">
+        <Card variant="outlined" className="p-4 flex items-center justify-between border-2 border-[color-mix(in_srgb,var(--color-primary)_25%,transparent)] rounded-2xl">
           <div className="flex items-center gap-3">
             <svg className="w-10 h-10 text-red-500" viewBox="0 0 24 24" fill="currentColor">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
@@ -278,11 +278,11 @@ export function PDFVectorExtractorTool({ className = '' }: PDFVectorExtractorToo
               <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
             </svg>
             <div>
-              <p className="font-semibold text-sm text-[hsl(var(--color-foreground))] truncate max-w-[280px]" title={file.name}>
+              <p className="font-semibold text-sm text-[var(--color-foreground)] truncate max-w-[280px]" title={file.name}>
                 {file.name}
               </p>
               <div className="flex items-center gap-4 mt-0.5">
-                <span className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <span className="text-xs text-[var(--color-muted-foreground)]">
                   {totalPages > 0 ? t('comparePdfs.totalAligned', { count: totalPages }) : t('status.loading')} • {(file.size / (1024 * 1024)).toFixed(2)} MB
                 </span>
                 
@@ -324,7 +324,7 @@ export function PDFVectorExtractorTool({ className = '' }: PDFVectorExtractorToo
             <Card variant="outlined" className="p-4 bg-zinc-100 dark:bg-zinc-950 flex-1 flex flex-col justify-between rounded-[2rem] border-2 shadow-inner min-h-[480px]">
               
               <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800">
-                <span className="text-xs font-bold text-[hsl(var(--color-foreground))] flex items-center gap-1.5">
+                <span className="text-xs font-bold text-[var(--color-foreground)] flex items-center gap-1.5">
                   <Search className="w-4 h-4 text-zinc-400" />
                   {tTools('vectorExtractor.previewHelp')}
                 </span>
@@ -356,24 +356,24 @@ export function PDFVectorExtractorTool({ className = '' }: PDFVectorExtractorToo
             <Card variant="default" className="flex-1 p-6 rounded-[2rem] border border-white/20 dark:border-zinc-800/40 bg-white/40 dark:bg-black/30 backdrop-blur-md flex flex-col justify-between shadow-xl">
               
               <div className="space-y-6">
-                <div className="border-b border-[hsl(var(--color-border))] pb-3">
-                  <h3 className="text-base font-bold text-[hsl(var(--color-foreground))] flex items-center gap-2">
-                    <Settings2 className="w-5 h-5 text-[hsl(var(--color-primary))]" />
+                <div className="border-b border-[var(--color-border)] pb-3">
+                  <h3 className="text-base font-bold text-[var(--color-foreground)] flex items-center gap-2">
+                    <Settings2 className="w-5 h-5 text-[var(--color-primary)]" />
                     {tTools('vectorExtractor.propertiesTitle')}
                   </h3>
                 </div>
 
                 {!selectedElementHtml ? (
-                  <div className="text-center p-6 text-[hsl(var(--color-muted-foreground))] space-y-2">
+                  <div className="text-center p-6 text-[var(--color-muted-foreground)] space-y-2">
                     <Layers className="w-12 h-12 text-zinc-400 mx-auto opacity-50" />
-                    <h4 className="text-xs font-bold text-[hsl(var(--color-foreground))]">{tTools('vectorExtractor.emptyTitle')}</h4>
+                    <h4 className="text-xs font-bold text-[var(--color-foreground)]">{tTools('vectorExtractor.emptyTitle')}</h4>
                     <p className="text-[10px]">{tTools('vectorExtractor.emptyDescription')}</p>
                   </div>
                 ) : (
                   <div className="space-y-5 animate-in fade-in zoom-in-95 duration-200">
                     
                     {/* SVG Preview Box */}
-                    <div className="border border-[hsl(var(--color-border))] rounded-2xl p-4 bg-white flex items-center justify-center aspect-video shadow-sm relative overflow-hidden">
+                    <div className="border border-[var(--color-border)] rounded-2xl p-4 bg-white flex items-center justify-center aspect-video shadow-sm relative overflow-hidden">
                       <div className="absolute top-2 left-2 text-[8px] font-bold text-zinc-400">Preview</div>
                       <div 
                         className="w-20 h-20 flex items-center justify-center"
@@ -383,7 +383,7 @@ export function PDFVectorExtractorTool({ className = '' }: PDFVectorExtractorToo
 
                     {/* Recolor panel */}
                     <div className="space-y-2">
-                      <label className="text-[11px] font-bold text-[hsl(var(--color-muted-foreground))] flex items-center gap-1.5">
+                      <label className="text-[11px] font-bold text-[var(--color-muted-foreground)] flex items-center gap-1.5">
                         <Palette className="w-4 h-4" /> {tTools('vectorExtractor.colorFill')}
                       </label>
                       <div className="flex items-center gap-3">
@@ -398,7 +398,7 @@ export function PDFVectorExtractorTool({ className = '' }: PDFVectorExtractorToo
                     </div>
 
                     {/* Actions list */}
-                    <div className="space-y-2.5 pt-2 border-t border-[hsl(var(--color-border))]">
+                    <div className="space-y-2.5 pt-2 border-t border-[var(--color-border)]">
                       
                       {/* Copy Code */}
                       <Button 
@@ -429,7 +429,7 @@ export function PDFVectorExtractorTool({ className = '' }: PDFVectorExtractorToo
               </div>
 
               {/* Complete Page Downloader */}
-              <div className="pt-6 border-t border-[hsl(var(--color-border))] mt-6">
+              <div className="pt-6 border-t border-[var(--color-border)] mt-6">
                 {resultBlob && (
                   <DownloadButton
                     file={resultBlob}

@@ -387,7 +387,7 @@ export function PageNumbersTool({ className = '' }: PageNumbersToolProps) {
                   </svg>
                   <div className="min-w-0">
                     <p className="font-medium text-sm truncate">{file.name}</p>
-                    <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                    <p className="text-xs text-[var(--color-muted-foreground)]">
                       {formatSize(file.size)} • {totalPages} pages
                     </p>
                   </div>

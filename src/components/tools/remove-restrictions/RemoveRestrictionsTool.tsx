@@ -220,10 +220,10 @@ export function RemoveRestrictionsTool({ className = '' }: RemoveRestrictionsToo
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                <p className="text-sm font-medium text-[var(--color-foreground)]">
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)}
                 </p>
               </div>
@@ -243,14 +243,14 @@ export function RemoveRestrictionsTool({ className = '' }: RemoveRestrictionsToo
       {/* Options */}
       {file && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('removeRestrictions.optionsTitle') || 'Options'}
           </h3>
           
           <div className="space-y-4">
             {/* Owner Password Input */}
             <div>
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTools('removeRestrictions.ownerPasswordLabel') || 'Owner Password (optional)'}
               </label>
               <div className="relative">
@@ -260,17 +260,17 @@ export function RemoveRestrictionsTool({ className = '' }: RemoveRestrictionsToo
                   onChange={(e) => setOwnerPassword(e.target.value)}
                   disabled={isProcessing}
                   placeholder={tTools('removeRestrictions.ownerPasswordPlaceholder') || 'Enter owner password if known'}
-                  className="w-full px-3 py-2 pr-10 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-muted-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] disabled:opacity-50"
+                  className="w-full px-3 py-2 pr-10 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] disabled:opacity-50"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
                 >
                   {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
-              <p className="mt-1 text-xs text-[hsl(var(--color-muted-foreground))]">
+              <p className="mt-1 text-xs text-[var(--color-muted-foreground)]">
                 {tTools('removeRestrictions.ownerPasswordHint') || 'If the PDF has an owner password, enter it here for better results.'}
               </p>
             </div>
@@ -369,7 +369,7 @@ export function RemoveRestrictionsTool({ className = '' }: RemoveRestrictionsToo
               </svg>
             </div>
             <div>
-              <p className="text-sm text-[hsl(var(--color-foreground))]">
+              <p className="text-sm text-[var(--color-foreground)]">
                 {passwordErrorMessage}
               </p>
             </div>

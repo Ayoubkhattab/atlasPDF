@@ -73,7 +73,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
       
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        await page.render({ canvasContext: ctx, viewport }).promise;
+        await page.render({ canvasContext: ctx, canvas, viewport }).promise;
         const originalUrl = canvas.toDataURL('image/jpeg', 1.0);
         setPdfPageImage(originalUrl);
         
@@ -263,7 +263,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
       {hasFiles && !singleFile && (
         <Card variant="outlined">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-bold text-[hsl(var(--color-foreground))]">
+            <h3 className="text-sm font-bold text-[var(--color-foreground)]">
               {t('compress.waitingFiles', { count: files.length })}
             </h3>
             <Button variant="ghost" size="sm" onClick={handleClearFile} disabled={isProcessing}>
@@ -272,7 +272,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
           </div>
           <div className="space-y-2 max-h-40 overflow-y-auto">
             {files.map((bf) => (
-              <div key={bf.id} className="flex items-center justify-between p-3 bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-border))] rounded-xl">
+              <div key={bf.id} className="flex items-center justify-between p-3 bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-border)] rounded-xl">
                 <span className="text-xs font-semibold truncate max-w-sm">{bf.file.name}</span>
                 {bf.status === 'completed' && bf.result && (
                   <DownloadButton
@@ -290,7 +290,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
           <div className="mt-4 space-y-4">
             {/* Quality Options */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider">
+              <label className="text-xs font-bold text-[var(--color-muted-foreground)] uppercase tracking-wider">
                 {t('compress.qualityTitle')}
               </label>
               <div className="grid grid-cols-4 gap-2">
@@ -301,7 +301,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                     disabled={isProcessing}
                     className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
                       quality === q
-                        ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.08)] text-[hsl(var(--color-foreground))]'
+                        ? 'border-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)] text-[var(--color-foreground)]'
                         : 'border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-black/20 text-zinc-500'
                     }`}
                   >
@@ -316,7 +316,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
 
             {/* Algorithm Options */}
             <div className="space-y-2">
-              <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider">
+              <label className="text-xs font-bold text-[var(--color-muted-foreground)] uppercase tracking-wider">
                 Compression Algorithm
               </label>
               <div className="grid grid-cols-3 gap-2">
@@ -327,7 +327,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                     disabled={isProcessing}
                     className={`py-2 px-3 rounded-xl text-xs font-bold transition-all border ${
                       algorithm === alg
-                        ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.08)] text-[hsl(var(--color-foreground))]'
+                        ? 'border-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)] text-[var(--color-foreground)]'
                         : 'border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-black/20 text-zinc-500'
                     }`}
                   >
@@ -345,7 +345,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                   checked={optimizeImages}
                   onChange={(e) => setOptimizeImages(e.target.checked)}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-zinc-300 text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-zinc-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
                 <span className="text-sm">{t('compress.optimizeGraphics')}</span>
               </label>
@@ -355,7 +355,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                   checked={removeMetadata}
                   onChange={(e) => setRemoveMetadata(e.target.checked)}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-zinc-300 text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-zinc-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
                 <span className="text-sm">{t('compress.clearMetadata')}</span>
               </label>
@@ -385,7 +385,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
             <Card variant="outlined" className="p-4 bg-zinc-100 dark:bg-zinc-950 rounded-[2rem] flex flex-col justify-between shadow-inner h-full min-h-[480px]">
               
               <div className="flex items-center justify-between pb-3 border-b border-zinc-200 dark:border-zinc-800">
-                <span className="text-xs font-bold text-[hsl(var(--color-foreground))] flex items-center gap-1.5">
+                <span className="text-xs font-bold text-[var(--color-foreground)] flex items-center gap-1.5">
                   <Eye className="w-4 h-4 text-zinc-400" />
                   {t('compress.sliderTooltip')}
                 </span>
@@ -490,8 +490,8 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                   <svg className="w-full h-24" viewBox="0 0 200 80">
                     <defs>
                       <radialGradient id="weight-glow" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stopColor="hsl(var(--color-primary))" stopOpacity="0.4" />
-                        <stop offset="100%" stopColor="hsl(var(--color-primary))" stopOpacity="0" />
+                        <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.4" />
+                        <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
                       </radialGradient>
                     </defs>
                     
@@ -546,7 +546,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
 
                 {/* Quality options */}
                 <div className="space-y-3.5">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider flex items-center gap-1.5">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)] uppercase tracking-wider flex items-center gap-1.5">
                     {t('compress.qualityTitle')}
                   </label>
                   <div className="grid grid-cols-4 gap-1.5">
@@ -556,7 +556,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                         onClick={() => setQuality(q)}
                         className={`py-2 rounded-xl text-xs font-extrabold transition-all border ${
                           quality === q
-                            ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.08)] text-[hsl(var(--color-foreground))]'
+                            ? 'border-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)] text-[var(--color-foreground)]'
                             : 'border-zinc-200 dark:border-zinc-800 bg-white/50 dark:bg-black/20 text-zinc-500'
                         }`}
                       >
@@ -576,13 +576,13 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                 </div>
 
                 {/* Extra Options */}
-                <div className="space-y-2 border-t border-[hsl(var(--color-border))] pt-4">
+                <div className="space-y-2 border-t border-[var(--color-border)] pt-4">
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={optimizeImages}
                       onChange={(e) => setOptimizeImages(e.target.checked)}
-                      className="w-4 h-4 rounded border-zinc-300 text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                      className="w-4 h-4 rounded border-zinc-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                     />
                     {t('compress.optimizeGraphics')}
                   </label>
@@ -591,7 +591,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                       type="checkbox"
                       checked={removeMetadata}
                       onChange={(e) => setRemoveMetadata(e.target.checked)}
-                      className="w-4 h-4 rounded border-zinc-300 text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                      className="w-4 h-4 rounded border-zinc-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                     />
                     {t('compress.clearMetadata')}
                   </label>
@@ -600,7 +600,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
               </div>
 
               {/* Compression Actions */}
-              <div className="pt-6 border-t border-[hsl(var(--color-border))]">
+              <div className="pt-6 border-t border-[var(--color-border)]">
                 <div className="flex gap-2">
                   <Button variant="ghost" size="sm" onClick={handleClearSingleFile} disabled={isProcessing}>
                     <Trash2 className="w-4 h-4" />
@@ -608,7 +608,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
                   <Button
                     variant="primary"
                     size="lg"
-                    className="flex-1 font-bold shadow-lg shadow-[hsl(var(--color-primary)/0.15)]"
+                    className="flex-1 font-bold shadow-lg shadow-[color-mix(in_srgb,var(--color-primary)_15%,transparent)]"
                     onClick={handleCompress}
                     disabled={!canCompress}
                     loading={isProcessing}
@@ -659,7 +659,7 @@ export function CompressPDFTool({ className = '' }: CompressPDFToolProps) {
           
           <div className="space-y-2 max-w-sm mx-auto">
             {t('compress.successDone')}
-            <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+            <p className="text-xs text-[var(--color-muted-foreground)]">
               {t('compress.sizeInfo', { size: (singleFile.size / (1024 * 1024)).toFixed(2) })}
             </p>
           </div>

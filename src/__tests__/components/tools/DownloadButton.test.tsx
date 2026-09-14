@@ -181,7 +181,7 @@ describe('DownloadButton', () => {
       render(<DownloadButton file={mockBlob} filename="test.pdf" />);
       
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[hsl(var(--color-primary))]');
+      expect(button).toHaveClass('bg-[var(--color-primary)]');
     });
 
     it('renders with secondary variant', () => {
@@ -195,7 +195,7 @@ describe('DownloadButton', () => {
       );
       
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[hsl(var(--color-secondary))]');
+      expect(button).toHaveClass('bg-[var(--color-secondary)]');
     });
 
     it('renders with different sizes', () => {

@@ -34,11 +34,11 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
     if (file) return;
 
     // Check in-memory transfer first
-    if (typeof window !== 'undefined' && (window as any).__PDFCRAFT_PENDING_EDIT_FILE__ instanceof File) {
-      const pendingFile = (window as any).__PDFCRAFT_PENDING_EDIT_FILE__ as File;
-      (window as any).__PDFCRAFT_PENDING_EDIT_FILE__ = null;
+    if (typeof window !== 'undefined' && (window as any).__ATLASPDF_PENDING_EDIT_FILE__ instanceof File) {
+      const pendingFile = (window as any).__ATLASPDF_PENDING_EDIT_FILE__ as File;
+      (window as any).__ATLASPDF_PENDING_EDIT_FILE__ = null;
       try {
-        window.sessionStorage.removeItem('pdfcraft_pending_edit_file');
+        window.sessionStorage.removeItem('atlaspdf_pending_edit_file');
       } catch {}
       setFile(pendingFile);
       return;
@@ -47,9 +47,9 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
     // Check sessionStorage fallback
     if (typeof window !== 'undefined') {
       try {
-        const stored = window.sessionStorage.getItem('pdfcraft_pending_edit_file');
+        const stored = window.sessionStorage.getItem('atlaspdf_pending_edit_file');
         if (stored) {
-          window.sessionStorage.removeItem('pdfcraft_pending_edit_file');
+          window.sessionStorage.removeItem('atlaspdf_pending_edit_file');
           const parsed = JSON.parse(stored);
           if (parsed?.data) {
             fetch(parsed.data)
@@ -101,7 +101,7 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
       const buffer = await currentFile.arrayBuffer();
       iframeRef.current.contentWindow.postMessage(
         {
-          type: 'PDFCRAFT_LOAD_PDF',
+          type: 'ATLASPDF_LOAD_PDF',
           payload: {
             name: currentFile.name,
             buffer,
@@ -120,7 +120,7 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
     const isDark = document.documentElement.classList.contains('dark');
     iframeRef.current.contentWindow.postMessage(
       {
-        type: 'PDFCRAFT_THEME_CHANGE',
+        type: 'ATLASPDF_THEME_CHANGE',
         payload: { isDark },
       },
       '*'
@@ -155,17 +155,17 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       const { type, fileName, sizeKb } = event.data || {};
-      if (type === 'PDFCRAFT_EDITOR_READY') {
+      if (type === 'ATLASPDF_EDITOR_READY') {
         sendThemeToIframe();
         sendPdfToIframe();
-      } else if (type === 'PDFCRAFT_LOADED_SUCCESS') {
+      } else if (type === 'ATLASPDF_LOADED_SUCCESS') {
         setIsEditorReady(true);
-      } else if (type === 'PDFCRAFT_SAVE_SUCCESS') {
+      } else if (type === 'ATLASPDF_SAVE_SUCCESS') {
         setSavedNotice(
           `${fileName || 'Document'} saved successfully! (${sizeKb ? sizeKb + ' KB' : 'downloaded'})`
         );
         setTimeout(() => setSavedNotice(null), 6000);
-      } else if (type === 'PDFCRAFT_EXIT_EDITOR') {
+      } else if (type === 'ATLASPDF_EXIT_EDITOR') {
         handleClear();
       }
     };
@@ -190,7 +190,7 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
                 }`}
               >
                 <span>✦</span>
-                <span>{locale === 'zh' ? '直接编辑正文与图片' : 'Direct Content Edit'}</span>
+                <span>{'Direct Content Edit'}</span>
               </button>
               <button
                 type="button"
@@ -202,7 +202,7 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
                 }`}
               >
                 <span>✎</span>
-                <span>{locale === 'zh' ? '经典批注与涂鸦' : 'Classic Annotator'}</span>
+                <span>{'Classic Annotator'}</span>
               </button>
             </div>
           </div>
@@ -239,10 +239,10 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
                   <path d="M14 2v6h6" fill="white" />
                 </svg>
                 <div>
-                  <p className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate max-w-[240px] sm:max-w-md">
+                  <p className="text-sm font-medium text-[var(--color-foreground)] truncate max-w-[240px] sm:max-w-md">
                     {file.name}
                   </p>
-                  <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                  <p className="text-xs text-[var(--color-muted-foreground)]">
                     {(file.size / (1024 * 1024)).toFixed(2)} MB
                   </p>
                 </div>
@@ -260,7 +260,7 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
                   }`}
                 >
                   <span>✦</span>
-                  <span>{locale === 'zh' ? '直接编辑正文与图片' : 'Direct Content Edit'}</span>
+                  <span>{'Direct Content Edit'}</span>
                 </button>
                 <button
                   type="button"
@@ -272,7 +272,7 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
                   }`}
                 >
                   <span>✎</span>
-                  <span>{locale === 'zh' ? '经典批注与涂鸦' : 'Classic Annotator'}</span>
+                  <span>{'Classic Annotator'}</span>
                 </button>
               </div>
 
@@ -290,7 +290,7 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
 
           {/* Direct In-place Text/Image Editor Mode */}
           {editMode === 'direct' && (
-            <div className="relative border border-[hsl(var(--color-border))] rounded-2xl overflow-hidden bg-[hsl(var(--color-card))] shadow-sm">
+            <div className="relative border border-[var(--color-border)] rounded-2xl overflow-hidden bg-[var(--color-card)] shadow-sm">
               <iframe
                 ref={iframeRef}
                 src={`/direct-pdf-editor/index.html?lang=${encodeURIComponent(locale || 'en')}`}
@@ -302,9 +302,9 @@ export function EditPDFTool({ className = '' }: EditPDFToolProps) {
               />
               {!isEditorReady && (
                 <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-950/80 z-10 backdrop-blur-md">
-                  <div className="text-center p-6 rounded-2xl bg-white dark:bg-gray-900 border border-[hsl(var(--color-border))] shadow-lg">
+                  <div className="text-center p-6 rounded-2xl bg-white dark:bg-gray-900 border border-[var(--color-border)] shadow-lg">
                     <div className="animate-spin rounded-full h-9 w-9 border-2 border-blue-600 border-t-transparent mx-auto mb-3"></div>
-                    <p className="text-sm font-semibold text-[hsl(var(--color-foreground))]">
+                    <p className="text-sm font-semibold text-[var(--color-foreground)]">
                       {t('status.loading') || 'Loading...'}
                     </p>
                   </div>

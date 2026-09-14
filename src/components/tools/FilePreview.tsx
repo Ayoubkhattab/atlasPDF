@@ -95,7 +95,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
         setPreviewUrl(url);
 
         // Load PDF document
-        const loadingTask = pdfjsLib.getDocument(url);
+        const loadingTask = pdfjsLib.getDocument({ url });
         const pdf = await loadingTask.promise;
         
         setPdfDoc(pdf);
@@ -231,8 +231,8 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
   // No file state
   if (!file) {
     return (
-      <div className={`flex items-center justify-center min-h-[300px] bg-[hsl(var(--color-muted)/0.3)] rounded-[var(--radius-lg)] ${className}`}>
-        <p className="text-[hsl(var(--color-muted-foreground))]">
+      <div className={`flex items-center justify-center min-h-[300px] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] rounded-[var(--radius-lg)] ${className}`}>
+        <p className="text-[var(--color-muted-foreground)]">
           No file to preview
         </p>
       </div>
@@ -242,10 +242,10 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
   // Loading state
   if (isLoading) {
     return (
-      <div className={`flex items-center justify-center min-h-[300px] bg-[hsl(var(--color-muted)/0.3)] rounded-[var(--radius-lg)] ${className}`}>
+      <div className={`flex items-center justify-center min-h-[300px] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] rounded-[var(--radius-lg)] ${className}`}>
         <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-[hsl(var(--color-primary))] border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+          <div className="w-8 h-8 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-[var(--color-muted-foreground)]">
             {t('status.loading')}
           </p>
         </div>
@@ -256,7 +256,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
   // Error state
   if (error) {
     return (
-      <div className={`flex items-center justify-center min-h-[300px] bg-[hsl(var(--color-muted)/0.3)] rounded-[var(--radius-lg)] ${className}`}>
+      <div className={`flex items-center justify-center min-h-[300px] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] rounded-[var(--radius-lg)] ${className}`}>
         <div className="flex flex-col items-center gap-3 text-center p-4">
           <svg
             className="w-12 h-12 text-red-500"
@@ -272,7 +272,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
             />
           </svg>
-          <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+          <p className="text-sm text-[var(--color-muted-foreground)]">
             {error}
           </p>
         </div>
@@ -283,11 +283,11 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
   return (
     <div className={`flex flex-col ${className}`}>
       {/* Toolbar */}
-      <div className="flex items-center justify-between p-2 bg-[hsl(var(--color-muted)/0.5)] rounded-t-[var(--radius-lg)] border-b border-[hsl(var(--color-border))]">
+      <div className="flex items-center justify-between p-2 bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)] rounded-t-[var(--radius-lg)] border-b border-[var(--color-border)]">
         {/* File name */}
         <div className="flex items-center gap-2 min-w-0">
           <svg
-            className="w-5 h-5 text-[hsl(var(--color-muted-foreground))] flex-shrink-0"
+            className="w-5 h-5 text-[var(--color-muted-foreground)] flex-shrink-0"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -300,7 +300,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
               d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
             />
           </svg>
-          <span className="text-sm text-[hsl(var(--color-foreground))] truncate">
+          <span className="text-sm text-[var(--color-foreground)] truncate">
             {filename || 'Document'}
           </span>
         </div>
@@ -324,7 +324,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
               
               <button
                 onClick={handleResetZoom}
-                className="px-2 py-1 text-xs font-medium text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))] transition-colors"
+                className="px-2 py-1 text-xs font-medium text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors"
                 aria-label={`Zoom: ${Math.round(zoom * 100)}%`}
               >
                 {Math.round(zoom * 100)}%
@@ -346,7 +346,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
 
           {/* Page navigation */}
           {showNavigation && totalPages > 1 && (
-            <div className="flex items-center gap-1 ml-2 pl-2 border-l border-[hsl(var(--color-border))]">
+            <div className="flex items-center gap-1 ml-2 pl-2 border-l border-[var(--color-border)]">
               <Button
                 variant="ghost"
                 size="sm"
@@ -359,7 +359,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
                 </svg>
               </Button>
               
-              <span className="text-xs text-[hsl(var(--color-muted-foreground))] whitespace-nowrap">
+              <span className="text-xs text-[var(--color-muted-foreground)] whitespace-nowrap">
                 {currentPage} / {totalPages}
               </span>
               
@@ -382,7 +382,7 @@ export const FilePreview: React.FC<FilePreviewProps> = ({
       {/* Preview area */}
       <div
         ref={containerRef}
-        className="relative flex items-center justify-center overflow-auto bg-[hsl(var(--color-muted)/0.3)] rounded-b-[var(--radius-lg)] min-h-[400px] max-h-[600px]"
+        className="relative flex items-center justify-center overflow-auto bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] rounded-b-[var(--radius-lg)] min-h-[400px] max-h-[600px]"
         onWheel={handleWheel}
       >
         <canvas

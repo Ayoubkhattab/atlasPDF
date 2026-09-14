@@ -176,10 +176,10 @@ export function SanitizePDFTool({ className = '' }: SanitizePDFToolProps) {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                <p className="text-sm font-medium text-[var(--color-foreground)]">
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)}
                 </p>
               </div>
@@ -199,7 +199,7 @@ export function SanitizePDFTool({ className = '' }: SanitizePDFToolProps) {
       {/* Sanitization Options */}
       {file && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('sanitizePdf.optionsTitle') || 'Sanitization Options'}
           </h3>
           
@@ -219,9 +219,9 @@ export function SanitizePDFTool({ className = '' }: SanitizePDFToolProps) {
                   checked={options.removeJavaScript}
                   onChange={() => handleOptionChange('removeJavaScript')}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('sanitizePdf.removeJavaScript') || 'Remove JavaScript'}
                 </span>
               </label>
@@ -232,9 +232,9 @@ export function SanitizePDFTool({ className = '' }: SanitizePDFToolProps) {
                   checked={options.removeAttachments}
                   onChange={() => handleOptionChange('removeAttachments')}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('sanitizePdf.removeAttachments') || 'Remove Attachments'}
                 </span>
               </label>
@@ -245,9 +245,9 @@ export function SanitizePDFTool({ className = '' }: SanitizePDFToolProps) {
                   checked={options.removeLinks}
                   onChange={() => handleOptionChange('removeLinks')}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('sanitizePdf.removeLinks') || 'Remove External Links'}
                 </span>
               </label>
@@ -258,9 +258,9 @@ export function SanitizePDFTool({ className = '' }: SanitizePDFToolProps) {
                   checked={options.flattenForms}
                   onChange={() => handleOptionChange('flattenForms')}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('sanitizePdf.flattenForms') || 'Flatten Forms'}
                 </span>
               </label>
@@ -271,9 +271,9 @@ export function SanitizePDFTool({ className = '' }: SanitizePDFToolProps) {
                   checked={options.removeMetadata}
                   onChange={() => handleOptionChange('removeMetadata')}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('sanitizePdf.removeMetadata') || 'Remove Metadata'}
                 </span>
               </label>
@@ -284,9 +284,9 @@ export function SanitizePDFTool({ className = '' }: SanitizePDFToolProps) {
                   checked={options.removeAnnotations}
                   onChange={() => handleOptionChange('removeAnnotations')}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('sanitizePdf.removeAnnotations') || 'Remove Annotations'}
                 </span>
               </label>

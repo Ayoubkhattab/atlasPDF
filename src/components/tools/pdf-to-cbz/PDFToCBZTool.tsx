@@ -166,28 +166,28 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
     <div className={`space-y-6 ${className}`.trim()}>
       {/* File Upload Zone */}
       <div className="space-y-3">
-        <label className="text-sm font-bold text-[hsl(var(--color-foreground))] block">
+        <label className="text-sm font-bold text-[var(--color-foreground)] block">
           {t('pdfToCbz.uploadLabel')}
         </label>
         {file ? (
           <Card 
             variant="outlined" 
-            className="relative group p-4 flex items-center justify-between border-2 border-[hsl(var(--color-primary)/0.3)] bg-[hsl(var(--color-muted)/0.15)] rounded-2xl"
+            className="relative group p-4 flex items-center justify-between border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,transparent)] bg-[color-mix(in_srgb,var(--color-muted)_15%,transparent)] rounded-2xl"
           >
             <div className="flex items-center gap-3">
-              <svg className="w-10 h-10 text-[hsl(var(--color-primary))]" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-10 h-10 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
                 <path d="M14 2v6h6" fill="white" />
                 <text x="8" y="17" fontSize="5.5" fill="white" fontWeight="bold">CBZ</text>
               </svg>
               <div>
                 <p 
-                  className="font-semibold text-sm text-[hsl(var(--color-foreground))] truncate max-w-[280px] md:max-w-md" 
+                  className="font-semibold text-sm text-[var(--color-foreground)] truncate max-w-[280px] md:max-w-md" 
                   title={file.name}
                 >
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {totalPages > 0 ? t('pdfToCbz.uploadSuccess', { count: totalPages, size: (file.size / (1024 * 1024)).toFixed(2) }) : (t('aiPdfReflower.scanningMetadata') || 'Loading...')}
                 </p>
               </div>
@@ -195,7 +195,7 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
             <button 
               onClick={handleClearFile}
               disabled={isProcessing}
-              className="p-1 rounded-full hover:bg-[hsl(var(--color-muted))] text-zinc-400 hover:text-red-500 transition-colors"
+              className="p-1 rounded-full hover:bg-[var(--color-muted)] text-zinc-400 hover:text-red-500 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -232,9 +232,9 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
           
           {/* LEFT: 3D Comic Book floating Preview */}
           <div className="lg:col-span-5 space-y-4">
-            <Card variant="outlined" className="p-6 bg-[hsl(var(--color-card))] rounded-2xl flex flex-col items-center justify-center min-h-[360px] overflow-hidden relative">
-              <span className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] mb-8 flex items-center gap-1.5">
-                <BookOpen className="w-4 h-4 text-[hsl(var(--color-primary))]" />
+            <Card variant="outlined" className="p-6 bg-[var(--color-card)] rounded-2xl flex flex-col items-center justify-center min-h-[360px] overflow-hidden relative">
+              <span className="text-xs font-bold text-[var(--color-muted-foreground)] mb-8 flex items-center gap-1.5">
+                <BookOpen className="w-4 h-4 text-[var(--color-primary)]" />
                 {t('pdfToCbz.previewTitle')}
               </span>
               
@@ -310,7 +310,7 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
               </div>
 
               <div className="mt-8 text-center max-w-xs leading-normal">
-                <p className="text-[11px] font-semibold text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-[11px] font-semibold text-[var(--color-muted-foreground)]">
                   {manga === 'YesAndRightToLeft' 
                     ? t('pdfToCbz.directionRtlHelp')
                     : t('pdfToCbz.directionLtrHelp')
@@ -326,8 +326,8 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
               variant="default" 
               className="p-6 rounded-2xl space-y-6 backdrop-blur-md bg-white/40 dark:bg-black/30 border border-white/20 dark:border-zinc-800/40"
             >
-              <h3 className="text-sm font-bold text-[hsl(var(--color-foreground))] border-b border-[hsl(var(--color-border))] pb-3 flex items-center gap-1.5">
-                <Settings2 className="w-4.5 h-4.5 text-[hsl(var(--color-primary))]" />
+              <h3 className="text-sm font-bold text-[var(--color-foreground)] border-b border-[var(--color-border)] pb-3 flex items-center gap-1.5">
+                <Settings2 className="w-4.5 h-4.5 text-[var(--color-primary)]" />
                 {t('pdfToCbz.metadataTitle')}
               </h3>
 
@@ -335,20 +335,20 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Book Title */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))]">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)]">
                     {t('pdfToCbz.fieldTitle')}
                   </label>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
 
                 {/* Series name */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))]">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)]">
                     {t('pdfToCbz.fieldSeries')}
                   </label>
                   <input
@@ -356,39 +356,39 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
                     placeholder={t('pdfToCbz.seriesPlaceholder')}
                     value={series}
                     onChange={(e) => setSeries(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
 
                 {/* Issue Number */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))]">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)]">
                     {t('pdfToCbz.fieldIssue')}
                   </label>
                   <input
                     type="text"
                     value={number}
                     onChange={(e) => setNumber(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
 
                 {/* Volume Number */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))]">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)]">
                     {t('pdfToCbz.fieldVolume')}
                   </label>
                   <input
                     type="text"
                     value={volume}
                     onChange={(e) => setVolume(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
 
                 {/* Writer/Artist */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] flex items-center gap-1">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)] flex items-center gap-1">
                     <User className="w-3.5 h-3.5 text-zinc-400" />
                     {t('pdfToCbz.fieldArtist')}
                   </label>
@@ -397,13 +397,13 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
                     placeholder={t('pdfToCbz.artistPlaceholder')}
                     value={writer}
                     onChange={(e) => setWriter(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
 
                 {/* Publisher */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))]">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)]">
                     {t('pdfToCbz.fieldPublisher')}
                   </label>
                   <input
@@ -411,13 +411,13 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
                     placeholder={t('pdfToCbz.publisherPlaceholder')}
                     value={publisher}
                     onChange={(e) => setPublisher(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
 
                 {/* Genre */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] flex items-center gap-1">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)] flex items-center gap-1">
                     <Tag className="w-3.5 h-3.5 text-zinc-400" />
                     {t('pdfToCbz.fieldGenre')}
                   </label>
@@ -426,20 +426,20 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
                     placeholder={t('pdfToCbz.genrePlaceholder')}
                     value={genre}
                     onChange={(e) => setGenre(e.target.value)}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                   />
                 </div>
 
                 {/* Manga LTR/RTL reading order */}
                 <div className="space-y-1.5">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] flex items-center gap-1">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)] flex items-center gap-1">
                     <Globe className="w-3.5 h-3.5 text-zinc-400" />
                     {t('pdfToCbz.readingOrderLabel')}
                   </label>
                   <select
                     value={manga}
                     onChange={(e) => setManga(e.target.value as any)}
-                    className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.35)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                    className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_35%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                   >
                     <option value="No">{t('pdfToCbz.readingOrderLtr')}</option>
                     <option value="YesAndRightToLeft">{t('pdfToCbz.readingOrderRtl')}</option>
@@ -448,8 +448,8 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
               </div>
 
               {/* Adjustments: compression, scale & grayscale */}
-              <div className="border-t border-[hsl(var(--color-border))] pt-4 space-y-4">
-                <h4 className="text-xs font-bold text-[hsl(var(--color-foreground))] flex items-center gap-1.5">
+              <div className="border-t border-[var(--color-border)] pt-4 space-y-4">
+                <h4 className="text-xs font-bold text-[var(--color-foreground)] flex items-center gap-1.5">
                   <Layers className="w-4 h-4 text-emerald-500" />
                   {t('pdfToCbz.deviceOptimizeTitle')}
                 </h4>
@@ -458,10 +458,10 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
                   {/* Quality slider */}
                   <div className="space-y-1.5">
                     <div className="flex justify-between items-center text-xs">
-                      <label className="font-bold text-[hsl(var(--color-muted-foreground))]">
+                      <label className="font-bold text-[var(--color-muted-foreground)]">
                         {t('pdfToCbz.qualityLabel')}
                       </label>
-                      <span className="font-black text-[hsl(var(--color-primary))]">
+                      <span className="font-black text-[var(--color-primary)]">
                         {Math.round(quality * 100)}%
                       </span>
                     </div>
@@ -472,17 +472,17 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
                       step="0.05"
                       value={quality}
                       onChange={(e) => setQuality(parseFloat(e.target.value))}
-                      className="w-full accent-[hsl(var(--color-primary))] bg-[hsl(var(--color-muted))] h-1 rounded-lg appearance-none cursor-pointer"
+                      className="w-full accent-[var(--color-primary)] bg-[var(--color-muted)] h-1 rounded-lg appearance-none cursor-pointer"
                     />
                   </div>
 
                   {/* Scale slider */}
                   <div className="space-y-1.5">
                     <div className="flex justify-between items-center text-xs">
-                      <label className="font-bold text-[hsl(var(--color-muted-foreground))]">
+                      <label className="font-bold text-[var(--color-muted-foreground)]">
                         {t('pdfToCbz.scaleLabel')}
                       </label>
-                      <span className="font-black text-[hsl(var(--color-primary))]">
+                      <span className="font-black text-[var(--color-primary)]">
                         {scale.toFixed(1)}x ({Math.round(scale * 72)} DPI)
                       </span>
                     </div>
@@ -493,16 +493,16 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
                       step="0.1"
                       value={scale}
                       onChange={(e) => setScale(parseFloat(e.target.value))}
-                      className="w-full accent-[hsl(var(--color-primary))] bg-[hsl(var(--color-muted))] h-1 rounded-lg appearance-none cursor-pointer"
+                      className="w-full accent-[var(--color-primary)] bg-[var(--color-muted)] h-1 rounded-lg appearance-none cursor-pointer"
                     />
                   </div>
 
                   {/* Format selector */}
                   <div className="space-y-1.5">
-                    <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] block">
+                    <label className="text-xs font-bold text-[var(--color-muted-foreground)] block">
                       {t('pdfToCbz.formatLabel')}
                     </label>
-                    <div className="flex bg-[hsl(var(--color-muted)/0.5)] p-0.5 rounded-lg border border-[hsl(var(--color-input)/0.4)]">
+                    <div className="flex bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)] p-0.5 rounded-lg border border-[color-mix(in_srgb,var(--color-input)_40%,transparent)]">
                       {(['jpg', 'png', 'webp'] as const).map(fmt => (
                         <button
                           key={fmt}
@@ -510,8 +510,8 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
                           onClick={() => setFormat(fmt)}
                           className={`flex-1 py-1 text-[10px] font-bold rounded transition-all ${
                             format === fmt
-                              ? 'bg-[hsl(var(--color-card))] text-[hsl(var(--color-foreground))] shadow-sm'
-                              : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                              ? 'bg-[var(--color-card)] text-[var(--color-foreground)] shadow-sm'
+                              : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                           }`}
                         >
                           {fmt.toUpperCase()}
@@ -521,14 +521,14 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
                   </div>
 
                   {/* Grayscale switch */}
-                  <div className="flex items-center justify-between p-2 rounded-xl bg-[hsl(var(--color-muted)/0.2)] border border-[hsl(var(--color-input)/0.2)]">
+                  <div className="flex items-center justify-between p-2 rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_20%,transparent)] border border-[color-mix(in_srgb,var(--color-input)_20%,transparent)]">
                     <div className="flex items-center gap-2">
                       <Eye className="w-4 h-4 text-zinc-400" />
                       <div>
-                        <span className="text-[11px] font-bold text-[hsl(var(--color-foreground))] block">
+                        <span className="text-[11px] font-bold text-[var(--color-foreground)] block">
                           {t('pdfToCbz.einkGreyscale')}
                         </span>
-                        <span className="text-[8px] text-[hsl(var(--color-muted-foreground))] block leading-none mt-0.5">
+                        <span className="text-[8px] text-[var(--color-muted-foreground)] block leading-none mt-0.5">
                           {t('pdfToCbz.einkGreyscaleDesc')}
                         </span>
                       </div>
@@ -559,7 +559,7 @@ export function PDFToCBZTool({ className = '' }: PDFToCBZToolProps) {
                 size="lg"
                 onClick={handleProcess}
                 disabled={isProcessing}
-                className="w-full py-4 font-bold shadow-lg shadow-[hsl(var(--color-primary)/0.15)] flex items-center justify-center gap-2"
+                className="w-full py-4 font-bold shadow-lg shadow-[color-mix(in_srgb,var(--color-primary)_15%,transparent)] flex items-center justify-center gap-2"
               >
                 <BookOpen className="w-5 h-5" />
                 {isProcessing ? (t('pdfToCbz.processing') || 'Processing...') : t('pdfToCbz.processButton')}

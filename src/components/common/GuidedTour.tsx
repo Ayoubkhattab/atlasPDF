@@ -160,16 +160,16 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
         
         {/* Welcome Dialog */}
         <div className="fixed inset-0 flex items-center justify-center z-[9999] p-4">
-          <div className="bg-[hsl(var(--color-background))] rounded-[var(--radius-lg)] shadow-xl max-w-md w-full p-6">
+          <div className="bg-[var(--color-background)] rounded-[var(--radius-lg)] shadow-xl max-w-md w-full p-6">
             <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 rounded-full bg-[hsl(var(--color-primary))]/10">
-                <HelpCircle className="h-6 w-6 text-[hsl(var(--color-primary))]" />
+              <div className="p-2 rounded-full bg-[var(--color-primary)]/10">
+                <HelpCircle className="h-6 w-6 text-[var(--color-primary)]" />
               </div>
-              <h2 className="text-xl font-semibold text-[hsl(var(--color-foreground))]">
+              <h2 className="text-xl font-semibold text-[var(--color-foreground)]">
                 {translations.welcomeTitle}
               </h2>
             </div>
-            <p className="text-[hsl(var(--color-muted-foreground))] mb-6">
+            <p className="text-[var(--color-muted-foreground)] mb-6">
               {translations.welcomeMessage}
             </p>
             <div className="flex gap-3 justify-end">
@@ -227,7 +227,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
       {/* Highlight border around target */}
       {targetRect && (
         <div
-          className="fixed z-[9999] pointer-events-none border-2 border-[hsl(var(--color-primary))] rounded-[var(--radius-md)] transition-all duration-300"
+          className="fixed z-[9999] pointer-events-none border-2 border-[var(--color-primary)] rounded-[var(--radius-md)] transition-all duration-300"
           style={{
             top: targetRect.top - 8,
             left: targetRect.left - 8,
@@ -240,7 +240,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
       {/* Tooltip */}
       <div
         ref={tooltipRef}
-        className="fixed z-[10000] w-80 bg-[hsl(var(--color-background))] rounded-[var(--radius-lg)] shadow-xl border border-[hsl(var(--color-border))] transition-all duration-300"
+        className="fixed z-[10000] w-80 bg-[var(--color-background)] rounded-[var(--radius-lg)] shadow-xl border border-[var(--color-border)] transition-all duration-300"
         style={{
           top: tooltipPosition.top,
           left: tooltipPosition.left,
@@ -249,7 +249,7 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
         {/* Close button */}
         <button
           onClick={endTour}
-          className="absolute top-2 right-2 p-1 text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))] transition-colors"
+          className="absolute top-2 right-2 p-1 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors"
           aria-label="Close tour"
         >
           <X className="h-4 w-4" aria-hidden="true" />
@@ -257,16 +257,16 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
 
         {/* Content */}
         <div className="p-4">
-          <h3 className="font-semibold text-[hsl(var(--color-foreground))] mb-2 pr-6">
+          <h3 className="font-semibold text-[var(--color-foreground)] mb-2 pr-6">
             {currentStepData.title}
           </h3>
-          <p className="text-sm text-[hsl(var(--color-muted-foreground))] mb-4">
+          <p className="text-sm text-[var(--color-muted-foreground)] mb-4">
             {currentStepData.content}
           </p>
 
           {/* Progress and navigation */}
           <div className="flex items-center justify-between">
-            <span className="text-xs text-[hsl(var(--color-muted-foreground))]">
+            <span className="text-xs text-[var(--color-muted-foreground)]">
               {currentStep + 1} {translations.stepOf} {totalSteps}
             </span>
             <div className="flex gap-2">
@@ -333,10 +333,10 @@ export const GuidedTour: React.FC<GuidedTourProps> = ({
                   }
                 }
               }}
-              className={`w-2 h-2 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-1 ${
+              className={`w-2 h-2 rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)] focus-visible:ring-offset-1 ${
                 index === currentStep
-                  ? 'bg-[hsl(var(--color-primary))]'
-                  : 'bg-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-muted-foreground))]'
+                  ? 'bg-[var(--color-primary)]'
+                  : 'bg-[var(--color-muted)] hover:bg-[var(--color-muted-foreground)]'
               }`}
             />
           ))}

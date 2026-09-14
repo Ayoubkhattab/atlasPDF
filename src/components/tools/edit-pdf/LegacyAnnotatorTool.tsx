@@ -135,11 +135,11 @@ export function LegacyAnnotatorTool({
                 (btn as HTMLElement).style.display = 'none';
               }
             });
-          }          // 3. Inject PDFCraft Enrichment Script
+          }          // 3. Inject AtlasPDF Enrichment Script
           const patchScript = doc.createElement('script');
           patchScript.textContent = `
             (function() {
-              console.log('[PDFCraft Patch] Initializing annotation patches...');
+              console.log('[AtlasPDF Patch] Initializing annotation patches...');
 
               let undoStack = [];
               let redoStack = [];
@@ -163,7 +163,7 @@ export function LegacyAnnotatorTool({
                 const ext = window.pdfjsAnnotationExtensionInstance;
                 if (ext) {
                   clearInterval(initInterval);
-                  console.log('[PDFCraft Patch] pdfjsAnnotationExtensionInstance found! Setting up patches...');
+                  console.log('[AtlasPDF Patch] pdfjsAnnotationExtensionInstance found! Setting up patches...');
                   setupCloudFix();
                   setupColorPickerAndStroke();
                   setupUndoRedoAndAuthorPatch();
@@ -174,7 +174,7 @@ export function LegacyAnnotatorTool({
               }, 200);
 
               function setupExistingTextEditing() {
-                if (document.getElementById('pdfcraft-edit-existing-text')) return;
+                if (document.getElementById('atlaspdf-edit-existing-text')) return;
                 const toolbar = document.querySelector('.CustomToolbar ul.buttons');
                 if (!toolbar) return;
 
@@ -216,7 +216,7 @@ export function LegacyAnnotatorTool({
                     };
 
                 const item = document.createElement('li');
-                item.id = 'pdfcraft-edit-existing-text';
+                item.id = 'atlaspdf-edit-existing-text';
                 item.title = labels.tool;
                 item.innerHTML =
                   '<div class="icon"><span role="img" aria-label="' + labels.tool + '"' +
@@ -231,59 +231,59 @@ export function LegacyAnnotatorTool({
                 }
 
                 const style = document.createElement('style');
-                style.id = 'pdfcraft-existing-text-styles';
+                style.id = 'atlaspdf-existing-text-styles';
                 style.textContent = \`
-                  body.pdfcraft-text-edit-mode .textLayer { pointer-events: auto !important; }
-                  body.pdfcraft-text-edit-mode .textLayer span {
+                  body.atlaspdf-text-edit-mode .textLayer { pointer-events: auto !important; }
+                  body.atlaspdf-text-edit-mode .textLayer span {
                     cursor: text !important;
                     pointer-events: auto !important;
                     border-radius: 2px;
                     transition: outline-color .12s, background .12s;
                   }
-                  body.pdfcraft-text-edit-mode .textLayer span:hover {
+                  body.atlaspdf-text-edit-mode .textLayer span:hover {
                     outline: 2px solid #2563eb !important;
                     background: rgba(37, 99, 235, .14) !important;
                   }
-                  #pdfcraft-edit-existing-text.pdfcraft-active {
+                  #atlaspdf-edit-existing-text.atlaspdf-active {
                     background: rgba(37, 99, 235, .18) !important;
                     color: #2563eb !important;
                   }
-                  #pdfcraft-text-edit-hint {
+                  #atlaspdf-text-edit-hint {
                     position: fixed; left: 50%; top: 74px; transform: translateX(-50%);
                     z-index: 100000; padding: 7px 12px; border-radius: 999px;
                     color: white; background: #1d4ed8; box-shadow: 0 5px 18px rgba(0,0,0,.2);
                     font: 500 12px/1.2 system-ui, sans-serif; pointer-events: none;
                   }
-                  #pdfcraft-text-edit-popover {
+                  #atlaspdf-text-edit-popover {
                     position: fixed; z-index: 100001; width: min(380px, calc(100vw - 24px));
                     padding: 14px; border: 1px solid #cbd5e1; border-radius: 10px;
                     background: white; color: #0f172a; box-shadow: 0 16px 40px rgba(15,23,42,.28);
                     font: 13px/1.4 system-ui, sans-serif;
                   }
-                  #pdfcraft-text-edit-popover textarea {
+                  #atlaspdf-text-edit-popover textarea {
                     box-sizing: border-box; width: 100%; min-height: 62px; resize: vertical;
                     margin-top: 4px; padding: 8px; border: 1px solid #94a3b8; border-radius: 6px;
                     color: #0f172a; background: white; font: inherit;
                   }
-                  #pdfcraft-text-edit-popover .pdfcraft-actions {
+                  #atlaspdf-text-edit-popover .atlaspdf-actions {
                     display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px;
                   }
-                  #pdfcraft-text-edit-popover button {
+                  #atlaspdf-text-edit-popover button {
                     padding: 6px 11px; border: 1px solid #94a3b8; border-radius: 6px;
                     cursor: pointer; background: white; color: #0f172a; font: inherit;
                   }
-                  #pdfcraft-text-edit-popover button[data-action="apply"] {
+                  #atlaspdf-text-edit-popover button[data-action="apply"] {
                     border-color: #2563eb; background: #2563eb; color: white;
                   }
-                  #pdfcraft-text-edit-popover .pdfcraft-overflow {
+                  #atlaspdf-text-edit-popover .atlaspdf-overflow {
                     display: none; margin-top: 8px; padding: 7px 8px; border-radius: 6px;
                     color: #92400e; background: #fffbeb; border: 1px solid #fde68a;
                   }
-                  #pdfcraft-text-edit-popover select {
+                  #atlaspdf-text-edit-popover select {
                     box-sizing: border-box; width: 100%; margin-top: 4px; padding: 7px;
                     border: 1px solid #94a3b8; border-radius: 6px; background: white;
                   }
-                  .pdfcraft-live-text-preview {
+                  .atlaspdf-live-text-preview {
                     outline: 2px dashed #16a34a !important;
                     background: rgba(22, 163, 74, .10) !important;
                   }
@@ -298,7 +298,7 @@ export function LegacyAnnotatorTool({
                 function restorePreview() {
                   if (previewSpan) {
                     previewSpan.textContent = previewOriginalText;
-                    previewSpan.classList.remove('pdfcraft-live-text-preview');
+                    previewSpan.classList.remove('atlaspdf-live-text-preview');
                   }
                   previewSpan = null;
                   previewOriginalText = '';
@@ -312,14 +312,14 @@ export function LegacyAnnotatorTool({
 
                 function setActive(nextActive) {
                   active = nextActive;
-                  document.body.classList.toggle('pdfcraft-text-edit-mode', active);
-                  item.classList.toggle('pdfcraft-active', active);
+                  document.body.classList.toggle('atlaspdf-text-edit-mode', active);
+                  item.classList.toggle('atlaspdf-active', active);
                   closePopover();
 
-                  document.getElementById('pdfcraft-text-edit-hint')?.remove();
+                  document.getElementById('atlaspdf-text-edit-hint')?.remove();
                   if (active) {
                     const hint = document.createElement('div');
-                    hint.id = 'pdfcraft-text-edit-hint';
+                    hint.id = 'atlaspdf-text-edit-hint';
                     hint.textContent = labels.hint;
                     document.body.appendChild(hint);
                   }
@@ -370,7 +370,7 @@ export function LegacyAnnotatorTool({
                   previewSpan = span;
                   previewOriginalText = span.textContent;
                   popover = document.createElement('div');
-                  popover.id = 'pdfcraft-text-edit-popover';
+                  popover.id = 'atlaspdf-text-edit-popover';
                   popover.innerHTML =
                     '<strong>' + labels.heading + '</strong>' +
                     '<div style="margin-top:8px;color:#64748b">' + labels.original + '</div>' +
@@ -380,7 +380,7 @@ export function LegacyAnnotatorTool({
                     '<label style="display:block;margin-top:8px">' + labels.replacement +
                       '<textarea></textarea>' +
                     '</label>' +
-                    '<div class="pdfcraft-overflow" role="status">' + labels.overflow + '</div>' +
+                    '<div class="atlaspdf-overflow" role="status">' + labels.overflow + '</div>' +
                     '<label style="display:block;margin-top:8px">' + labels.fit +
                       '<select data-fit-mode>' +
                         '<option value="preserve">' + labels.preserve + '</option>' +
@@ -389,7 +389,7 @@ export function LegacyAnnotatorTool({
                       '</select>' +
                     '</label>' +
                     '<div style="margin-top:8px;color:#92400e;font-size:11px">' + labels.signature + '</div>' +
-                    '<div class="pdfcraft-actions">' +
+                    '<div class="atlaspdf-actions">' +
                       '<button type="button" data-action="cancel">' + labels.cancel + '</button>' +
                       '<button type="button" data-action="apply">' + labels.apply + '</button>' +
                     '</div>';
@@ -407,11 +407,11 @@ export function LegacyAnnotatorTool({
                   textarea.value = span.textContent;
                   textarea.focus();
                   textarea.select();
-                  const overflowNotice = popover.querySelector('.pdfcraft-overflow');
+                  const overflowNotice = popover.querySelector('.atlaspdf-overflow');
 
                   function updatePreview() {
                     span.textContent = textarea.value;
-                    span.classList.add('pdfcraft-live-text-preview');
+                    span.classList.add('atlaspdf-live-text-preview');
                     const previewRect = span.getBoundingClientRect();
                     const lineCount = Math.max(1, textarea.value.split(/\\r?\\n/).length);
                     const overflow = previewRect.width > originalWidth + 1 ||
@@ -433,7 +433,7 @@ export function LegacyAnnotatorTool({
                     applyButton.disabled = true;
                     applyButton.textContent = '…';
                     window.parent.postMessage({
-                      type: 'pdfcraft:replace-existing-text',
+                      type: 'atlaspdf:replace-existing-text',
                       payload: {
                         page: pageNumber,
                         text: previewOriginalText,
@@ -452,7 +452,7 @@ export function LegacyAnnotatorTool({
                 const stage = ext?.stage || ext?.konvaStage || (window.Konva && window.Konva.stages[0]);
                 if (!stage) return;
                 
-                console.log('[PDFCraft Patch] Setting up Konva Snapping Alignment...');
+                console.log('[AtlasPDF Patch] Setting up Konva Snapping Alignment...');
                 
                 stage.on('dragmove', function(e) {
                   const activeShape = e.target;
@@ -503,10 +503,10 @@ export function LegacyAnnotatorTool({
                 });
                 
                 function drawGuides(stg, sx, sy) {
-                  let container = document.getElementById('pdfcraft-alignment-guides');
+                  let container = document.getElementById('atlaspdf-alignment-guides');
                   if (!container) {
                     container = document.createElement('div');
-                    container.id = 'pdfcraft-alignment-guides';
+                    container.id = 'atlaspdf-alignment-guides';
                     container.style.cssText = 'position:absolute; inset:0; pointer-events:none; z-index:99999;';
                     stg.container().appendChild(container);
                   }
@@ -525,7 +525,7 @@ export function LegacyAnnotatorTool({
                 }
                 
                 function clearGuides() {
-                  const container = document.getElementById('pdfcraft-alignment-guides');
+                  const container = document.getElementById('atlaspdf-alignment-guides');
                   if (container) container.innerHTML = '';
                 }
               }
@@ -537,7 +537,7 @@ export function LegacyAnnotatorTool({
 
                 const originalSave = pdfLib.PDFDocument.prototype.save;
                 pdfLib.PDFDocument.prototype.save = async function(saveOptions) {
-                  console.log('[PDFCraft Patch] Intercepting save to inspect for Chinese text...');
+                  console.log('[AtlasPDF Patch] Intercepting save to inspect for Chinese text...');
                   
                   let hasChinese = false;
                   
@@ -556,7 +556,7 @@ export function LegacyAnnotatorTool({
 
                   if (hasChinese) {
                     try {
-                      console.log('[PDFCraft Patch] Chinese text found. Embedding NotoSansSC-Regular font...');
+                      console.log('[AtlasPDF Patch] Chinese text found. Embedding NotoSansSC-Regular font...');
                       const fontBytes = await fetch('/fonts/NotoSansSC-Regular.ttf').then(res => res.arrayBuffer());
                       const customFont = await this.embedFont(fontBytes, { subset: true });
                       
@@ -564,13 +564,13 @@ export function LegacyAnnotatorTool({
                       const originalEmbedFont = this.embedFont;
                       this.embedFont = async function(fontToEmbed, embedOpts) {
                         if (fontToEmbed === pdfLib.StandardFonts.Helvetica || fontToEmbed === 'Helvetica') {
-                          console.log('[PDFCraft Patch] Redirected Helvetica embed to NotoSansSC font');
+                          console.log('[AtlasPDF Patch] Redirected Helvetica embed to NotoSansSC font');
                           return customFont;
                         }
                         return originalEmbedFont.call(this, fontToEmbed, embedOpts);
                       };
                     } catch (e) {
-                      console.error('[PDFCraft Patch] Failed to embed Chinese font subset', e);
+                      console.error('[AtlasPDF Patch] Failed to embed Chinese font subset', e);
                     }
                   }
 
@@ -586,7 +586,7 @@ export function LegacyAnnotatorTool({
                   if (activeTool === 'cloud') {
                     const konvaContent = document.querySelector('.konvajs-content');
                     if (konvaContent) {
-                      console.log('[PDFCraft Patch] Intercepted dblclick for cloud tool, dispatching to Konva stage.');
+                      console.log('[AtlasPDF Patch] Intercepted dblclick for cloud tool, dispatching to Konva stage.');
                       const dblEvent = new MouseEvent('dblclick', {
                         bubbles: true,
                         cancelable: true,
@@ -607,7 +607,7 @@ export function LegacyAnnotatorTool({
                     if (activeTool === 'cloud') {
                       const konvaContent = document.querySelector('.konvajs-content');
                       if (konvaContent) {
-                        console.log('[PDFCraft Patch] Intercepted Enter key for cloud tool, dispatching dblclick to end drawing.');
+                        console.log('[AtlasPDF Patch] Intercepted Enter key for cloud tool, dispatching dblclick to end drawing.');
                         const dblEvent = new MouseEvent('dblclick', {
                           bubbles: true,
                           cancelable: true,
@@ -624,10 +624,10 @@ export function LegacyAnnotatorTool({
                 // Inject picker for Highlight tool
                 const hlColorPicker = document.getElementById('editorHighlightColorPicker');
                 if (hlColorPicker) {
-                  if (!hlColorPicker.querySelector('.pdfcraft-custom-hl-picker')) {
+                  if (!hlColorPicker.querySelector('.atlaspdf-custom-hl-picker')) {
                     const picker = document.createElement('input');
                     picker.type = 'color';
-                    picker.className = 'pdfcraft-custom-hl-picker';
+                    picker.className = 'atlaspdf-custom-hl-picker';
                     picker.style.cssText = 'width:28px; height:28px; border:2px solid #ccc; border-radius:50%; padding:0; cursor:pointer; margin-left:8px; vertical-align:middle; background:none;';
                     
                     picker.addEventListener('input', function(e) {
@@ -658,12 +658,12 @@ export function LegacyAnnotatorTool({
               }
 
               function injectCustomMenuControls(menu) {
-                if (menu.querySelector('.pdfcraft-custom-controls')) return;
+                if (menu.querySelector('.atlaspdf-custom-controls')) return;
 
-                console.log('[PDFCraft Patch] CustomAnnotationMenu opened, injecting custom controls...');
+                console.log('[AtlasPDF Patch] CustomAnnotationMenu opened, injecting custom controls...');
 
                 const container = document.createElement('div');
-                container.className = 'pdfcraft-custom-controls';
+                container.className = 'atlaspdf-custom-controls';
                 container.style.cssText = 'border-top:1px solid #ccc; margin-top:8px; padding-top:8px; font-size:12px; display:flex; flex-direction:column; gap:8px; color:var(--toolbar-fg-color, #333);';
 
                 const ext = window.pdfjsAnnotationExtensionInstance;
@@ -698,7 +698,7 @@ export function LegacyAnnotatorTool({
                 nativeSliders.forEach(slider => {
                   if (slider.getAttribute('min') === '1') {
                     slider.setAttribute('min', '0');
-                    console.log('[PDFCraft Patch] Stroke width slider updated min to 0');
+                    console.log('[AtlasPDF Patch] Stroke width slider updated min to 0');
                   }
                 });
 
@@ -713,12 +713,12 @@ export function LegacyAnnotatorTool({
                   
                   const fillCheckbox = document.createElement('input');
                   fillCheckbox.type = 'checkbox';
-                  fillCheckbox.id = 'pdfcraft-fill-enabled';
+                  fillCheckbox.id = 'atlaspdf-fill-enabled';
                   fillCheckbox.style.cssText = 'cursor:pointer;';
                   fillCheckbox.checked = selected.style?.fillEnabled || false;
                   
                   const fillLabel = document.createElement('label');
-                  fillLabel.htmlFor = 'pdfcraft-fill-enabled';
+                  fillLabel.htmlFor = 'atlaspdf-fill-enabled';
                   {t('editPdf.fillColorLabel')}
                   fillLabel.style.cssText = 'cursor:pointer; user-select:none;';
 
@@ -849,7 +849,7 @@ export function LegacyAnnotatorTool({
                   lastStateStr = stateStr;
                   updateUndoRedoButtonsState();
                 } catch (err) {
-                  console.error('[PDFCraft Patch] Failed to load state', err);
+                  console.error('[AtlasPDF Patch] Failed to load state', err);
                 } finally {
                   setTimeout(() => {
                     isDoingUndoRedo = false;
@@ -860,11 +860,11 @@ export function LegacyAnnotatorTool({
               function injectUndoRedoButtons() {
                 const customToolbar = document.querySelector('.CustomToolbar');
                 if (customToolbar) {
-                  if (customToolbar.querySelector('.pdfcraft-undo-btn')) return;
+                  if (customToolbar.querySelector('.atlaspdf-undo-btn')) return;
                   const btnList = customToolbar.querySelector('ul') || customToolbar;
 
                   const undoLi = document.createElement('li');
-                  undoLi.className = 'pdfcraft-undo-btn';
+                  undoLi.className = 'atlaspdf-undo-btn';
                   undoLi.style.cssText = 'display:inline-block; margin-right:8px;';
 
                   const undoBtn = document.createElement('button');
@@ -877,7 +877,7 @@ export function LegacyAnnotatorTool({
                   undoLi.appendChild(undoBtn);
 
                   const redoLi = document.createElement('li');
-                  redoLi.className = 'pdfcraft-redo-btn';
+                  redoLi.className = 'atlaspdf-redo-btn';
                   redoLi.style.cssText = 'display:inline-block; margin-right:8px;';
 
                   const redoBtn = document.createElement('button');
@@ -900,8 +900,8 @@ export function LegacyAnnotatorTool({
               }
 
               function updateUndoRedoButtonsState() {
-                const undoBtn = document.querySelector('.pdfcraft-undo-btn button');
-                const redoBtn = document.querySelector('.pdfcraft-redo-btn button');
+                const undoBtn = document.querySelector('.atlaspdf-undo-btn button');
+                const redoBtn = document.querySelector('.atlaspdf-redo-btn button');
                 
                 if (undoBtn) {
                   const canUndo = undoStack.length > 1;
@@ -917,7 +917,7 @@ export function LegacyAnnotatorTool({
             })();
           `;
           doc.body.appendChild(patchScript);
-          console.log('[PDFCraft Patch] Enrichment script successfully injected into iframe!');
+          console.log('[AtlasPDF Patch] Enrichment script successfully injected into iframe!');
         }
       } catch (e) {
         console.warn('Could not access iframe content to inject patches', e);
@@ -991,7 +991,7 @@ export function LegacyAnnotatorTool({
       if (
         event.origin !== window.location.origin ||
         event.source !== iframeRef.current?.contentWindow ||
-        event.data?.type !== 'pdfcraft:replace-existing-text' ||
+        event.data?.type !== 'atlaspdf:replace-existing-text' ||
         !file ||
         isTextReplacing
       ) {
@@ -1089,8 +1089,8 @@ export function LegacyAnnotatorTool({
                     <path d="M14 2v6h6" fill="white" />
                   </svg>
                   <div>
-                    <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                    <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                    <p className="text-sm font-medium text-[var(--color-foreground)]">{file.name}</p>
+                    <p className="text-xs text-[var(--color-muted-foreground)]">
                       {(file.size / (1024 * 1024)).toFixed(2)} MB
                     </p>
                   </div>
@@ -1109,10 +1109,10 @@ export function LegacyAnnotatorTool({
           )}
 
           <div
-            className="flex flex-wrap items-center gap-2 rounded-md border border-[hsl(var(--color-border))] bg-white p-2"
+            className="flex flex-wrap items-center gap-2 rounded-md border border-[var(--color-border)] bg-white p-2"
             aria-label={tTools('textHistory')}
           >
-            <span className="mr-1 text-xs font-medium text-[hsl(var(--color-muted-foreground))]">
+            <span className="mr-1 text-xs font-medium text-[var(--color-muted-foreground)]">
               {tTools('textHistory')}:
             </span>
             <Button
@@ -1152,7 +1152,7 @@ export function LegacyAnnotatorTool({
           )}
 
           {/* PDF Viewer iframe */}
-          <div className="relative border border-[hsl(var(--color-border))] rounded-[var(--radius-md)] overflow-hidden bg-gray-100">
+          <div className="relative border border-[var(--color-border)] rounded-[var(--radius-md)] overflow-hidden bg-gray-100">
             <iframe
               ref={iframeRef}
               src={`/pdfjs-annotation-viewer/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`}
@@ -1164,15 +1164,15 @@ export function LegacyAnnotatorTool({
             {!isEditorReady && (
               <div className="absolute inset-0 flex items-center justify-center bg-white/80">
                 <div className="text-center">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--color-primary))] mx-auto mb-2"></div>
-                  <p className="text-sm text-[hsl(var(--color-muted-foreground))]">{t('status.loading') || 'Loading...'}</p>
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--color-primary)] mx-auto mb-2"></div>
+                  <p className="text-sm text-[var(--color-muted-foreground)]">{t('status.loading') || 'Loading...'}</p>
                 </div>
               </div>
             )}
             {isTextReplacing && (
               <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/70">
                 <div className="rounded-lg bg-white px-5 py-4 text-center shadow-lg">
-                  <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2 border-[hsl(var(--color-primary))]" />
+                  <div className="mx-auto mb-2 h-8 w-8 animate-spin rounded-full border-b-2 border-[var(--color-primary)]" />
                   <p className="text-sm font-medium">Updating PDF text…</p>
                 </div>
               </div>

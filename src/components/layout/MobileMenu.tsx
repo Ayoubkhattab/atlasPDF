@@ -55,10 +55,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, locale 
   const mainNavItems = [
     { href: `/${locale}`, label: tCommon('navigation.home') },
     { href: `/${locale}/tools`, label: tCommon('navigation.tools'), hasSubmenu: true },
-    { href: `/${locale}/about`, label: tCommon('navigation.about') },
     { href: `/${locale}/faq`, label: tCommon('navigation.faq') },
-    { href: `/${locale}/privacy`, label: tCommon('navigation.privacy') },
-    { href: `/${locale}/contact`, label: tCommon('navigation.contact') },
   ];
 
   // Focus trap and escape key handling
@@ -165,7 +162,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, locale 
       <div
         ref={menuRef}
         className={`
-          fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-[hsl(var(--color-background))] 
+          fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-[var(--color-background)] 
           shadow-xl z-50 md:hidden
           transform transition-transform duration-300 ease-in-out
           ${isOpen ? 'translate-x-0' : 'translate-x-full'}
@@ -177,8 +174,8 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, locale 
         onTouchEnd={handleTouchEnd}
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[hsl(var(--color-border))]">
-          <span className="text-lg font-bold text-[hsl(var(--color-primary))]">
+        <div className="flex items-center justify-between p-4 border-b border-[var(--color-border)]">
+          <span className="text-lg font-bold text-[var(--color-primary)]">
             {tCommon('brand')}
           </span>
           <Button
@@ -201,7 +198,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, locale 
                   <div>
                     <button
                       onClick={() => handleCategoryToggle('tools')}
-                      className="flex items-center justify-between w-full px-4 py-3 text-left text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))] rounded-[var(--radius-md)] transition-colors"
+                      className="flex items-center justify-between w-full px-4 py-3 text-left text-[var(--color-foreground)] hover:bg-[var(--color-muted)] rounded-[var(--radius-md)] transition-colors"
                       aria-expanded={expandedCategory === 'tools'}
                     >
                       <span className="font-medium">{item.label}</span>
@@ -214,11 +211,11 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, locale 
                     
                     {/* Submenu */}
                     {expandedCategory === 'tools' && (
-                      <ul className="ml-4 mt-1 border-l-2 border-[hsl(var(--color-border))]">
+                      <ul className="ml-4 mt-1 border-l-2 border-[var(--color-border)]">
                         <li>
                           <Link
                             href={item.href}
-                            className="block px-4 py-2 text-sm text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-primary))] hover:bg-[hsl(var(--color-muted))] rounded-[var(--radius-md)] transition-colors"
+                            className="block px-4 py-2 text-sm text-[var(--color-foreground)] hover:text-[var(--color-primary)] hover:bg-[var(--color-muted)] rounded-[var(--radius-md)] transition-colors"
                             onClick={handleLinkClick}
                           >
                             All Tools
@@ -228,7 +225,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, locale 
                           <li key={category.id}>
                             <Link
                               href={category.href}
-                              className="block px-4 py-2 text-sm text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-primary))] hover:bg-[hsl(var(--color-muted))] rounded-[var(--radius-md)] transition-colors"
+                              className="block px-4 py-2 text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-primary)] hover:bg-[var(--color-muted)] rounded-[var(--radius-md)] transition-colors"
                               onClick={handleLinkClick}
                             >
                               {t(category.labelKey)}
@@ -241,7 +238,7 @@ export const MobileMenu: React.FC<MobileMenuProps> = ({ isOpen, onClose, locale 
                 ) : (
                   <Link
                     href={item.href}
-                    className="block px-4 py-3 font-medium text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))] rounded-[var(--radius-md)] transition-colors"
+                    className="block px-4 py-3 font-medium text-[var(--color-foreground)] hover:bg-[var(--color-muted)] rounded-[var(--radius-md)] transition-colors"
                     onClick={handleLinkClick}
                   >
                     {item.label}

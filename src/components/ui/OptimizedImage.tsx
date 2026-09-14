@@ -125,11 +125,11 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       {/* Error state */}
       {hasError && !fallbackSrc && (
         <div 
-          className="absolute inset-0 flex items-center justify-center bg-[hsl(var(--color-muted))]"
+          className="absolute inset-0 flex items-center justify-center bg-[var(--color-muted)]"
           role="img"
           aria-label={`Failed to load: ${alt}`}
         >
-          <span className="text-[hsl(var(--color-muted-foreground))] text-sm">
+          <span className="text-[var(--color-muted-foreground)] text-sm">
             Image unavailable
           </span>
         </div>

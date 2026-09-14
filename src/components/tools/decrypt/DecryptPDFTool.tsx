@@ -188,10 +188,10 @@ export function DecryptPDFTool({ className = '' }: DecryptPDFToolProps) {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                <p className="text-sm font-medium text-[var(--color-foreground)]">
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)}
                 </p>
               </div>
@@ -211,7 +211,7 @@ export function DecryptPDFTool({ className = '' }: DecryptPDFToolProps) {
       {/* Password Input */}
       {file && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('decryptPdf.passwordTitle') || 'Enter Password'}
           </h3>
           
@@ -225,7 +225,7 @@ export function DecryptPDFTool({ className = '' }: DecryptPDFToolProps) {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="decrypt-password" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <label htmlFor="decrypt-password" className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTools('decryptPdf.passwordLabel') || 'PDF Password'}
               </label>
               <div className="relative">
@@ -237,18 +237,18 @@ export function DecryptPDFTool({ className = '' }: DecryptPDFToolProps) {
                   disabled={isProcessing}
                   placeholder={tTools('decryptPdf.passwordPlaceholder') || 'Enter the PDF password'}
                   aria-describedby="decrypt-password-hint"
-                  className="w-full px-3 py-2 pr-10 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                  className="w-full px-3 py-2 pr-10 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
                 >
                   {showPassword ? '🙈' : '👁️'}
                 </button>
               </div>
-              <p id="decrypt-password-hint" className="mt-1 text-xs text-[hsl(var(--color-muted-foreground))]">
+              <p id="decrypt-password-hint" className="mt-1 text-xs text-[var(--color-muted-foreground)]">
                 {tTools('decryptPdf.passwordHint') || 'Leave empty if the PDF only has owner password restrictions.'}
               </p>
             </div>
@@ -323,7 +323,7 @@ export function DecryptPDFTool({ className = '' }: DecryptPDFToolProps) {
               </svg>
             </div>
             <div>
-              <p className="text-sm text-[hsl(var(--color-foreground))]">
+              <p className="text-sm text-[var(--color-foreground)]">
                 {passwordErrorMessage}
               </p>
             </div>

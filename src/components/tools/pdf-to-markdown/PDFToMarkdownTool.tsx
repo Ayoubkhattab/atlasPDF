@@ -211,12 +211,12 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
                 <Card variant="outlined" size="lg" className="glass-card">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 rounded-xl bg-[hsl(var(--color-primary)/0.1)] flex items-center justify-center text-[hsl(var(--color-primary))]">
+                            <div className="w-12 h-12 rounded-xl bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] flex items-center justify-center text-[var(--color-primary)]">
                                 <FileText className="w-6 h-6" />
                             </div>
                             <div>
-                                <p className="font-semibold text-[hsl(var(--color-foreground))]">{file.file.name}</p>
-                                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">{formatSize(file.file.size)}</p>
+                                <p className="font-semibold text-[var(--color-foreground)]">{file.file.name}</p>
+                                <p className="text-sm text-[var(--color-muted-foreground)]">{formatSize(file.file.size)}</p>
                             </div>
                         </div>
                         <Button
@@ -224,7 +224,7 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
                             size="sm"
                             onClick={handleRemoveFile}
                             disabled={isProcessing}
-                            className="text-[hsl(var(--color-muted-foreground))] hover:text-red-500 hover:bg-red-50"
+                            className="text-[var(--color-muted-foreground)] hover:text-red-500 hover:bg-red-50"
                         >
                             <Trash2 className="w-5 h-5" />
                             <span className="sr-only">{t('buttons.remove') || 'Remove'}</span>
@@ -237,14 +237,14 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
             {file && !isProcessing && status !== 'complete' && (
                 <Card variant="outlined" size="lg" className="glass-card">
                     <div className="space-y-4">
-                        <div className="flex items-center gap-2 text-[hsl(var(--color-foreground))]">
+                        <div className="flex items-center gap-2 text-[var(--color-foreground)]">
                             <Settings2 className="w-5 h-5" />
                             <h3 className="font-semibold">{tTools('pdfToMarkdown.optionsTitle') || 'Conversion Options'}</h3>
                         </div>
 
                         {/* Page Range */}
                         <div className="space-y-2">
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)]">
                                 {tTools('pdfToMarkdown.pageRange') || 'Page Range'}
                             </label>
                             <input
@@ -252,9 +252,9 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
                                 value={pageRange}
                                 onChange={(e) => setPageRange(e.target.value)}
                                 placeholder={tTools('pdfToMarkdown.pageRangePlaceholder') || 'e.g., 1-3, 5, 7'}
-                                className="w-full px-3 py-2 rounded-lg border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-muted-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                className="w-full px-3 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                             />
-                            <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                            <p className="text-xs text-[var(--color-muted-foreground)]">
                                 {tTools('pdfToMarkdown.pageRangeHint') || 'Leave empty for all pages'}
                             </p>
                         </div>
@@ -266,9 +266,9 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
                                 id="includePageNumbers"
                                 checked={includePageNumbers}
                                 onChange={(e) => setIncludePageNumbers(e.target.checked)}
-                                className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                                className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                             />
-                            <label htmlFor="includePageNumbers" className="text-sm text-[hsl(var(--color-foreground))]">
+                            <label htmlFor="includePageNumbers" className="text-sm text-[var(--color-foreground)]">
                                 {tTools('pdfToMarkdown.includePageNumbers') || 'Include page numbers as headers'}
                             </label>
                         </div>
@@ -280,9 +280,9 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
                                 id="preserveLineBreaks"
                                 checked={preserveLineBreaks}
                                 onChange={(e) => setPreserveLineBreaks(e.target.checked)}
-                                className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                                className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                             />
-                            <label htmlFor="preserveLineBreaks" className="text-sm text-[hsl(var(--color-foreground))]">
+                            <label htmlFor="preserveLineBreaks" className="text-sm text-[var(--color-foreground)]">
                                 {tTools('pdfToMarkdown.preserveLineBreaks') || 'Preserve line breaks'}
                             </label>
                         </div>
@@ -351,12 +351,12 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
                 <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <Card variant="outlined" className="overflow-hidden glass-card p-0">
                         {/* Preview Tabs */}
-                        <div className="flex border-b border-[hsl(var(--color-border))] bg-[hsl(var(--color-muted))]/30">
+                        <div className="flex border-b border-[var(--color-border)] bg-[var(--color-muted)]/30">
                             <button
                                 onClick={() => setActiveTab('preview')}
                                 className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors ${activeTab === 'preview'
-                                        ? 'bg-[hsl(var(--color-background))] text-[hsl(var(--color-primary))] border-b-2 border-[hsl(var(--color-primary))] -mb-[1px]'
-                                        : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                                        ? 'bg-[var(--color-background)] text-[var(--color-primary)] border-b-2 border-[var(--color-primary)] -mb-[1px]'
+                                        : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                                     }`}
                             >
                                 <Eye className="w-4 h-4" />
@@ -365,8 +365,8 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
                             <button
                                 onClick={() => setActiveTab('source')}
                                 className={`flex items-center gap-2 px-6 py-3 text-sm font-medium transition-colors ${activeTab === 'source'
-                                        ? 'bg-[hsl(var(--color-background))] text-[hsl(var(--color-primary))] border-b-2 border-[hsl(var(--color-primary))] -mb-[1px]'
-                                        : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                                        ? 'bg-[var(--color-background)] text-[var(--color-primary)] border-b-2 border-[var(--color-primary)] -mb-[1px]'
+                                        : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                                     }`}
                             >
                                 <Code className="w-4 h-4" />
@@ -375,7 +375,7 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
                         </div>
 
                         {/* Preview Content */}
-                        <div className="p-6 max-h-[600px] overflow-y-auto bg-[hsl(var(--color-background))]">
+                        <div className="p-6 max-h-[600px] overflow-y-auto bg-[var(--color-background)]">
                             {activeTab === 'preview' ? (
                                 <div
                                     className="prose prose-sm md:prose-base lg:prose-lg dark:prose-invert max-w-none
@@ -385,7 +385,7 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
                                     prose-h3:text-xl prose-h3:mb-2 prose-h3:mt-4
                                     prose-p:leading-relaxed prose-p:mb-4
                                     prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
-                                    prose-strong:font-semibold prose-strong:text-[hsl(var(--color-foreground))]
+                                    prose-strong:font-semibold prose-strong:text-[var(--color-foreground)]
                                     prose-code:bg-gray-100 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
                                     prose-pre:bg-gray-900 prose-pre:text-gray-100 prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto
                                     prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-4
@@ -401,7 +401,7 @@ export function PDFToMarkdownTool({ className = '' }: PDFToMarkdownToolProps) {
                                     dangerouslySetInnerHTML={{ __html: sanitizeHtml(htmlContent) }}
                                 />
                             ) : (
-                                <pre className="p-4 rounded-lg bg-[hsl(var(--color-muted))] text-[hsl(var(--color-foreground))] overflow-x-auto text-sm font-mono whitespace-pre-wrap break-words">
+                                <pre className="p-4 rounded-lg bg-[var(--color-muted)] text-[var(--color-foreground)] overflow-x-auto text-sm font-mono whitespace-pre-wrap break-words">
                                     {markdownContent}
                                 </pre>
                             )}

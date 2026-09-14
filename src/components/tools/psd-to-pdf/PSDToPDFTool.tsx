@@ -331,7 +331,7 @@ export function PSDToPDFTool({ className = '' }: PSDToPDFToolProps) {
             {files.length > 0 && (
                 <Card variant="outlined" size="lg">
                     <div className="flex items-center justify-between mb-4">
-                        <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+                        <h3 className="text-lg font-medium text-[var(--color-foreground)]">
                             Files ({files.length})
                         </h3>
                         <Button
@@ -344,7 +344,7 @@ export function PSDToPDFTool({ className = '' }: PSDToPDFToolProps) {
                         </Button>
                     </div>
 
-                    <p className="text-sm text-[hsl(var(--color-muted-foreground))] mb-4">
+                    <p className="text-sm text-[var(--color-muted-foreground)] mb-4">
                         {tTools('psdToPdf.reorderHint') || 'Drag and drop to reorder files.'}
                     </p>
 
@@ -361,14 +361,14 @@ export function PSDToPDFTool({ className = '' }: PSDToPDFToolProps) {
                   relative group rounded-[var(--radius-md)] border overflow-hidden
                   transition-all duration-200
                   ${draggedIndex === index ? 'opacity-50 border-dashed' : ''}
-                  ${dragOverIndex === index ? 'border-[hsl(var(--color-primary))] ring-2 ring-[hsl(var(--color-primary)/0.2)]' : 'border-[hsl(var(--color-border))]'}
-                  ${!isProcessing ? 'cursor-grab hover:border-[hsl(var(--color-primary)/0.5)]' : ''}
+                  ${dragOverIndex === index ? 'border-[var(--color-primary)] ring-2 ring-[color-mix(in_srgb,var(--color-primary)_20%,transparent)]' : 'border-[var(--color-border)]'}
+                  ${!isProcessing ? 'cursor-grab hover:border-[color-mix(in_srgb,var(--color-primary)_50%,transparent)]' : ''}
                 `}
                             >
                                 {/* File Icon/Preview */}
-                                <div className="aspect-square bg-[hsl(var(--color-muted)/0.3)] flex items-center justify-center p-4">
+                                <div className="aspect-square bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] flex items-center justify-center p-4">
                                     {/* Generic PSD Icon since preview isn't instant */}
-                                    <div className="flex flex-col items-center justify-center text-[hsl(var(--color-muted-foreground))]">
+                                    <div className="flex flex-col items-center justify-center text-[var(--color-muted-foreground)]">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                             <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
                                             <polyline points="14 2 14 8 20 8" />
@@ -379,7 +379,7 @@ export function PSDToPDFTool({ className = '' }: PSDToPDFToolProps) {
                                 </div>
 
                                 {/* Page Number Badge */}
-                                <span className="absolute top-2 left-2 w-6 h-6 rounded-full bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))] text-xs font-medium flex items-center justify-center">
+                                <span className="absolute top-2 left-2 w-6 h-6 rounded-full bg-[var(--color-primary)] text-[var(--color-primary-foreground)] text-xs font-medium flex items-center justify-center">
                                     {index + 1}
                                 </span>
 
@@ -398,10 +398,10 @@ export function PSDToPDFTool({ className = '' }: PSDToPDFToolProps) {
 
                                 {/* File Info */}
                                 <div className="p-2 bg-white">
-                                    <p className="text-xs font-medium text-[hsl(var(--color-foreground))] truncate">
+                                    <p className="text-xs font-medium text-[var(--color-foreground)] truncate">
                                         {file.file.name}
                                     </p>
-                                    <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                                    <p className="text-xs text-[var(--color-muted-foreground)]">
                                         {formatSize(file.file.size)}
                                     </p>
                                 </div>
@@ -415,21 +415,21 @@ export function PSDToPDFTool({ className = '' }: PSDToPDFToolProps) {
             {/* Options Panel */}
             {files.length >= 1 && (
                 <Card variant="outlined">
-                    <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+                    <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
                         PDF Options
                     </h3>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         {/* Page Size */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('imageToPdf.pageSize') || 'Page Size'}
                             </label>
                             <select
                                 value={pageSize}
                                 onChange={(e) => setPageSize(e.target.value as PageSizeType)}
                                 disabled={isProcessing}
-                                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                             >
                                 <option value="A4">A4</option>
                                 <option value="LETTER">Letter</option>
@@ -442,14 +442,14 @@ export function PSDToPDFTool({ className = '' }: PSDToPDFToolProps) {
 
                         {/* Orientation */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('imageToPdf.orientation') || 'Orientation'}
                             </label>
                             <select
                                 value={orientation}
                                 onChange={(e) => setOrientation(e.target.value as 'portrait' | 'landscape' | 'auto')}
                                 disabled={isProcessing}
-                                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                             >
                                 <option value="auto">{tTools('imageToPdf.orientationAuto') || 'Auto (match image)'}</option>
                                 <option value="portrait">{tTools('imageToPdf.orientationPortrait') || 'Portrait'}</option>
@@ -459,14 +459,14 @@ export function PSDToPDFTool({ className = '' }: PSDToPDFToolProps) {
 
                         {/* Margin */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('imageToPdf.margin') || 'Margin'}
                             </label>
                             <select
                                 value={margin}
                                 onChange={(e) => setMargin(Number(e.target.value))}
                                 disabled={isProcessing}
-                                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                             >
                                 <option value="0">{tTools('imageToPdf.marginNone') || 'None'}</option>
                                 <option value="18">{tTools('imageToPdf.marginSmall') || 'Small (0.25")'}</option>
@@ -483,9 +483,9 @@ export function PSDToPDFTool({ className = '' }: PSDToPDFToolProps) {
                                 checked={centerImage}
                                 onChange={(e) => setCenterImage(e.target.checked)}
                                 disabled={isProcessing}
-                                className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                                className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                             />
-                            <span className="text-sm text-[hsl(var(--color-foreground))]">
+                            <span className="text-sm text-[var(--color-foreground)]">
                                 {tTools('imageToPdf.centerImage') || 'Center images on page'}
                             </span>
                         </label>
@@ -496,9 +496,9 @@ export function PSDToPDFTool({ className = '' }: PSDToPDFToolProps) {
                                 checked={scaleToFit}
                                 onChange={(e) => setScaleToFit(e.target.checked)}
                                 disabled={isProcessing}
-                                className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                                className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                             />
-                            <span className="text-sm text-[hsl(var(--color-foreground))]">
+                            <span className="text-sm text-[var(--color-foreground)]">
                                 {tTools('imageToPdf.scaleToFit') || 'Scale images to fit page'}
                             </span>
                         </label>

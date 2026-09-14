@@ -230,15 +230,15 @@ export function PDFToJSONTool({ className = '' }: PDFToJSONToolProps) {
         <Card variant="outlined" size="lg">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[hsl(var(--color-primary)/0.1)] flex items-center justify-center">
-                <svg className="w-5 h-5 text-[hsl(var(--color-primary))]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <div className="w-10 h-10 rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] flex items-center justify-center">
+                <svg className="w-5 h-5 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                   <polyline points="14 2 14 8 20 8" />
                 </svg>
               </div>
               <div>
-                <p className="font-medium text-[hsl(var(--color-foreground))]">{file.file.name}</p>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">{formatSize(file.file.size)}</p>
+                <p className="font-medium text-[var(--color-foreground)]">{file.file.name}</p>
+                <p className="text-sm text-[var(--color-muted-foreground)]">{formatSize(file.file.size)}</p>
               </div>
             </div>
             <Button
@@ -256,7 +256,7 @@ export function PDFToJSONTool({ className = '' }: PDFToJSONToolProps) {
       {/* Options Panel */}
       {file && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('pdfToJson.optionsTitle') || 'Extraction Options'}
           </h3>
           
@@ -268,9 +268,9 @@ export function PDFToJSONTool({ className = '' }: PDFToJSONToolProps) {
                   checked={includeText}
                   onChange={(e) => setIncludeText(e.target.checked)}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('pdfToJson.includeText') || 'Include Text'}
                 </span>
               </label>
@@ -281,9 +281,9 @@ export function PDFToJSONTool({ className = '' }: PDFToJSONToolProps) {
                   checked={includeMetadata}
                   onChange={(e) => setIncludeMetadata(e.target.checked)}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('pdfToJson.includeMetadata') || 'Include Metadata'}
                 </span>
               </label>
@@ -294,9 +294,9 @@ export function PDFToJSONTool({ className = '' }: PDFToJSONToolProps) {
                   checked={includePageInfo}
                   onChange={(e) => setIncludePageInfo(e.target.checked)}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('pdfToJson.includePageInfo') || 'Include Page Info'}
                 </span>
               </label>
@@ -307,9 +307,9 @@ export function PDFToJSONTool({ className = '' }: PDFToJSONToolProps) {
                   checked={includeOutline}
                   onChange={(e) => setIncludeOutline(e.target.checked)}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('pdfToJson.includeOutline') || 'Include Outline'}
                 </span>
               </label>
@@ -320,9 +320,9 @@ export function PDFToJSONTool({ className = '' }: PDFToJSONToolProps) {
                   checked={prettyPrint}
                   onChange={(e) => setPrettyPrint(e.target.checked)}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {tTools('pdfToJson.prettyPrint') || 'Pretty Print'}
                 </span>
               </label>
@@ -330,7 +330,7 @@ export function PDFToJSONTool({ className = '' }: PDFToJSONToolProps) {
 
             {/* Page Range */}
             <div className="max-w-xs">
-              <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTools('pdfToJson.pageRange') || 'Page Range'}
               </label>
               <input
@@ -339,9 +339,9 @@ export function PDFToJSONTool({ className = '' }: PDFToJSONToolProps) {
                 onChange={(e) => setPageRange(e.target.value)}
                 placeholder={tTools('pdfToJson.pageRangePlaceholder') || 'e.g., 1-3, 5, 7'}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">
+              <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
                 {tTools('pdfToJson.pageRangeHint') || 'Leave empty for all pages'}
               </p>
             </div>
@@ -389,10 +389,10 @@ export function PDFToJSONTool({ className = '' }: PDFToJSONToolProps) {
       {/* JSON Preview */}
       {jsonPreview && (
         <Card variant="outlined" size="lg">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('pdfToJson.previewTitle') || 'JSON Preview'}
           </h3>
-          <pre className="p-4 bg-[hsl(var(--color-muted)/0.3)] rounded-[var(--radius-md)] overflow-auto max-h-96 text-xs font-mono text-[hsl(var(--color-foreground))]">
+          <pre className="p-4 bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] rounded-[var(--radius-md)] overflow-auto max-h-96 text-xs font-mono text-[var(--color-foreground)]">
             {jsonPreview}
           </pre>
         </Card>

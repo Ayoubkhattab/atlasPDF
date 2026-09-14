@@ -264,7 +264,7 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
 
       {/* File Metadata Overview */}
       {file && (
-        <Card variant="outlined" className="p-4 flex items-center justify-between border-2 border-[hsl(var(--color-primary)/0.25)] rounded-2xl">
+        <Card variant="outlined" className="p-4 flex items-center justify-between border-2 border-[color-mix(in_srgb,var(--color-primary)_25%,transparent)] rounded-2xl">
           <div className="flex items-center gap-3">
             <svg className="w-10 h-10 text-red-500" viewBox="0 0 24 24" fill="currentColor">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
@@ -272,10 +272,10 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
               <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
             </svg>
             <div>
-              <p className="font-semibold text-sm text-[hsl(var(--color-foreground))] truncate max-w-[280px]" title={file.name}>
+              <p className="font-semibold text-sm text-[var(--color-foreground)] truncate max-w-[280px]" title={file.name}>
                 {file.name}
               </p>
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+              <p className="text-xs text-[var(--color-muted-foreground)]">
                 {totalPages > 0 ? `${totalPages} ${t('pdfToCbz.pagesLabel') || 'pages'}` : t('citationLinker.scanningMetadata')} • {(file.size / (1024 * 1024)).toFixed(2)} MB
               </p>
             </div>
@@ -295,9 +295,9 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
             <Card variant="default" className="flex-1 p-6 rounded-[2rem] border border-white/20 dark:border-zinc-800/40 bg-white/40 dark:bg-black/30 backdrop-blur-md flex flex-col justify-between shadow-xl">
               
               <div className="space-y-4">
-                <div className="border-b border-[hsl(var(--color-border))] pb-3">
-                  <h3 className="text-base font-bold text-[hsl(var(--color-foreground))] flex items-center gap-2">
-                    <Settings2 className="w-5 h-5 text-[hsl(var(--color-primary))]" />
+                <div className="border-b border-[var(--color-border)] pb-3">
+                  <h3 className="text-base font-bold text-[var(--color-foreground)] flex items-center gap-2">
+                    <Settings2 className="w-5 h-5 text-[var(--color-primary)]" />
                     {t('citationLinker.optionsTitle')}
                   </h3>
                 </div>
@@ -308,24 +308,24 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
                       type="checkbox"
                       checked={detectDoi}
                       onChange={(e) => setDetectDoi(e.target.checked)}
-                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                     />
-                    <span className="text-xs font-semibold text-[hsl(var(--color-foreground))]">{t('citationLinker.detectDoi')}</span>
+                    <span className="text-xs font-semibold text-[var(--color-foreground)]">{t('citationLinker.detectDoi')}</span>
                   </label>
                   <label className="flex items-center gap-3 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={fallbackToPageJump}
                       onChange={(e) => setFallbackToPageJump(e.target.checked)}
-                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                     />
-                    <span className="text-xs font-semibold text-[hsl(var(--color-foreground))]">{t('citationLinker.enableGoto')}</span>
+                    <span className="text-xs font-semibold text-[var(--color-foreground)]">{t('citationLinker.enableGoto')}</span>
                   </label>
                 </div>
 
                 {/* Edit Link input */}
                 {selectedCitation && (
-                  <div className="p-4 bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-border))] rounded-2xl space-y-3 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="p-4 bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-border)] rounded-2xl space-y-3 animate-in fade-in zoom-in-95 duration-200">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-amber-500">{t('citationLinker.editingCitation', { marker: selectedCitation.marker })}</span>
                       <span className="text-[10px] opacity-60">{t('citationLinker.citationPage', { page: selectedCitation.pageNum })}</span>
@@ -341,7 +341,7 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
                         value={editUrl}
                         onChange={(e) => setEditUrl(e.target.value)}
                         placeholder={t('citationLinker.doiPlaceholder')}
-                        className="flex-1 px-3 py-2 text-xs rounded-xl bg-white dark:bg-zinc-800 border border-[hsl(var(--color-border))] focus:ring-1 focus:ring-[hsl(var(--color-primary))]"
+                        className="flex-1 px-3 py-2 text-xs rounded-xl bg-white dark:bg-zinc-800 border border-[var(--color-border)] focus:ring-1 focus:ring-[var(--color-primary)]"
                       />
                       <Button size="sm" variant="primary" onClick={handleSaveUrl}>
                         <Check className="w-3.5 h-3.5" />
@@ -352,7 +352,7 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
 
                 {/* Citations checklist */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)] uppercase tracking-wider">
                     {t('citationLinker.citationListTitle', { count: citations.length })}
                   </label>
                   <div className="space-y-1.5 max-h-[160px] overflow-y-auto pr-1">
@@ -365,12 +365,12 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
                         }}
                         className={`p-2.5 rounded-xl border flex items-center justify-between text-xs cursor-pointer transition-all ${
                           selectedCitation?.id === c.id
-                            ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.035)]'
-                            : 'border-[hsl(var(--color-border))] bg-[hsl(var(--color-card))] hover:bg-[hsl(var(--color-muted)/0.3)]'
+                            ? 'border-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_3.5%,transparent)]'
+                            : 'border-[var(--color-border)] bg-[var(--color-card)] hover:bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]'
                         }`}
                       >
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-[hsl(var(--color-foreground))]">{c.marker}</span>
+                          <span className="font-bold text-[var(--color-foreground)]">{c.marker}</span>
                           <span className="text-[10px] text-zinc-400">Page {c.pageNum}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
@@ -389,7 +389,7 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
               </div>
 
               {/* Action Apply Button */}
-              <div className="pt-4 border-t border-[hsl(var(--color-border))]">
+              <div className="pt-4 border-t border-[var(--color-border)]">
                 <Button
                   variant="primary"
                   size="lg"
@@ -405,15 +405,15 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
 
           {/* RIGHT: Interactive Glassmorphism Citation Star Map */}
           <div className="lg:col-span-7 flex flex-col justify-between">
-            <Card variant="outlined" className="flex-1 p-6 bg-[hsl(var(--color-card))] border-2 border-dashed border-[hsl(var(--color-border))] rounded-[2rem] flex flex-col items-center justify-center relative overflow-hidden shadow-inner h-full min-h-[420px]">
+            <Card variant="outlined" className="flex-1 p-6 bg-[var(--color-card)] border-2 border-dashed border-[var(--color-border)] rounded-[2rem] flex flex-col items-center justify-center relative overflow-hidden shadow-inner h-full min-h-[420px]">
               
               {/* Star Topology SVG Map */}
               <div className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
                 <svg className="w-full h-full opacity-60">
                   <defs>
                     <radialGradient id="star-glow" cx="50%" cy="50%" r="50%">
-                      <stop offset="0%" stopColor="hsl(var(--color-primary))" stopOpacity="0.15" />
-                      <stop offset="100%" stopColor="hsl(var(--color-primary))" stopOpacity="0" />
+                      <stop offset="0%" stopColor="var(--color-primary)" stopOpacity="0.15" />
+                      <stop offset="100%" stopColor="var(--color-primary)" stopOpacity="0" />
                     </radialGradient>
                     {/* Glowing path filter */}
                     <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
@@ -433,7 +433,7 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
                     
                     const isSelected = selectedCitation?.id === c.id;
                     const strokeColor = isSelected 
-                      ? 'hsl(var(--color-primary))' 
+                      ? 'var(--color-primary)' 
                       : c.url 
                         ? 'rgba(16, 185, 129, 0.4)' 
                         : 'rgba(156, 163, 175, 0.3)';
@@ -472,8 +472,8 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
               <div className="w-full h-full relative z-20 flex items-center justify-center">
                 
                 {/* Central paper node */}
-                <div className="w-20 h-20 rounded-full border-4 border-[hsl(var(--color-primary)/0.6)] bg-white dark:bg-zinc-800 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-30 transform hover:scale-105 transition-transform">
-                  <FileText className="w-6 h-6 text-[hsl(var(--color-primary))]" />
+                <div className="w-20 h-20 rounded-full border-4 border-[color-mix(in_srgb,var(--color-primary)_60%,transparent)] bg-white dark:bg-zinc-800 shadow-2xl flex flex-col items-center justify-center text-center p-2 z-30 transform hover:scale-105 transition-transform">
+                  <FileText className="w-6 h-6 text-[var(--color-primary)]" />
                   <span className="text-[9px] font-black mt-1 leading-none uppercase">Paper</span>
                 </div>
 
@@ -499,7 +499,7 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
                       }}
                       className={`absolute w-12 h-12 rounded-xl flex flex-col items-center justify-center text-center cursor-pointer transition-all hover:scale-110 shadow-lg border-2 z-30 ${
                         isSelected
-                          ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.15)] ring-2 ring-[hsl(var(--color-primary)/0.3)]'
+                          ? 'border-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_15%,transparent)] ring-2 ring-[color-mix(in_srgb,var(--color-primary)_30%,transparent)]'
                           : c.url
                             ? 'border-emerald-500/50 bg-emerald-50/90 dark:bg-emerald-950/20'
                             : 'border-zinc-300 dark:border-zinc-700 bg-white/90 dark:bg-zinc-900/90'
@@ -532,7 +532,7 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
           <div className="relative w-24 h-24 flex items-center justify-center">
             <div 
               style={{ transform: `rotate(${gearAngle}deg)` }}
-              className="absolute w-20 h-20 text-[hsl(var(--color-primary))] opacity-80"
+              className="absolute w-20 h-20 text-[var(--color-primary)] opacity-80"
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="w-full h-full">
                 <circle cx="12" cy="12" r="3" />
@@ -553,8 +553,8 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
           </div>
 
           <div className="text-center space-y-2">
-            <h4 className="text-sm font-bold text-[hsl(var(--color-foreground))]">{t('citationLinker.injectingMessage')}</h4>
-            <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{progressMessage}</p>
+            <h4 className="text-sm font-bold text-[var(--color-foreground)]">{t('citationLinker.injectingMessage')}</h4>
+            <p className="text-xs text-[var(--color-muted-foreground)]">{progressMessage}</p>
           </div>
         </Card>
       )}
@@ -567,8 +567,8 @@ export function CitationLinkerTool({ className = '' }: CitationLinkerToolProps) 
           </div>
           
           <div className="space-y-2 max-w-sm mx-auto">
-            <h3 className="text-base font-extrabold text-[hsl(var(--color-foreground))]">{t('citationLinker.injectLink')}</h3>
-            <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+            <h3 className="text-base font-extrabold text-[var(--color-foreground)]">{t('citationLinker.injectLink')}</h3>
+            <p className="text-xs text-[var(--color-muted-foreground)]">
               {t('citationLinker.successDesc', { count: citations.length })}
             </p>
           </div>

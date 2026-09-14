@@ -341,14 +341,14 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
     const targetFile = new File([result], fileName, { type: 'application/pdf' });
     
     // Store in global memory
-    (window as any).__PDFCRAFT_PENDING_EDIT_FILE__ = targetFile;
+    (window as any).__ATLASPDF_PENDING_EDIT_FILE__ = targetFile;
 
     // Fallback to sessionStorage
     try {
       const reader = new FileReader();
       reader.onloadend = () => {
         try {
-          window.sessionStorage.setItem('pdfcraft_pending_edit_file', JSON.stringify({
+          window.sessionStorage.setItem('atlaspdf_pending_edit_file', JSON.stringify({
             name: fileName,
             type: 'application/pdf',
             data: reader.result,
@@ -408,17 +408,17 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
 
       {/* File metadata bar */}
       {file && (
-        <Card variant="outlined" className="p-4 flex items-center justify-between border-2 border-[hsl(var(--color-primary)/0.25)] rounded-2xl">
+        <Card variant="outlined" className="p-4 flex items-center justify-between border-2 border-[color-mix(in_srgb,var(--color-primary)_25%,transparent)] rounded-2xl">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[hsl(var(--color-primary)/0.1)] flex items-center justify-center">
-              <svg className="w-5 h-5 text-[hsl(var(--color-primary))]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <div className="w-10 h-10 rounded-xl bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] flex items-center justify-center">
+              <svg className="w-5 h-5 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
               </svg>
             </div>
             <div>
-              <p className="font-semibold text-sm text-[hsl(var(--color-foreground))]">{file.file.name}</p>
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{formatSize(file.file.size)}</p>
+              <p className="font-semibold text-sm text-[var(--color-foreground)]">{file.file.name}</p>
+              <p className="text-xs text-[var(--color-muted-foreground)]">{formatSize(file.file.size)}</p>
             </div>
           </div>
           <Button variant="ghost" size="sm" onClick={handleRemoveFile} disabled={isProcessing}>
@@ -436,16 +436,16 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
             <Card variant="default" className="flex-1 p-6 rounded-[2rem] border border-white/20 dark:border-zinc-800/40 bg-white/40 dark:bg-black/30 backdrop-blur-md flex flex-col justify-between shadow-xl space-y-6">
               
               <div className="space-y-4 flex-1">
-                <div className="border-b border-[hsl(var(--color-border))] pb-3">
-                  <h3 className="text-base font-bold text-[hsl(var(--color-foreground))] flex items-center gap-2">
-                    <Settings2 className="w-5 h-5 text-[hsl(var(--color-primary))]" />
+                <div className="border-b border-[var(--color-border)] pb-3">
+                  <h3 className="text-base font-bold text-[var(--color-foreground)] flex items-center gap-2">
+                    <Settings2 className="w-5 h-5 text-[var(--color-primary)]" />
                     {t('ocr.optionsTitle')}
                   </h3>
                 </div>
 
                 {/* Multi language choice */}
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider flex items-center gap-1.5">
+                  <label className="text-xs font-bold text-[var(--color-muted-foreground)] uppercase tracking-wider flex items-center gap-1.5">
                     <Languages className="w-4 h-4" /> {t('ocr.selectLang')}
                   </label>
                   <div className="flex flex-wrap gap-1.5">
@@ -458,8 +458,8 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
                         className={`
                           px-3 py-1.5 rounded-xl text-xs font-bold transition-all border
                           ${languages.includes(lang)
-                            ? 'bg-[hsl(var(--color-primary))] text-white border-[hsl(var(--color-primary))]'
-                            : 'bg-white/50 dark:bg-zinc-800/50 text-zinc-600 border-[hsl(var(--color-border))]'
+                            ? 'bg-[var(--color-primary)] text-[var(--color-primary-foreground)] border-[var(--color-primary)]'
+                            : 'bg-[var(--color-muted)] text-[var(--color-muted-foreground)] border-[var(--color-border)] hover:text-[var(--color-foreground)]'
                           }
                         `}
                       >
@@ -472,7 +472,7 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {/* Format Output */}
                   <div>
-                    <label className="block text-[11px] font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider mb-2">
+                    <label className="block text-[11px] font-bold text-[var(--color-muted-foreground)] uppercase tracking-wider mb-2">
                       {t('ocr.outputFormat')}
                     </label>
                     <Select
@@ -489,7 +489,7 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
 
                   {/* Resolution scale */}
                   <div>
-                    <label className="block text-[11px] font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider mb-2">
+                    <label className="block text-[11px] font-bold text-[var(--color-muted-foreground)] uppercase tracking-wider mb-2">
                       {t('ocr.accuracyTitle')}
                     </label>
                     <Select
@@ -505,7 +505,7 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
 
                   {/* Range */}
                   <div>
-                    <label className="block text-[11px] font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider mb-2">
+                    <label className="block text-[11px] font-bold text-[var(--color-muted-foreground)] uppercase tracking-wider mb-2">
                       {t('ocr.specifyPages')}
                     </label>
                     <input
@@ -514,21 +514,21 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
                       onChange={(e) => setPageRange(e.target.value)}
                       placeholder={t('ocr.pagesPlaceholder')}
                       disabled={isProcessing}
-                      className="w-full px-3 py-2 rounded-xl border border-[hsl(var(--color-border))] bg-white dark:bg-zinc-800 text-xs focus:ring-1 focus:ring-[hsl(var(--color-primary))]"
+                      className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] bg-[var(--color-input)] text-[var(--color-foreground)] text-xs focus:ring-1 focus:ring-[var(--color-primary)]"
                     />
                   </div>
                 </div>
 
                 {/* Contrast enhancement toggle */}
-                <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white/50 dark:bg-zinc-800/40 border border-[hsl(var(--color-border))] transition-all hover:border-[hsl(var(--color-primary)/0.4)]">
+                <div className="flex items-center justify-between p-3.5 rounded-2xl bg-[var(--color-muted)] border border-[var(--color-border)] transition-all hover:border-[color-mix(in_srgb,var(--color-primary)_40%,transparent)]">
                   <div className="space-y-0.5 pr-3">
                     <div className="flex items-center gap-2">
-                      <SlidersHorizontal className="w-4 h-4 text-[hsl(var(--color-primary))]" />
-                      <span className="text-xs font-bold text-[hsl(var(--color-foreground))]">
+                      <SlidersHorizontal className="w-4 h-4 text-[var(--color-primary)]" />
+                      <span className="text-xs font-bold text-[var(--color-foreground)]">
                         {t('ocr.enhanceContrast')}
                       </span>
                     </div>
-                    <p className="text-[11px] text-[hsl(var(--color-muted-foreground))] pl-6">
+                    <p className="text-[11px] text-[var(--color-muted-foreground)] pl-6">
                       {t('ocr.enhanceContrastDesc')}
                     </p>
                   </div>
@@ -540,13 +540,13 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
                       disabled={isProcessing}
                       className="sr-only peer"
                     />
-                    <div className="w-9 h-5 bg-zinc-200 dark:bg-zinc-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-zinc-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[hsl(var(--color-primary))]"></div>
+                    <div className="w-9 h-5 bg-[var(--color-border)] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-[var(--color-border)] after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[var(--color-primary)]"></div>
                   </label>
                 </div>
               </div>
 
               {/* Start Trigger */}
-              <div className="pt-4 border-t border-[hsl(var(--color-border))] mt-6">
+              <div className="pt-4 border-t border-[var(--color-border)] mt-6">
                 <Button
                   variant="primary"
                   size="lg"
@@ -564,7 +564,7 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
 
           {/* RIGHT: 3D Holographic Wireframe Scan visualizer */}
           <div className="lg:col-span-5 flex flex-col justify-between">
-            <Card variant="outlined" className="flex-1 p-6 bg-zinc-950 border-2 border-dashed border-[hsl(var(--color-border))] rounded-[2rem] flex flex-col items-center justify-center relative overflow-hidden shadow-inner h-full min-h-[380px]">
+            <Card variant="outlined" className="flex-1 p-6 bg-zinc-950 border-2 border-dashed border-[var(--color-border)] rounded-[2rem] flex flex-col items-center justify-center relative overflow-hidden shadow-inner h-full min-h-[380px]">
               
               {/* Scan grid canvas */}
               <div className="relative w-full aspect-video flex items-center justify-center z-10">
@@ -617,8 +617,8 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
           </div>
 
           <div className="space-y-2 max-w-sm mx-auto">
-            <h3 className="text-base font-extrabold text-[hsl(var(--color-foreground))]">{t('ocr.successTitle')}</h3>
-            <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+            <h3 className="text-base font-extrabold text-[var(--color-foreground)]">{t('ocr.successTitle')}</h3>
+            <p className="text-xs text-[var(--color-muted-foreground)]">
               {outputFormat === 'searchable-pdf' 
                 ? t('ocr.successSearchablePdf') 
                 : t('ocr.successText')
@@ -629,20 +629,20 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
           {/* Stats Bar */}
           {stats && (
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-lg mx-auto py-1">
-              <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-[hsl(var(--color-border))] text-center">
-                <p className="text-[10px] uppercase font-bold text-[hsl(var(--color-muted-foreground))]">{t('ocr.statsPages')}</p>
-                <p className="text-base font-extrabold text-[hsl(var(--color-foreground))]">{stats.pageCount || 1}</p>
+              <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-[var(--color-border)] text-center">
+                <p className="text-[10px] uppercase font-bold text-[var(--color-muted-foreground)]">{t('ocr.statsPages')}</p>
+                <p className="text-base font-extrabold text-[var(--color-foreground)]">{stats.pageCount || 1}</p>
               </div>
-              <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-[hsl(var(--color-border))] text-center">
-                <p className="text-[10px] uppercase font-bold text-[hsl(var(--color-muted-foreground))]">{t('ocr.statsWords')}</p>
-                <p className="text-base font-extrabold text-[hsl(var(--color-foreground))]">{stats.totalWords || 0}</p>
+              <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-[var(--color-border)] text-center">
+                <p className="text-[10px] uppercase font-bold text-[var(--color-muted-foreground)]">{t('ocr.statsWords')}</p>
+                <p className="text-base font-extrabold text-[var(--color-foreground)]">{stats.totalWords || 0}</p>
               </div>
-              <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-[hsl(var(--color-border))] text-center">
-                <p className="text-[10px] uppercase font-bold text-[hsl(var(--color-muted-foreground))]">{t('ocr.statsChars')}</p>
-                <p className="text-base font-extrabold text-[hsl(var(--color-foreground))]">{stats.totalChars || 0}</p>
+              <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-[var(--color-border)] text-center">
+                <p className="text-[10px] uppercase font-bold text-[var(--color-muted-foreground)]">{t('ocr.statsChars')}</p>
+                <p className="text-base font-extrabold text-[var(--color-foreground)]">{stats.totalChars || 0}</p>
               </div>
-              <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-[hsl(var(--color-border))] text-center">
-                <p className="text-[10px] uppercase font-bold text-[hsl(var(--color-muted-foreground))]">{t('ocr.statsConfidence')}</p>
+              <div className="p-3 rounded-2xl bg-zinc-100 dark:bg-zinc-800/60 border border-[var(--color-border)] text-center">
+                <p className="text-[10px] uppercase font-bold text-[var(--color-muted-foreground)]">{t('ocr.statsConfidence')}</p>
                 <p className="text-base font-extrabold text-emerald-600 dark:text-emerald-400">{stats.avgConfidence || 92}%</p>
               </div>
             </div>
@@ -666,7 +666,7 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
                 variant="secondary"
                 size="lg"
                 onClick={handleOpenInEditor}
-                className="flex-1 font-bold border-2 border-[hsl(var(--color-primary)/0.4)] text-[hsl(var(--color-primary))] hover:bg-[hsl(var(--color-primary)/0.08)] flex items-center justify-center gap-2 min-w-[160px]"
+                className="flex-1 font-bold border-2 border-[color-mix(in_srgb,var(--color-primary)_40%,transparent)] text-[var(--color-primary)] hover:bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)] flex items-center justify-center gap-2 min-w-[160px]"
               >
                 <ExternalLink className="w-4 h-4" />
                 {t('ocr.openInEditor')}
@@ -691,10 +691,10 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
       {/* Pure text/JSON preview box */}
       {textPreview && (
         <Card variant="outlined" size="lg" className="rounded-3xl shadow-sm space-y-3">
-          <div className="flex items-center justify-between border-b border-[hsl(var(--color-border))] pb-3">
+          <div className="flex items-center justify-between border-b border-[var(--color-border)] pb-3">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-[hsl(var(--color-primary))]" />
-              <h3 className="text-sm font-bold text-[hsl(var(--color-foreground))]">
+              <FileText className="w-4 h-4 text-[var(--color-primary)]" />
+              <h3 className="text-sm font-bold text-[var(--color-foreground)]">
                 {t('ocr.previewTitle')}
               </h3>
               <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 uppercase">
@@ -706,14 +706,14 @@ export function OCRPDFTool({ className = '' }: OCRPDFToolProps) {
               variant="ghost"
               size="sm"
               onClick={handleCopy}
-              className="text-xs font-semibold flex items-center gap-1.5 h-8 px-2.5 text-[hsl(var(--color-primary))]"
+              className="text-xs font-semibold flex items-center gap-1.5 h-8 px-2.5 text-[var(--color-primary)]"
             >
               {copied ? <CheckCheck className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
               {copied ? t('ocr.copied') : t('ocr.copyText')}
             </Button>
           </div>
 
-          <pre className="p-4 bg-[hsl(var(--color-muted)/0.35)] border border-[hsl(var(--color-border))] rounded-2xl overflow-auto max-h-80 text-xs font-mono text-[hsl(var(--color-foreground))] whitespace-pre-wrap leading-relaxed select-text">
+          <pre className="p-4 bg-[color-mix(in_srgb,var(--color-muted)_35%,transparent)] border border-[var(--color-border)] rounded-2xl overflow-auto max-h-80 text-xs font-mono text-[var(--color-foreground)] whitespace-pre-wrap leading-relaxed select-text">
             {textPreview}
           </pre>
         </Card>

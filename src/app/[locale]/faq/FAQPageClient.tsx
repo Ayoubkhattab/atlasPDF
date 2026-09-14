@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import Link from 'next/link';
-import { ChevronDown, ChevronUp, Search, ArrowRight } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/Button';
@@ -101,25 +100,25 @@ export default function FAQPageClient({ locale }: FAQPageClientProps) {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-[hsl(var(--color-muted)/0.3)] pt-20 pb-12">
+        <section className="bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] pt-20 pb-12">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-3xl md:text-4xl font-bold text-[hsl(var(--color-foreground))] mb-4">
+              <h1 className="text-3xl md:text-4xl font-bold text-[var(--color-foreground)] mb-4">
                 {t('title')}
               </h1>
-              <p className="text-[hsl(var(--color-muted-foreground))] mb-8">
+              <p className="text-[var(--color-muted-foreground)] mb-8">
                 {t('subtitle', { brand: tCommon('brand') })}
               </p>
 
               {/* Search Bar */}
               <div className="relative max-w-xl mx-auto">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[hsl(var(--color-muted-foreground))]" />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--color-muted-foreground)]" />
                 <input
                   type="search"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder={t('searchPlaceholder')}
-                  className="w-full pl-12 pr-4 py-3 text-base rounded-lg border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-ring))]"
+                  className="w-full pl-12 pr-4 py-3 text-base rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-ring)]"
                   aria-label="Search FAQs"
                 />
               </div>
@@ -161,27 +160,27 @@ export default function FAQPageClient({ locale }: FAQPageClientProps) {
                   {filteredFaqs.map((faq, index) => (
                     <Card key={index} className="overflow-hidden">
                       <button
-                        className="w-full px-6 py-4 text-left flex items-center justify-between gap-4 hover:bg-[hsl(var(--color-muted)/0.5)] transition-colors"
+                        className="w-full px-6 py-4 text-left flex items-center justify-between gap-4 hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)] transition-colors"
                         onClick={() => toggleItem(index)}
                         aria-expanded={expandedItems.has(index)}
                       >
                         <div className="flex-1">
-                          <span className="text-xs text-[hsl(var(--color-primary))] font-medium mb-1 block">
+                          <span className="text-xs text-[var(--color-primary)] font-medium mb-1 block">
                             {faq.categoryLabel}
                           </span>
-                          <span className="font-medium text-[hsl(var(--color-foreground))]">
+                          <span className="font-medium text-[var(--color-foreground)]">
                             {faq.question}
                           </span>
                         </div>
                         {expandedItems.has(index) ? (
-                          <ChevronUp className="h-5 w-5 text-[hsl(var(--color-muted-foreground))] flex-shrink-0" />
+                          <ChevronUp className="h-5 w-5 text-[var(--color-muted-foreground)] flex-shrink-0" />
                         ) : (
-                          <ChevronDown className="h-5 w-5 text-[hsl(var(--color-muted-foreground))] flex-shrink-0" />
+                          <ChevronDown className="h-5 w-5 text-[var(--color-muted-foreground)] flex-shrink-0" />
                         )}
                       </button>
                       {expandedItems.has(index) && (
                         <div className="px-6 pb-4">
-                          <p className="text-[hsl(var(--color-muted-foreground))] leading-relaxed">
+                          <p className="text-[var(--color-muted-foreground)] leading-relaxed">
                             {faq.answer}
                           </p>
                         </div>
@@ -191,7 +190,7 @@ export default function FAQPageClient({ locale }: FAQPageClientProps) {
                 </div>
               ) : (
                 <Card className="p-12 text-center">
-                  <p className="text-[hsl(var(--color-muted-foreground))]">
+                  <p className="text-[var(--color-muted-foreground)]">
                     {t('noResults')}
                   </p>
                 </Card>
@@ -200,25 +199,6 @@ export default function FAQPageClient({ locale }: FAQPageClientProps) {
           </div>
         </section>
 
-        {/* Contact CTA */}
-        <section className="py-12 bg-[hsl(var(--color-muted)/0.3)]">
-          <div className="container mx-auto px-4">
-            <div className="max-w-2xl mx-auto text-center">
-              <h2 className="text-2xl font-bold text-[hsl(var(--color-foreground))] mb-4">
-                {t('cta.title')}
-              </h2>
-              <p className="text-[hsl(var(--color-muted-foreground))] mb-6">
-                {t('cta.description')}
-              </p>
-              <Link href={`/${locale}/contact`}>
-                <Button variant="primary">
-                  {t('cta.button')}
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </section>
       </main>
 
       <Footer locale={locale} />

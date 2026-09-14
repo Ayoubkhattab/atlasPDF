@@ -120,7 +120,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
           className={`
             ${isVertical ? 'flex-col' : 'flex'}
             ${isVertical ? 'border-r' : 'border-b'}
-            border-[hsl(var(--color-border))]
+            border-[var(--color-border)]
             ${isVertical ? 'pr-4' : 'pb-0'}
           `.trim()}
         >
@@ -151,19 +151,19 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(
                   px-4 py-2
                   font-medium text-sm
                   transition-all duration-[var(--transition-fast)]
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-inset
+                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)] focus-visible:ring-inset
                   ${isVertical ? 'text-left w-full' : ''}
                   ${
                     isActive
                       ? `
-                        text-[hsl(var(--color-primary))]
-                        ${isVertical ? 'border-r-2 border-[hsl(var(--color-primary))] -mr-[2px]' : 'border-b-2 border-[hsl(var(--color-primary))] -mb-[2px]'}
-                        bg-[hsl(var(--color-muted))]
+                        text-[var(--color-primary)]
+                        ${isVertical ? 'border-r-2 border-[var(--color-primary)] -mr-[2px]' : 'border-b-2 border-[var(--color-primary)] -mb-[2px]'}
+                        bg-[var(--color-muted)]
                       `
                       : `
-                        text-[hsl(var(--color-muted-foreground))]
-                        hover:text-[hsl(var(--color-foreground))]
-                        hover:bg-[hsl(var(--color-muted))]
+                        text-[var(--color-muted-foreground)]
+                        hover:text-[var(--color-foreground)]
+                        hover:bg-[var(--color-muted)]
                       `
                   }
                   ${

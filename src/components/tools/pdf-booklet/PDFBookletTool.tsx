@@ -138,8 +138,8 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
                 <Card variant="outlined">
                     <div className="flex items-center justify-between">
                         <div>
-                            <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                            <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                            <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                            <p className="text-sm text-[var(--color-muted-foreground)]">
                                 {(file.size / 1024 / 1024).toFixed(2)} MB
                             </p>
                         </div>
@@ -153,14 +153,14 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
             {/* Booklet Options */}
             {hasFile && (
                 <Card variant="outlined">
-                    <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+                    <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
                         {tTools('pdfBooklet.optionsTitle') || 'Booklet Options'}
                     </h3>
 
                     <div className="space-y-4">
                         {/* Grid Mode */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('pdfBooklet.gridModeLabel') || 'Grid Mode'}
                             </label>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -174,8 +174,8 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
                       px-4 py-2 rounded-[var(--radius-md)] border text-sm font-medium
                       transition-colors duration-200
                       ${gridMode === mode
-                                                ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))]'
-                                                : 'border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted)/0.5)]'
+                                                ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)]'
+                                                : 'border-[var(--color-border)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)]'
                                             }
                       disabled:opacity-50 disabled:cursor-not-allowed
                     `}
@@ -184,14 +184,14 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
                                     </button>
                                 ))}
                             </div>
-                            <p className="mt-1 text-xs text-[hsl(var(--color-muted-foreground))]">
+                            <p className="mt-1 text-xs text-[var(--color-muted-foreground)]">
                                 {tTools('pdfBooklet.gridModeDesc') || '1x2 is standard for booklets. Use larger grids to save paper.'}
                             </p>
                         </div>
 
                         {/* Paper Size */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('pdfBooklet.paperSizeLabel') || 'Paper Size'}
                             </label>
                             <div className="grid grid-cols-3 gap-2">
@@ -205,8 +205,8 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
                       px-4 py-2 rounded-[var(--radius-md)] border text-sm font-medium uppercase
                       transition-colors duration-200
                       ${paperSize === size
-                                                ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))]'
-                                                : 'border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted)/0.5)]'
+                                                ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)]'
+                                                : 'border-[var(--color-border)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)]'
                                             }
                       disabled:opacity-50 disabled:cursor-not-allowed
                     `}
@@ -219,7 +219,7 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
 
                         {/* Orientation */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('pdfBooklet.orientationLabel') || 'Orientation'}
                             </label>
                             <div className="grid grid-cols-2 gap-2">
@@ -233,8 +233,8 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
                       px-4 py-2 rounded-[var(--radius-md)] border text-sm font-medium capitalize
                       transition-colors duration-200
                       ${orientation === orient
-                                                ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))]'
-                                                : 'border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted)/0.5)]'
+                                                ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)]'
+                                                : 'border-[var(--color-border)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)]'
                                             }
                       disabled:opacity-50 disabled:cursor-not-allowed
                     `}
@@ -247,7 +247,7 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
 
                         {/* Rotation */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('pdfBooklet.rotationLabel') || 'Page Rotation'}
                             </label>
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
@@ -261,8 +261,8 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
                       px-4 py-2 rounded-[var(--radius-md)] border text-sm font-medium
                       transition-colors duration-200
                       ${rotation === rot
-                                                ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))]'
-                                                : 'border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted)/0.5)]'
+                                                ? 'border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)]'
+                                                : 'border-[var(--color-border)] hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)]'
                                             }
                       disabled:opacity-50 disabled:cursor-not-allowed
                     `}
@@ -278,7 +278,7 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
 
                         {/* Padding */}
                         <div>
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                                 {tTools('pdfBooklet.paddingLabel') || 'Padding'}: {padding}pt
                             </label>
                             <input
@@ -288,13 +288,13 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
                                 value={padding}
                                 onChange={(e) => setPadding(Number(e.target.value))}
                                 disabled={isProcessing}
-                                className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-[hsl(var(--color-muted))]"
+                                className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-[var(--color-muted)]"
                             />
                         </div>
 
                         {/* Live Preview */}
-                        <div className="pt-4 border-t border-[hsl(var(--color-border))]">
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-3">
+                        <div className="pt-4 border-t border-[var(--color-border)]">
+                            <label className="block text-sm font-medium text-[var(--color-foreground)] mb-3">
                                 {tTools('pdfBooklet.previewLabel') || 'Layout Preview'}
                             </label>
                             <div
@@ -340,7 +340,7 @@ export function PDFBookletTool({ className = '' }: PDFBookletToolProps) {
                                     </span>
                                 </div>
                             </div>
-                            <p className="mt-2 text-xs text-[hsl(var(--color-muted-foreground))] text-center">
+                            <p className="mt-2 text-xs text-[var(--color-muted-foreground)] text-center">
                                 {tTools('pdfBooklet.previewDesc') || 'This preview shows how pages will be arranged on each sheet.'}
                             </p>
                         </div>

@@ -68,12 +68,12 @@ export function FavoriteButton({
                 aria-hidden="true"
             >
                 <div
-                    className={`${sizeConfig.button} rounded-full bg-[hsl(var(--color-secondary)/0.3)] flex items-center justify-center`}
+                    className={`${sizeConfig.button} rounded-full bg-[color-mix(in_srgb,var(--color-secondary)_30%,transparent)] flex items-center justify-center`}
                 >
-                    <Star className={`${sizeConfig.icon} text-[hsl(var(--color-muted-foreground)/0.5)]`} />
+                    <Star className={`${sizeConfig.icon} text-[color-mix(in_srgb,var(--color-muted-foreground)_50%,transparent)]`} />
                 </div>
                 {showLabel && (
-                    <span className={`${sizeConfig.label} text-[hsl(var(--color-muted-foreground)/0.5)]`}>
+                    <span className={`${sizeConfig.label} text-[color-mix(in_srgb,var(--color-muted-foreground)_50%,transparent)]`}>
                         {t('tools.favorite.add')}
                     </span>
                 )}
@@ -88,7 +88,7 @@ export function FavoriteButton({
             className={`
         inline-flex items-center gap-2 
         transition-all duration-200
-        focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] focus-visible:ring-offset-2
+        focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)] focus-visible:ring-offset-2
         rounded-full
         ${className}
       `}
@@ -104,7 +104,7 @@ export function FavoriteButton({
           transition-all duration-200
           ${favorite
                         ? 'bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 dark:hover:bg-amber-900/50'
-                        : 'bg-[hsl(var(--color-secondary)/0.5)] hover:bg-[hsl(var(--color-secondary))]'
+                        : 'bg-[color-mix(in_srgb,var(--color-secondary)_50%,transparent)] hover:bg-[var(--color-secondary)]'
                     }
         `}
             >
@@ -114,7 +114,7 @@ export function FavoriteButton({
             transition-all duration-200
             ${favorite
                             ? 'text-amber-500 fill-amber-500 scale-110'
-                            : 'text-[hsl(var(--color-muted-foreground))] hover:text-amber-400'
+                            : 'text-[var(--color-muted-foreground)] hover:text-amber-400'
                         }
           `}
                 />
@@ -127,7 +127,7 @@ export function FavoriteButton({
             transition-colors duration-200
             ${favorite
                             ? 'text-amber-600 dark:text-amber-400'
-                            : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                            : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                         }
           `}
                 >

@@ -134,6 +134,7 @@ export function RemoveBlankPagesTool({ className = '' }: RemoveBlankPagesToolPro
 
           await page.render({
             canvasContext: context,
+            canvas,
             viewport: viewport,
           }).promise;
 
@@ -305,15 +306,15 @@ export function RemoveBlankPagesTool({ className = '' }: RemoveBlankPagesToolPro
         <Card variant="outlined" className="p-8 border border-white/20 dark:border-zinc-800/40 bg-white/40 dark:bg-black/30 backdrop-blur-md rounded-3xl text-center space-y-4">
           <div className="flex justify-center">
             <div className="relative w-16 h-16 flex items-center justify-center">
-              <Loader2 className="w-10 h-10 text-[hsl(var(--color-primary))] animate-spin" />
-              <div className="absolute inset-0 rounded-full border-4 border-[hsl(var(--color-primary)/0.15)] border-t-[hsl(var(--color-primary))] animate-pulse" />
+              <Loader2 className="w-10 h-10 text-[var(--color-primary)] animate-spin" />
+              <div className="absolute inset-0 rounded-full border-4 border-[color-mix(in_srgb,var(--color-primary)_15%,transparent)] border-t-[var(--color-primary)] animate-pulse" />
             </div>
           </div>
           <div className="space-y-2 max-w-sm mx-auto">
-            <h3 className="text-sm font-black text-[hsl(var(--color-foreground))] tracking-wider">
+            <h3 className="text-sm font-black text-[var(--color-foreground)] tracking-wider">
               {tTools('removeBlankPages.analyzingPages')}
             </h3>
-            <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+            <p className="text-xs text-[var(--color-muted-foreground)]">
               {analyzingProgress}% Completed
             </p>
             <div className="w-full bg-zinc-200 dark:bg-zinc-800 h-1.5 rounded-full overflow-hidden">
@@ -337,10 +338,10 @@ export function RemoveBlankPagesTool({ className = '' }: RemoveBlankPagesToolPro
                 <FileText className="w-6 h-6" />
               </div>
               <div>
-                <p className="font-semibold text-sm text-[hsl(var(--color-foreground))] truncate max-w-[280px]" title={file.name}>
+                <p className="font-semibold text-sm text-[var(--color-foreground)] truncate max-w-[280px]" title={file.name}>
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {t('removeBlankPages.pagesCount', { count: pages.length, size: (file.size / (1024 * 1024)).toFixed(2) })}
                 </p>
               </div>
@@ -358,8 +359,8 @@ export function RemoveBlankPagesTool({ className = '' }: RemoveBlankPagesToolPro
               
               {/* Left Column: Sensitivity Threshold Slider */}
               <div className="md:col-span-7 space-y-3.5">
-                <h4 className="text-sm font-bold text-[hsl(var(--color-foreground))] flex items-center gap-2">
-                  <Sliders className="w-4 h-4 text-[hsl(var(--color-primary))]" />
+                <h4 className="text-sm font-bold text-[var(--color-foreground)] flex items-center gap-2">
+                  <Sliders className="w-4 h-4 text-[var(--color-primary)]" />
                   {tTools('removeBlankPages.sensitivity')}
                 </h4>
                 
@@ -370,15 +371,15 @@ export function RemoveBlankPagesTool({ className = '' }: RemoveBlankPagesToolPro
                     onChange={(e) => setThreshold(parseInt(e.target.value))} 
                     min={90} 
                     max={100} 
-                    className="flex-1 accent-[hsl(var(--color-primary))] cursor-pointer h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none" 
+                    className="flex-1 accent-[var(--color-primary)] cursor-pointer h-2 bg-zinc-200 dark:bg-zinc-700 rounded-lg appearance-none" 
                     disabled={isProcessing} 
                   />
-                  <span className="font-mono text-sm px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-md font-bold text-[hsl(var(--color-primary))]">
+                  <span className="font-mono text-sm px-2.5 py-1 bg-zinc-100 dark:bg-zinc-800 rounded-md font-bold text-[var(--color-primary)]">
                     {threshold}%
                   </span>
                 </div>
                 
-                <p className="text-[11px] text-[hsl(var(--color-muted-foreground))] leading-relaxed">
+                <p className="text-[11px] text-[var(--color-muted-foreground)] leading-relaxed">
                   {tTools('removeBlankPages.sensitivityHint')}
                 </p>
               </div>
@@ -386,7 +387,7 @@ export function RemoveBlankPagesTool({ className = '' }: RemoveBlankPagesToolPro
               {/* Right Column: Summaries & Quick Action buttons */}
               <div className="md:col-span-5 flex flex-col justify-between border-t md:border-t-0 md:border-l border-zinc-200 dark:border-zinc-800 pt-6 md:pt-0 md:pl-6 space-y-4">
                 <div className="space-y-1">
-                  <h4 className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] uppercase tracking-wider">
+                  <h4 className="text-xs font-bold text-[var(--color-muted-foreground)] uppercase tracking-wider">
                     {t('removeBlankPages.summaryTitle')}
                   </h4>
                   <div className="flex flex-wrap items-center gap-2.5 pt-1">
@@ -425,8 +426,8 @@ export function RemoveBlankPagesTool({ className = '' }: RemoveBlankPagesToolPro
                   onClick={() => setFilterMode('all')}
                   className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
                     filterMode === 'all' 
-                      ? 'bg-white dark:bg-zinc-800 text-[hsl(var(--color-foreground))] shadow-sm' 
-                      : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                      ? 'bg-white dark:bg-zinc-800 text-[var(--color-foreground)] shadow-sm' 
+                      : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                   }`}
                 >
                   {t('removeBlankPages.tabAll', { count: pages.length })}
@@ -475,7 +476,7 @@ export function RemoveBlankPagesTool({ className = '' }: RemoveBlankPagesToolPro
           {displayedPages.length === 0 ? (
             <Card variant="outlined" className="p-12 text-center rounded-[2rem] border-dashed border-zinc-200 dark:border-zinc-800">
               <Eye className="w-10 h-10 text-zinc-300 dark:text-zinc-700 mx-auto mb-3" />
-              <p className="text-sm text-[hsl(var(--color-muted-foreground))] font-bold">
+              <p className="text-sm text-[var(--color-muted-foreground)] font-bold">
                 {t('removeBlankPages.noPagesToDisplay') || 'No pages to display'}
               </p>
             </Card>
@@ -515,10 +516,10 @@ export function RemoveBlankPagesTool({ className = '' }: RemoveBlankPagesToolPro
           </div>
 
           <div className="space-y-2 max-w-sm mx-auto">
-            <h3 className="text-base font-extrabold text-[hsl(var(--color-foreground))]">
+            <h3 className="text-base font-extrabold text-[var(--color-foreground)]">
               {tTools('removeBlankPages.successMessage')}
             </h3>
-            <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+            <p className="text-xs text-[var(--color-muted-foreground)]">
               {removedCount > 0 
                 ? t('removeBlankPages.successPurged', { count: removedCount }) 
                 : t('removeBlankPages.successNoChange')

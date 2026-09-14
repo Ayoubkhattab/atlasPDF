@@ -196,22 +196,11 @@ const engineReady = new Promise((resolve) => {
       }
     : () => {};
   trace('wired');
-  const demo = params.get('demo');
-  if (demo) {
-    try {
-      trace('fetching ' + demo);
-      const bytes = new Uint8Array(await (await fetch(demo)).arrayBuffer());
-      trace('fetched ' + bytes.length);
-      const file = new File([bytes], demo.split('/').pop() || 'demo.pdf', {
-        type: 'application/pdf',
-      });
-      await openFile(file, demo, bytes);
-      trace('opened');
-    } catch (e) {
-      trace('openfail ' + e.message);
-      toast('Demo load failed: ' + e.message);
-    }
-  }
+  // Network isolation: the ?demo= E2E-testing hook (fetches an arbitrary caller-supplied
+  // URL) has been disabled in production — it is not needed by end users and would let a
+  // crafted link make this editor fetch an attacker-controlled resource. The strict
+  // connect-src CSP (see docs/PROJECT_STUDY.md §9) already blocks cross-origin targets,
+  // but the hook itself is removed here for defense in depth.
   const wantPage = parseInt(params.get('page') || '', 10);
   if (demo && wantPage >= 1) {
     try {

@@ -12,13 +12,13 @@ describe('Button', () => {
     it('renders with default variant (primary)', () => {
       render(<Button>Primary</Button>);
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[hsl(var(--color-primary))]');
+      expect(button).toHaveClass('bg-[var(--color-primary)]');
     });
 
     it('renders secondary variant', () => {
       render(<Button variant="secondary">Secondary</Button>);
       const button = screen.getByRole('button');
-      expect(button).toHaveClass('bg-[hsl(var(--color-secondary))]');
+      expect(button).toHaveClass('bg-[var(--color-secondary)]');
     });
 
     it('renders outline variant', () => {

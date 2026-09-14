@@ -162,7 +162,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
           tabIndex={-1}
           className={`
             relative z-10 w-full ${sizeStyles[size]}
-            bg-[hsl(var(--color-card))]
+            bg-[var(--color-card)]
             rounded-[var(--radius-lg)]
             shadow-[var(--shadow-xl)]
             transform transition-all duration-[var(--transition-normal)]
@@ -171,10 +171,10 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
           {...props}
         >
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-[hsl(var(--color-border))]">
+          <div className="flex items-center justify-between p-4 border-b border-[var(--color-border)]">
             <h2
               id="modal-title"
-              className="text-lg font-semibold text-[hsl(var(--color-card-foreground))]"
+              className="text-lg font-semibold text-[var(--color-card-foreground)]"
             >
               {title}
             </h2>
@@ -183,10 +183,10 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
               onClick={onClose}
               className="
                 p-1 rounded-[var(--radius-sm)]
-                text-[hsl(var(--color-muted-foreground))]
-                hover:text-[hsl(var(--color-foreground))]
-                hover:bg-[hsl(var(--color-muted))]
-                focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))]
+                text-[var(--color-muted-foreground)]
+                hover:text-[var(--color-foreground)]
+                hover:bg-[var(--color-muted)]
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)]
                 transition-colors duration-[var(--transition-fast)]
               "
               aria-label="Close modal"
@@ -210,7 +210,7 @@ export const Modal = forwardRef<HTMLDivElement, ModalProps>(
           </div>
 
           {/* Content */}
-          <div className="p-4 text-[hsl(var(--color-card-foreground))]">
+          <div className="p-4 text-[var(--color-card-foreground)]">
             {children}
           </div>
         </div>

@@ -245,28 +245,28 @@ export function AddPageLabelsTool() {
     <div className="space-y-6">
       {/* File Upload Zone */}
       <div className="space-y-3">
-        <label className="text-sm font-bold text-[hsl(var(--color-foreground))] block">
+        <label className="text-sm font-bold text-[var(--color-foreground)] block">
           {t('pageLabels.uploadLabel')}
         </label>
         {file ? (
           <Card 
             variant="outlined" 
-            className="relative group p-4 flex items-center justify-between border-2 border-[hsl(var(--color-primary)/0.3)] bg-[hsl(var(--color-muted)/0.15)] rounded-2xl"
+            className="relative group p-4 flex items-center justify-between border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,transparent)] bg-[color-mix(in_srgb,var(--color-muted)_15%,transparent)] rounded-2xl"
           >
             <div className="flex items-center gap-3">
-              <svg className="w-10 h-10 text-[hsl(var(--color-primary))]" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-10 h-10 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
                 <path d="M14 2v6h6" fill="white" />
                 <text x="8" y="17" fontSize="5" fill="white" fontWeight="bold">LABEL</text>
               </svg>
               <div>
                 <p 
-                  className="font-semibold text-sm text-[hsl(var(--color-foreground))] truncate max-w-[280px] md:max-w-md" 
+                  className="font-semibold text-sm text-[var(--color-foreground)] truncate max-w-[280px] md:max-w-md" 
                   title={file.name}
                 >
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {totalPages > 0 ? t('pageLabels.uploadSuccess', { count: totalPages, size: (file.size / (1024 * 1024)).toFixed(2) }) : (t('aiPdfReflower.scanningMetadata') || 'Loading...')}
                 </p>
               </div>
@@ -274,7 +274,7 @@ export function AddPageLabelsTool() {
             <button 
               onClick={handleClearFile}
               disabled={isProcessing}
-              className="p-1 rounded-full hover:bg-[hsl(var(--color-muted))] text-zinc-400 hover:text-red-500 transition-colors"
+              className="p-1 rounded-full hover:bg-[var(--color-muted)] text-zinc-400 hover:text-red-500 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -311,8 +311,8 @@ export function AddPageLabelsTool() {
           {/* LEFT: Rules configuration panel */}
           <div className="lg:col-span-7 space-y-4">
             <div className="flex justify-between items-center pb-2">
-              <label className="text-sm font-bold text-[hsl(var(--color-foreground))] flex items-center gap-1.5">
-                <Layers className="w-4 h-4 text-[hsl(var(--color-primary))]" />
+              <label className="text-sm font-bold text-[var(--color-foreground)] flex items-center gap-1.5">
+                <Layers className="w-4 h-4 text-[var(--color-primary)]" />
                 {t('pageLabels.optionsTitle')}
               </label>
               <Button
@@ -320,7 +320,7 @@ export function AddPageLabelsTool() {
                 size="sm"
                 onClick={handleAddRule}
                 disabled={isProcessing}
-                className="flex items-center gap-1 text-xs border border-[hsl(var(--color-primary)/0.35)] hover:bg-[hsl(var(--color-primary)/0.08)] py-1.5"
+                className="flex items-center gap-1 text-xs border border-[color-mix(in_srgb,var(--color-primary)_35%,transparent)] hover:bg-[color-mix(in_srgb,var(--color-primary)_8%,transparent)] py-1.5"
               >
                 <Plus className="w-3.5 h-3.5" />
                 {t('pageLabels.addRuleButton')}
@@ -334,15 +334,15 @@ export function AddPageLabelsTool() {
                   variant="outlined" 
                   className="p-5 rounded-2xl relative space-y-4 backdrop-blur-md bg-white/40 dark:bg-black/35 border border-white/20 dark:border-zinc-800/40 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-300"
                 >
-                  <div className="flex justify-between items-center border-b border-[hsl(var(--color-border))] pb-3">
-                    <span className="text-xs font-bold text-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.1)] px-2.5 py-1 rounded-md">
+                  <div className="flex justify-between items-center border-b border-[var(--color-border)] pb-3">
+                    <span className="text-xs font-bold text-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] px-2.5 py-1 rounded-md">
                       {t('pageLabels.ruleTitle', { index: idx + 1 })}
                     </span>
                     {rules.length > 1 && (
                       <button
                         onClick={() => handleRemoveRule(idx)}
                         disabled={isProcessing}
-                        className="text-zinc-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-[hsl(var(--color-muted))] transition-colors"
+                        className="text-zinc-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-[var(--color-muted)] transition-colors"
                         title={t('pageLabels.deleteRuleTitle')}
                       >
                         <Trash2 className="w-4 h-4" />
@@ -354,10 +354,10 @@ export function AddPageLabelsTool() {
                     {/* Page Range input */}
                     <div className="space-y-1.5">
                       <div className="flex justify-between items-center">
-                        <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))]">
+                        <label className="text-xs font-bold text-[var(--color-muted-foreground)]">
                           {t('pageLabels.pageRangeLabel')}
                         </label>
-                        <span className="text-[10px] text-[hsl(var(--color-muted-foreground))] font-medium">
+                        <span className="text-[10px] text-[var(--color-muted-foreground)] font-medium">
                           {t('pageLabels.pageRangeHelp')}
                         </span>
                       </div>
@@ -366,19 +366,19 @@ export function AddPageLabelsTool() {
                         placeholder={t('pageLabels.pageRangePlaceholder')}
                         value={rule.pageRange}
                         onChange={(e) => handleRuleChange(idx, { pageRange: e.target.value })}
-                        className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] focus:border-transparent transition-all"
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                       />
                     </div>
 
                     {/* Style selector */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] block">
+                      <label className="text-xs font-bold text-[var(--color-muted-foreground)] block">
                         {t('pageLabels.styleLabel')}
                       </label>
                       <select
                         value={rule.style}
                         onChange={(e) => handleRuleChange(idx, { style: e.target.value as any })}
-                        className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.35)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_35%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                       >
                         <option value="D">{t('pageLabels.styleArabic')}</option>
                         <option value="R">{t('pageLabels.styleRomanUpper')}</option>
@@ -391,7 +391,7 @@ export function AddPageLabelsTool() {
 
                     {/* Prefix input */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] block">
+                      <label className="text-xs font-bold text-[var(--color-muted-foreground)] block">
                         {t('pageLabels.prefixLabel')}
                       </label>
                       <input
@@ -399,13 +399,13 @@ export function AddPageLabelsTool() {
                         placeholder={t('pageLabels.prefixPlaceholder')}
                         value={rule.prefix}
                         onChange={(e) => handleRuleChange(idx, { prefix: e.target.value })}
-                        className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                       />
                     </div>
 
                     {/* Start value input */}
                     <div className="space-y-1.5">
-                      <label className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] block">
+                      <label className="text-xs font-bold text-[var(--color-muted-foreground)] block">
                         {t('pageLabels.startValueLabel')}
                       </label>
                       <input
@@ -413,7 +413,7 @@ export function AddPageLabelsTool() {
                         min="1"
                         value={rule.startValue}
                         onChange={(e) => handleRuleChange(idx, { startValue: parseInt(e.target.value, 10) || 1 })}
-                        className="w-full px-3 py-2 text-xs rounded-xl bg-[hsl(var(--color-muted)/0.3)] border border-[hsl(var(--color-input))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] transition-all"
+                        className="w-full px-3 py-2 text-xs rounded-xl bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] border border-[var(--color-input)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] transition-all"
                       />
                     </div>
                   </div>
@@ -428,7 +428,7 @@ export function AddPageLabelsTool() {
                 size="lg"
                 onClick={handleProcess}
                 disabled={isProcessing}
-                className="w-full py-4 font-bold shadow-lg shadow-[hsl(var(--color-primary)/0.15)] flex items-center justify-center gap-2"
+                className="w-full py-4 font-bold shadow-lg shadow-[color-mix(in_srgb,var(--color-primary)_15%,transparent)] flex items-center justify-center gap-2"
               >
                 <Tag className="w-5 h-5" />
                 {isProcessing ? t('pageLabels.processing') : t('pageLabels.processButton')}
@@ -458,20 +458,20 @@ export function AddPageLabelsTool() {
 
           {/* RIGHT: Live tag preview panel */}
           <div className="lg:col-span-5 space-y-4">
-            <label className="text-sm font-bold text-[hsl(var(--color-foreground))] flex items-center gap-1.5">
+            <label className="text-sm font-bold text-[var(--color-foreground)] flex items-center gap-1.5">
               <Tag className="w-4 h-4 text-emerald-500" />
               {t('pageLabels.previewTitle')}
             </label>
 
             <Card 
               variant="outlined" 
-              className="p-6 bg-[hsl(var(--color-card))] rounded-2xl min-h-[460px] flex flex-col border border-[hsl(var(--color-border))] shadow-inner"
+              className="p-6 bg-[var(--color-card)] rounded-2xl min-h-[460px] flex flex-col border border-[var(--color-border)] shadow-inner"
             >
               {/* Informative tips */}
-              <div className="mb-4 p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-100/35 text-[11px] text-[hsl(var(--color-muted-foreground))] leading-normal flex gap-2">
+              <div className="mb-4 p-3 rounded-xl bg-emerald-50/50 dark:bg-emerald-950/10 border border-emerald-100/35 text-[11px] text-[var(--color-muted-foreground)] leading-normal flex gap-2">
                 <Info className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold text-[hsl(var(--color-foreground))]">{t('pageLabels.previewAlgorithmTitle')}</span>
+                  <span className="font-bold text-[var(--color-foreground)]">{t('pageLabels.previewAlgorithmTitle')}</span>
                   {t('pageLabels.previewAlgorithmDesc')}
                 </div>
               </div>
@@ -481,9 +481,9 @@ export function AddPageLabelsTool() {
                 {previewList.map((label, idx) => (
                   <div 
                     key={idx}
-                    className="flex items-center justify-between p-2 rounded-xl border border-[hsl(var(--color-border)/0.4)] bg-white/20 dark:bg-zinc-800/10 backdrop-blur-sm select-none transition-all duration-300 hover:border-[hsl(var(--color-primary)/0.3)]"
+                    className="flex items-center justify-between p-2 rounded-xl border border-[color-mix(in_srgb,var(--color-border)_40%,transparent)] bg-white/20 dark:bg-zinc-800/10 backdrop-blur-sm select-none transition-all duration-300 hover:border-[color-mix(in_srgb,var(--color-primary)_30%,transparent)]"
                   >
-                    <span className="text-[10px] font-bold text-[hsl(var(--color-muted-foreground))]">
+                    <span className="text-[10px] font-bold text-[var(--color-muted-foreground)]">
                       P.{idx + 1}
                     </span>
                     <span className="text-xs font-black px-2 py-0.5 rounded-lg bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-600 dark:to-teal-600 text-white shadow-sm shadow-emerald-500/10">
@@ -494,7 +494,7 @@ export function AddPageLabelsTool() {
 
                 {totalPages > maxPreviewCount && !showAllPreview && (
                   <div className="col-span-full pt-4 pb-2 text-center">
-                    <p className="text-[10px] text-[hsl(var(--color-muted-foreground))] mb-2">
+                    <p className="text-[10px] text-[var(--color-muted-foreground)] mb-2">
                       {t('pageLabels.previewFolded', { count: totalPages - maxPreviewCount })}
                     </p>
                     <Button

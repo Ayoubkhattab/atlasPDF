@@ -215,10 +215,10 @@ export function RemoveMetadataTool({ className = '' }: RemoveMetadataToolProps) 
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                <p className="text-sm font-medium text-[var(--color-foreground)]">
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)}
                 </p>
               </div>
@@ -239,7 +239,7 @@ export function RemoveMetadataTool({ className = '' }: RemoveMetadataToolProps) 
       {file && (
         <Card variant="outlined">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+            <h3 className="text-lg font-medium text-[var(--color-foreground)]">
               {tTools('removeMetadata.optionsTitle') || 'Select Metadata to Remove'}
             </h3>
             <div className="flex gap-2">
@@ -269,9 +269,9 @@ export function RemoveMetadataTool({ className = '' }: RemoveMetadataToolProps) 
                     checked={options[key]}
                     onChange={() => handleOptionChange(key)}
                     disabled={isProcessing}
-                    className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                    className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                   />
-                  <span className="text-sm text-[hsl(var(--color-foreground))]">
+                  <span className="text-sm text-[var(--color-foreground)]">
                     {label}
                   </span>
                 </label>

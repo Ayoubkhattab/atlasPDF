@@ -104,10 +104,10 @@ export function PDFReaderTool({ className = '' }: PDFReaderToolProps) {
                     <Card variant="outlined" className="!p-3">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
-                                <span className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                                <span className="text-sm font-medium text-[var(--color-foreground)]">
                                     {file.name}
                                 </span>
-                                <span className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                                <span className="text-xs text-[var(--color-muted-foreground)]">
                                     ({(file.size / 1024 / 1024).toFixed(2)} MB)
                                 </span>
                             </div>

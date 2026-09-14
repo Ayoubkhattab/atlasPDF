@@ -97,10 +97,10 @@ export const SavedProjectsPanel: React.FC<SavedProjectsPanelProps> = ({
       <Card className="p-4">
         <div className="animate-pulse flex space-x-4">
           <div className="flex-1 space-y-4 py-1">
-            <div className="h-4 bg-[hsl(var(--color-muted))] rounded w-3/4"></div>
+            <div className="h-4 bg-[var(--color-muted)] rounded w-3/4"></div>
             <div className="space-y-2">
-              <div className="h-4 bg-[hsl(var(--color-muted))] rounded"></div>
-              <div className="h-4 bg-[hsl(var(--color-muted))] rounded w-5/6"></div>
+              <div className="h-4 bg-[var(--color-muted)] rounded"></div>
+              <div className="h-4 bg-[var(--color-muted)] rounded w-5/6"></div>
             </div>
           </div>
         </div>
@@ -131,15 +131,15 @@ export const SavedProjectsPanel: React.FC<SavedProjectsPanelProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <FolderOpen className="h-5 w-5 text-[hsl(var(--color-primary))]" aria-hidden="true" />
-          <h3 className="font-medium text-[hsl(var(--color-foreground))]">
+          <FolderOpen className="h-5 w-5 text-[var(--color-primary)]" aria-hidden="true" />
+          <h3 className="font-medium text-[var(--color-foreground)]">
             {translations.title}
           </h3>
         </div>
         {filteredProjects.length > 0 && (
           <button
             onClick={() => clearProjects()}
-            className="text-xs text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-destructive))] transition-colors flex items-center gap-1"
+            className="text-xs text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)] transition-colors flex items-center gap-1"
             aria-label={translations.clearAll}
           >
             <Trash2 className="h-3 w-3" aria-hidden="true" />
@@ -150,7 +150,7 @@ export const SavedProjectsPanel: React.FC<SavedProjectsPanelProps> = ({
 
       {/* Content */}
       {filteredProjects.length === 0 ? (
-        <div className="text-center py-6 text-sm text-[hsl(var(--color-muted-foreground))]">
+        <div className="text-center py-6 text-sm text-[var(--color-muted-foreground)]">
           <FolderOpen className="h-8 w-8 mx-auto mb-2 opacity-50" aria-hidden="true" />
           {translations.empty}
         </div>
@@ -160,19 +160,19 @@ export const SavedProjectsPanel: React.FC<SavedProjectsPanelProps> = ({
             <li
               key={project.id}
               ref={(el) => { itemRefs.current[index] = el; }}
-              className="group p-3 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-primary))] focus-within:border-[hsl(var(--color-primary))] transition-colors"
+              className="group p-3 rounded-[var(--radius-md)] border border-[var(--color-border)] hover:border-[var(--color-primary)] focus-within:border-[var(--color-primary)] transition-colors"
               onKeyDown={(e) => handleItemKeyDown(e, index, filteredProjects.length)}
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <StatusIcon status={project.status} />
-                    <span className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
+                    <span className="text-sm font-medium text-[var(--color-foreground)] truncate">
                       {project.name}
                     </span>
                   </div>
                   
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-[hsl(var(--color-muted-foreground))]">
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-xs text-[var(--color-muted-foreground)]">
                     <span>{getStatusLabel(project.status)}</span>
                     <span>•</span>
                     <span>{formatDate(project.updatedAt)}</span>
@@ -186,13 +186,13 @@ export const SavedProjectsPanel: React.FC<SavedProjectsPanelProps> = ({
 
                   {project.progress > 0 && project.progress < 100 && (
                     <div className="mt-2">
-                      <div className="flex items-center justify-between text-xs text-[hsl(var(--color-muted-foreground))] mb-1">
+                      <div className="flex items-center justify-between text-xs text-[var(--color-muted-foreground)] mb-1">
                         <span>{translations.progress}</span>
                         <span>{project.progress}%</span>
                       </div>
-                      <div className="h-1.5 bg-[hsl(var(--color-muted))] rounded-full overflow-hidden">
+                      <div className="h-1.5 bg-[var(--color-muted)] rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-[hsl(var(--color-primary))] transition-all"
+                          className="h-full bg-[var(--color-primary)] transition-all"
                           style={{ width: `${project.progress}%` }}
                         />
                       </div>
@@ -218,7 +218,7 @@ export const SavedProjectsPanel: React.FC<SavedProjectsPanelProps> = ({
                     size="sm"
                     onClick={() => removeProject(project.id)}
                     aria-label={translations.delete}
-                    className="text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-destructive))]"
+                    className="text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)]"
                   >
                     <Trash2 className="h-4 w-4" aria-hidden="true" />
                   </Button>

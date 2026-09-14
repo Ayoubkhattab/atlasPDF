@@ -213,8 +213,8 @@ export function OCGManagerTool({ className = '' }: OCGManagerToolProps) {
                 <Card variant="outlined">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
-                            <Layers className="w-5 h-5 text-[hsl(var(--color-primary))]" />
-                            <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+                            <Layers className="w-5 h-5 text-[var(--color-primary)]" />
+                            <h3 className="text-lg font-medium text-[var(--color-foreground)]">
                                 {tTools('ocgManager.layersTitle') || 'PDF Layers'} ({layers.length})
                             </h3>
                         </div>
@@ -229,7 +229,7 @@ export function OCGManagerTool({ className = '' }: OCGManagerToolProps) {
                     </div>
 
                     {isLoading ? (
-                        <div className="py-8 text-center text-[hsl(var(--color-muted-foreground))]">
+                        <div className="py-8 text-center text-[var(--color-muted-foreground)]">
                             Loading layers...
                         </div>
                     ) : hasLayers ? (
@@ -237,13 +237,13 @@ export function OCGManagerTool({ className = '' }: OCGManagerToolProps) {
                             {layers.map((layer) => (
                                 <div
                                     key={layer.id}
-                                    className="flex items-center justify-between p-3 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-muted)/0.3)]"
+                                    className="flex items-center justify-between p-3 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]"
                                 >
                                     <div className="flex items-center gap-3">
                                         <button
                                             onClick={() => handleToggleLayer(layer.id, layer.visible)}
                                             disabled={isProcessing}
-                                            className="p-1 rounded hover:bg-[hsl(var(--color-muted))]"
+                                            className="p-1 rounded hover:bg-[var(--color-muted)]"
                                             title={layer.visible ? 'Hide layer' : 'Show layer'}
                                         >
                                             {layer.visible ? (
@@ -263,7 +263,7 @@ export function OCGManagerTool({ className = '' }: OCGManagerToolProps) {
                                                 autoFocus
                                             />
                                         ) : (
-                                            <span className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                                            <span className="text-sm font-medium text-[var(--color-foreground)]">
                                                 {layer.name}
                                             </span>
                                         )}
@@ -299,10 +299,10 @@ export function OCGManagerTool({ className = '' }: OCGManagerToolProps) {
                                                         setEditName(layer.name);
                                                     }}
                                                     disabled={isProcessing}
-                                                    className="p-1 rounded hover:bg-[hsl(var(--color-muted))]"
+                                                    className="p-1 rounded hover:bg-[var(--color-muted)]"
                                                     title="Rename layer"
                                                 >
-                                                    <Edit2 className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                                                    <Edit2 className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDeleteLayer(layer.id)}
@@ -319,14 +319,14 @@ export function OCGManagerTool({ className = '' }: OCGManagerToolProps) {
                             ))}
                         </div>
                     ) : (
-                        <div className="py-8 text-center text-[hsl(var(--color-muted-foreground))]">
+                        <div className="py-8 text-center text-[var(--color-muted-foreground)]">
                             {tTools('ocgManager.noLayers') || 'This PDF has no layers (OCG).'}
                         </div>
                     )}
 
                     {/* Add New Layer */}
-                    <div className="mt-4 pt-4 border-t border-[hsl(var(--color-border))]">
-                        <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+                    <div className="mt-4 pt-4 border-t border-[var(--color-border)]">
+                        <label className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                             {tTools('ocgManager.addLayerLabel') || 'Add New Layer'}
                         </label>
                         <div className="flex gap-2">
@@ -336,7 +336,7 @@ export function OCGManagerTool({ className = '' }: OCGManagerToolProps) {
                                 onChange={(e) => setNewLayerName(e.target.value)}
                                 placeholder="Layer name..."
                                 disabled={isProcessing}
-                                className="flex-1 px-3 py-2 border border-[hsl(var(--color-border))] rounded-[var(--radius-md)] text-sm"
+                                className="flex-1 px-3 py-2 border border-[var(--color-border)] rounded-[var(--radius-md)] text-sm"
                             />
                             <Button
                                 variant="secondary"

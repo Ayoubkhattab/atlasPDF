@@ -211,8 +211,8 @@ export function AddBlankPageTool({ className = '' }: AddBlankPageToolProps) {
                 <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
               </svg>
               <div>
-                <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)} • {totalPages} {totalPages === 1 ? 'page' : 'pages'}
                 </p>
               </div>
@@ -232,7 +232,7 @@ export function AddBlankPageTool({ className = '' }: AddBlankPageToolProps) {
       {/* Options */}
       {file && totalPages > 0 && (
         <Card variant="outlined" size="lg">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('addBlankPage.optionsTitle') || 'Add Blank Pages Options'}
           </h3>
 
@@ -241,7 +241,7 @@ export function AddBlankPageTool({ className = '' }: AddBlankPageToolProps) {
             <div>
               <label 
                 htmlFor="position" 
-                className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1"
+                className="block text-sm font-medium text-[var(--color-foreground)] mb-1"
               >
                 {tTools('addBlankPage.positionLabel') || 'Insert Position'}
               </label>
@@ -253,9 +253,9 @@ export function AddBlankPageTool({ className = '' }: AddBlankPageToolProps) {
                 value={position}
                 onChange={(e) => setPosition(parseInt(e.target.value) || 0)}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
-              <p className="mt-1 text-sm text-[hsl(var(--color-muted-foreground))]">
+              <p className="mt-1 text-sm text-[var(--color-muted-foreground)]">
                 {tTools('addBlankPage.positionHint', { total: totalPages }) || `Enter 0 to insert at the beginning, or ${totalPages} to insert at the end.`}
               </p>
             </div>
@@ -264,7 +264,7 @@ export function AddBlankPageTool({ className = '' }: AddBlankPageToolProps) {
             <div>
               <label 
                 htmlFor="count" 
-                className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1"
+                className="block text-sm font-medium text-[var(--color-foreground)] mb-1"
               >
                 {tTools('addBlankPage.countLabel') || 'Number of Blank Pages'}
               </label>
@@ -276,7 +276,7 @@ export function AddBlankPageTool({ className = '' }: AddBlankPageToolProps) {
                 value={count}
                 onChange={(e) => setCount(parseInt(e.target.value) || 1)}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
             </div>
 

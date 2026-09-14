@@ -148,19 +148,19 @@ export function FB2ToPDFTool({ className = '' }: FB2ToPDFToolProps) {
             {files.length > 0 && (
                 <Card variant="outlined" size="lg" className="glass-card">
                     <div className="space-y-3">
-                        <h3 className="font-semibold text-[hsl(var(--color-foreground))]">
+                        <h3 className="font-semibold text-[var(--color-foreground)]">
                             {files.length} {files.length === 1 ? 'File' : 'Files'} Selected
                         </h3>
                         <div className="space-y-2 max-h-64 overflow-y-auto">
                             {files.map((file) => (
-                                <div key={file.id} className="flex items-center justify-between p-3 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))]">
+                                <div key={file.id} className="flex items-center justify-between p-3 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)]">
                                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                                        <div className="w-10 h-10 rounded-lg bg-[hsl(var(--color-primary)/0.1)] flex items-center justify-center text-[hsl(var(--color-primary))] flex-shrink-0">
+                                        <div className="w-10 h-10 rounded-lg bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] flex items-center justify-center text-[var(--color-primary)] flex-shrink-0">
                                             <BookText className="w-5 h-5" />
                                         </div>
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-medium text-[hsl(var(--color-foreground))] truncate">{file.file.name}</p>
-                                            <p className="text-xs text-[hsl(var(--color-muted-foreground))]">{formatSize(file.file.size)}</p>
+                                            <p className="font-medium text-[var(--color-foreground)] truncate">{file.file.name}</p>
+                                            <p className="text-xs text-[var(--color-muted-foreground)]">{formatSize(file.file.size)}</p>
                                         </div>
                                     </div>
                                     <Button
@@ -168,7 +168,7 @@ export function FB2ToPDFTool({ className = '' }: FB2ToPDFToolProps) {
                                         size="sm"
                                         onClick={() => handleRemoveFile(file.id)}
                                         disabled={isProcessing}
-                                        className="text-[hsl(var(--color-muted-foreground))] hover:text-red-500 hover:bg-red-50 flex-shrink-0"
+                                        className="text-[var(--color-muted-foreground)] hover:text-red-500 hover:bg-red-50 flex-shrink-0"
                                     >
                                         <Trash2 className="w-4 h-4" />
                                     </Button>

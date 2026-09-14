@@ -299,7 +299,7 @@ export function HeaderFooterTool({ className = '' }: HeaderFooterToolProps) {
                   </svg>
                   <div>
                     <p className="font-medium">{file.name}</p>
-                    <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                    <p className="text-sm text-[var(--color-muted-foreground)]">
                       {formatSize(file.size)} • {totalPages} pages
                     </p>
                   </div>

@@ -92,9 +92,9 @@ export const ProcessingProgress: React.FC<ProcessingProgressProps> = ({
         return 'bg-red-500';
       case 'uploading':
       case 'processing':
-        return 'bg-[hsl(var(--color-primary))]';
+        return 'bg-[var(--color-primary)]';
       default:
-        return 'bg-[hsl(var(--color-muted))]';
+        return 'bg-[var(--color-muted)]';
     }
   }, [status]);
 
@@ -148,8 +148,8 @@ export const ProcessingProgress: React.FC<ProcessingProgressProps> = ({
           {/* Status indicator */}
           {(status === 'uploading' || status === 'processing') && (
             <div className="relative">
-              <div className="w-4 h-4 rounded-full bg-[hsl(var(--color-primary)/0.3)]" />
-              <div className="absolute inset-0 w-4 h-4 rounded-full bg-[hsl(var(--color-primary))] animate-ping opacity-75" />
+              <div className="w-4 h-4 rounded-full bg-[color-mix(in_srgb,var(--color-primary)_30%,transparent)]" />
+              <div className="absolute inset-0 w-4 h-4 rounded-full bg-[var(--color-primary)] animate-ping opacity-75" />
             </div>
           )}
           {status === 'complete' && (
@@ -186,21 +186,21 @@ export const ProcessingProgress: React.FC<ProcessingProgressProps> = ({
           )}
           
           {/* Status text */}
-          <span className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+          <span className="text-sm font-medium text-[var(--color-foreground)]">
             {statusText}
           </span>
         </div>
 
         {/* Percentage */}
         {showPercentage && (
-          <span className="text-sm font-medium text-[hsl(var(--color-muted-foreground))]">
+          <span className="text-sm font-medium text-[var(--color-muted-foreground)]">
             {Math.round(clampedProgress)}%
           </span>
         )}
       </div>
 
       {/* Progress bar */}
-      <div className="relative w-full h-2 bg-[hsl(var(--color-muted))] rounded-full overflow-hidden">
+      <div className="relative w-full h-2 bg-[var(--color-muted)] rounded-full overflow-hidden">
         <div
           className={`absolute left-0 top-0 h-full transition-all duration-300 ease-out rounded-full ${progressBarColor}`}
           style={{ width: `${clampedProgress}%` }}
@@ -209,7 +209,7 @@ export const ProcessingProgress: React.FC<ProcessingProgressProps> = ({
         {/* Animated shimmer for active states */}
         {(status === 'uploading' || status === 'processing') && clampedProgress < 100 && (
           <div
-            className="absolute left-0 top-0 h-full bg-gradient-to-r from-transparent via-[hsl(var(--color-primary-foreground)/0.3)] to-transparent motion-safe:animate-shimmer"
+            className="absolute left-0 top-0 h-full bg-gradient-to-r from-transparent via-[color-mix(in_srgb,var(--color-primary-foreground)_30%,transparent)] to-transparent motion-safe:animate-shimmer"
             style={{ width: `${clampedProgress}%` }}
           />
         )}
@@ -218,13 +218,13 @@ export const ProcessingProgress: React.FC<ProcessingProgressProps> = ({
       {/* Message and estimated time */}
       <div className="flex items-center justify-between mt-2">
         {/* Current step message */}
-        <p className="text-sm text-[hsl(var(--color-muted-foreground))] truncate flex-1">
+        <p className="text-sm text-[var(--color-muted-foreground)] truncate flex-1">
           {message || ''}
         </p>
 
         {/* Estimated time */}
         {showEstimatedTime && formattedTime && (status === 'uploading' || status === 'processing') && (
-          <span className="text-xs text-[hsl(var(--color-muted-foreground))] ml-4 whitespace-nowrap">
+          <span className="text-xs text-[var(--color-muted-foreground)] ml-4 whitespace-nowrap">
             {formattedTime}
           </span>
         )}
@@ -236,7 +236,7 @@ export const ProcessingProgress: React.FC<ProcessingProgressProps> = ({
           <button
             type="button"
             onClick={onCancel}
-            className="text-sm text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))] transition-colors"
+            className="text-sm text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)] transition-colors"
             aria-label={t('buttons.cancel')}
           >
             {t('buttons.cancel')}

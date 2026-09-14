@@ -160,7 +160,7 @@ export function CropPDFTool({ className = '' }: CropPDFToolProps) {
       }
 
       const arrayBuffer = await file.arrayBuffer();
-      const pdfDoc = await pdfjsLib.getDocument(arrayBuffer).promise;
+      const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
 
       setState(prev => ({
         ...prev,
@@ -418,7 +418,7 @@ export function CropPDFTool({ className = '' }: CropPDFToolProps) {
                 </div>
                 <div>
                   <h3 className="font-medium">{state.file.name}</h3>
-                  <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                  <p className="text-sm text-[var(--color-muted-foreground)]">
                     {state.numPages} {tTools('cropPdf.pages') || 'pages'}
                   </p>
                 </div>

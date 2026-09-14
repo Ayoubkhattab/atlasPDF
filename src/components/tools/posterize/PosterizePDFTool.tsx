@@ -229,8 +229,8 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
                 <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
               </svg>
               <div>
-                <p className="font-medium text-[hsl(var(--color-foreground))]">{file.name}</p>
-                <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                <p className="font-medium text-[var(--color-foreground)]">{file.name}</p>
+                <p className="text-sm text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)} • {totalPages} {totalPages === 1 ? 'page' : 'pages'}
                 </p>
               </div>
@@ -251,14 +251,14 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
       {/* Options */}
       {file && totalPages > 0 && (
         <Card variant="outlined" size="lg">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('posterizePdf.optionsTitle') || 'Posterize Options'}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {/* Rows */}
             <div>
-              <label htmlFor="rows" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label htmlFor="rows" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('posterizePdf.rows') || 'Rows'}
               </label>
               <input
@@ -269,13 +269,13 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
                 value={rows}
                 onChange={(e) => setRows(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
             </div>
 
             {/* Columns */}
             <div>
-              <label htmlFor="cols" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label htmlFor="cols" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('posterizePdf.cols') || 'Columns'}
               </label>
               <input
@@ -286,13 +286,13 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
                 value={cols}
                 onChange={(e) => setCols(Math.max(1, Math.min(10, parseInt(e.target.value) || 1)))}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
             </div>
 
             {/* Page size */}
             <div>
-              <label htmlFor="pageSize" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label htmlFor="pageSize" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('posterizePdf.pageSize') || 'Output Page Size'}
               </label>
               <select
@@ -300,7 +300,7 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
                 value={pageSize}
                 onChange={(e) => setPageSize(e.target.value as 'A4' | 'Letter' | 'Legal' | 'A3')}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               >
                 <option value="A4">A4</option>
                 <option value="Letter">Letter</option>
@@ -311,7 +311,7 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
 
             {/* Orientation */}
             <div>
-              <label htmlFor="orientation" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label htmlFor="orientation" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('posterizePdf.orientation') || 'Orientation'}
               </label>
               <select
@@ -319,7 +319,7 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
                 value={orientation}
                 onChange={(e) => setOrientation(e.target.value as 'portrait' | 'landscape' | 'auto')}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               >
                 <option value="auto">{t('options.auto') || 'Auto'}</option>
                 <option value="portrait">{t('options.portrait') || 'Portrait'}</option>
@@ -329,7 +329,7 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
 
             {/* Overlap */}
             <div>
-              <label htmlFor="overlap" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label htmlFor="overlap" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('posterizePdf.overlap') || 'Overlap'}
               </label>
               <div className="flex gap-2">
@@ -341,13 +341,13 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
                   value={overlap}
                   onChange={(e) => setOverlap(Math.max(0, parseFloat(e.target.value) || 0))}
                   disabled={isProcessing}
-                  className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                  className="flex-1 px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
                 <select
                   value={overlapUnit}
                   onChange={(e) => setOverlapUnit(e.target.value as 'pt' | 'mm' | 'in')}
                   disabled={isProcessing}
-                  className="w-20 px-2 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                  className="w-20 px-2 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 >
                   <option value="mm">mm</option>
                   <option value="in">in</option>
@@ -358,7 +358,7 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
 
             {/* Scaling mode */}
             <div>
-              <label htmlFor="scalingMode" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label htmlFor="scalingMode" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('posterizePdf.scalingMode') || 'Scaling Mode'}
               </label>
               <select
@@ -366,7 +366,7 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
                 value={scalingMode}
                 onChange={(e) => setScalingMode(e.target.value as 'fit' | 'fill')}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               >
                 <option value="fit">{tTools('posterizePdf.fit') || 'Fit (preserve aspect ratio)'}</option>
                 <option value="fill">{tTools('posterizePdf.fill') || 'Fill (may crop)'}</option>
@@ -375,7 +375,7 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
 
             {/* Page range */}
             <div className="md:col-span-2 lg:col-span-3">
-              <label htmlFor="pageRange" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+              <label htmlFor="pageRange" className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                 {tTools('posterizePdf.pageRange') || 'Page Range (optional)'}
               </label>
               <input
@@ -385,14 +385,14 @@ export function PosterizePDFTool({ className = '' }: PosterizePDFToolProps) {
                 onChange={(e) => setPageRange(e.target.value)}
                 placeholder={tTools('posterizePdf.pageRangePlaceholder') || 'e.g., 1-5, 8, 10-15 (leave empty for all pages)'}
                 disabled={isProcessing}
-                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                className="w-full px-3 py-2 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
               />
             </div>
           </div>
 
           {/* Preview info */}
-          <div className="mt-4 p-3 rounded-[var(--radius-md)] bg-[hsl(var(--color-muted))]">
-            <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+          <div className="mt-4 p-3 rounded-[var(--radius-md)] bg-[var(--color-muted)]">
+            <p className="text-sm text-[var(--color-muted-foreground)]">
               {tTools('posterizePdf.previewInfo', { rows, cols, total: rows * cols }) || 
                 `Each page will be split into ${rows}×${cols} = ${rows * cols} tiles. Total output: ${outputTiles} pages.`
               }

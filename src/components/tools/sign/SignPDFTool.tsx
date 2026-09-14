@@ -289,10 +289,10 @@ export function SignPDFTool({ className = '' }: SignPDFToolProps) {
                   <path d="M14 2v6h6" fill="white" />
                 </svg>
                 <div>
-                  <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                  <p className="text-sm font-medium text-[var(--color-foreground)]">
                     {signState.file.name}
                   </p>
-                  <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                  <p className="text-xs text-[var(--color-muted-foreground)]">
                     {(signState.file.size / 1024 / 1024).toFixed(2)} MB
                   </p>
                 </div>
@@ -327,7 +327,7 @@ export function SignPDFTool({ className = '' }: SignPDFToolProps) {
           </Card>
 
           {/* PDF.js Viewer Iframe */}
-          <div className="border border-[hsl(var(--color-border))] rounded-[var(--radius-lg)] overflow-hidden">
+          <div className="border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden">
             <iframe
               key={signState.file.name + signState.file.lastModified}
               ref={iframeRef}

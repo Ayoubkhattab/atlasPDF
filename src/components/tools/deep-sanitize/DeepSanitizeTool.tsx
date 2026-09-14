@@ -312,7 +312,7 @@ export function DeepSanitizeTool({ className = '' }: DeepSanitizeToolProps) {
 
       {/* Metadata Overview */}
       {file && (
-        <Card variant="outlined" className="p-4 flex items-center justify-between border-2 border-[hsl(var(--color-primary)/0.25)] rounded-2xl">
+        <Card variant="outlined" className="p-4 flex items-center justify-between border-2 border-[color-mix(in_srgb,var(--color-primary)_25%,transparent)] rounded-2xl">
           <div className="flex items-center gap-3">
             <svg className="w-10 h-10 text-red-500" viewBox="0 0 24 24" fill="currentColor">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
@@ -320,10 +320,10 @@ export function DeepSanitizeTool({ className = '' }: DeepSanitizeToolProps) {
               <text x="7" y="17" fontSize="6" fill="white" fontWeight="bold">PDF</text>
             </svg>
             <div>
-              <p className="font-semibold text-sm text-[hsl(var(--color-foreground))] truncate max-w-[280px]" title={file.name}>
+              <p className="font-semibold text-sm text-[var(--color-foreground)] truncate max-w-[280px]" title={file.name}>
                 {file.name}
               </p>
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+              <p className="text-xs text-[var(--color-muted-foreground)]">
                 {t('deepSanitize.prechecking')}
               </p>
             </div>
@@ -343,9 +343,9 @@ export function DeepSanitizeTool({ className = '' }: DeepSanitizeToolProps) {
             <Card variant="default" className="flex-1 p-6 rounded-[2rem] border border-white/20 dark:border-zinc-800/40 bg-white/40 dark:bg-black/30 backdrop-blur-md flex flex-col justify-between shadow-xl space-y-6">
               
               <div className="space-y-4 flex-1">
-                <div className="border-b border-[hsl(var(--color-border))] pb-3">
-                  <h3 className="text-base font-bold text-[hsl(var(--color-foreground))] flex items-center gap-2">
-                    <Settings2 className="w-5 h-5 text-[hsl(var(--color-primary))]" />
+                <div className="border-b border-[var(--color-border)] pb-3">
+                  <h3 className="text-base font-bold text-[var(--color-foreground)] flex items-center gap-2">
+                    <Settings2 className="w-5 h-5 text-[var(--color-primary)]" />
                     {t('deepSanitize.optionsTitle')}
                   </h3>
                 </div>
@@ -357,7 +357,7 @@ export function DeepSanitizeTool({ className = '' }: DeepSanitizeToolProps) {
                       checked={stripMetadata}
                       onChange={(e) => setStripMetadata(e.target.checked)}
                       disabled={isProcessing}
-                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                     />
                     <div className="text-xs">
                       {t('deepSanitize.clearXmp')}
@@ -371,7 +371,7 @@ export function DeepSanitizeTool({ className = '' }: DeepSanitizeToolProps) {
                       checked={stripPieceInfo}
                       onChange={(e) => setStripPieceInfo(e.target.checked)}
                       disabled={isProcessing}
-                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                     />
                     <div className="text-xs">
                       {t('deepSanitize.clearPieceInfo')}
@@ -385,7 +385,7 @@ export function DeepSanitizeTool({ className = '' }: DeepSanitizeToolProps) {
                       checked={stripOcgWatermarks}
                       onChange={(e) => setStripOcgWatermarks(e.target.checked)}
                       disabled={isProcessing}
-                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                     />
                     <div className="text-xs">
                       {t('deepSanitize.clearOcProperties')}
@@ -399,7 +399,7 @@ export function DeepSanitizeTool({ className = '' }: DeepSanitizeToolProps) {
                       checked={stripAnnotations}
                       onChange={(e) => setStripAnnotations(e.target.checked)}
                       disabled={isProcessing}
-                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                      className="w-4.5 h-4.5 rounded border-zinc-300 text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                     />
                     <div className="text-xs">
                       {t('deepSanitize.clearAnnotations')}
@@ -410,7 +410,7 @@ export function DeepSanitizeTool({ className = '' }: DeepSanitizeToolProps) {
               </div>
 
               {/* Action Trigger Button */}
-              <div className="pt-4 border-t border-[hsl(var(--color-border))] mt-6">
+              <div className="pt-4 border-t border-[var(--color-border)] mt-6">
                 <Button
                   variant="primary"
                   size="lg"
@@ -428,7 +428,7 @@ export function DeepSanitizeTool({ className = '' }: DeepSanitizeToolProps) {
 
           {/* RIGHT: 3D Particle Chamber visual box */}
           <div className="lg:col-span-6 flex flex-col justify-between">
-            <Card variant="outlined" className="flex-1 p-6 bg-zinc-950 border-2 border-dashed border-[hsl(var(--color-border))] rounded-[2rem] flex flex-col items-center justify-center relative overflow-hidden shadow-inner h-full min-h-[420px]">
+            <Card variant="outlined" className="flex-1 p-6 bg-zinc-950 border-2 border-dashed border-[var(--color-border)] rounded-[2rem] flex flex-col items-center justify-center relative overflow-hidden shadow-inner h-full min-h-[420px]">
               
               {/* Particle chamber canvas */}
               <div className="relative w-60 h-60 flex items-center justify-center z-10">
@@ -482,7 +482,7 @@ export function DeepSanitizeTool({ className = '' }: DeepSanitizeToolProps) {
 
           <div className="space-y-2 max-w-sm mx-auto">
             {t('deepSanitize.successTitle')}
-            <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+            <p className="text-xs text-[var(--color-muted-foreground)]">
               {t('deepSanitize.successDesc')}
             </p>
           </div>

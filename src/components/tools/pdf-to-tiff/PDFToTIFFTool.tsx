@@ -146,28 +146,28 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
     <div className={`space-y-6 ${className}`.trim()}>
       {/* File Upload Zone */}
       <div className="space-y-3">
-        <label className="text-sm font-bold text-[hsl(var(--color-foreground))] block">
+        <label className="text-sm font-bold text-[var(--color-foreground)] block">
           {t('pdfToTiff.uploadLabel')}
         </label>
         {file ? (
           <Card 
             variant="outlined" 
-            className="relative group p-4 flex items-center justify-between border-2 border-[hsl(var(--color-primary)/0.3)] bg-[hsl(var(--color-muted)/0.15)] rounded-2xl"
+            className="relative group p-4 flex items-center justify-between border-2 border-[color-mix(in_srgb,var(--color-primary)_30%,transparent)] bg-[color-mix(in_srgb,var(--color-muted)_15%,transparent)] rounded-2xl"
           >
             <div className="flex items-center gap-3">
-              <svg className="w-10 h-10 text-[hsl(var(--color-primary))]" viewBox="0 0 24 24" fill="currentColor">
+              <svg className="w-10 h-10 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z" />
                 <path d="M14 2v6h6" fill="white" />
                 <text x="8" y="17" fontSize="5.5" fill="white" fontWeight="bold">TIFF</text>
               </svg>
               <div>
                 <p 
-                  className="font-semibold text-sm text-[hsl(var(--color-foreground))] truncate max-w-[280px] md:max-w-md" 
+                  className="font-semibold text-sm text-[var(--color-foreground)] truncate max-w-[280px] md:max-w-md" 
                   title={file.name}
                 >
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {totalPages > 0 ? t('pdfToTiff.uploadSuccess', { count: totalPages, size: (file.size / (1024 * 1024)).toFixed(2) }) : (t('aiPdfReflower.scanningMetadata') || 'Loading...')}
                 </p>
               </div>
@@ -175,7 +175,7 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
             <button 
               onClick={handleClearFile}
               disabled={isProcessing}
-              className="p-1 rounded-full hover:bg-[hsl(var(--color-muted))] text-zinc-400 hover:text-red-500 transition-colors"
+              className="p-1 rounded-full hover:bg-[var(--color-muted)] text-zinc-400 hover:text-red-500 transition-colors"
             >
               <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -212,9 +212,9 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
           
           {/* LEFT: 3D Pixel Grid Interactive Widget */}
           <div className="lg:col-span-5 space-y-4">
-            <Card variant="outlined" className="p-6 bg-[hsl(var(--color-card))] rounded-2xl flex flex-col items-center justify-center min-h-[360px] overflow-hidden relative">
-              <span className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] mb-8 flex items-center gap-1.5">
-                <Cpu className="w-4 h-4 text-[hsl(var(--color-primary))]" />
+            <Card variant="outlined" className="p-6 bg-[var(--color-card)] rounded-2xl flex flex-col items-center justify-center min-h-[360px] overflow-hidden relative">
+              <span className="text-xs font-bold text-[var(--color-muted-foreground)] mb-8 flex items-center gap-1.5">
+                <Cpu className="w-4 h-4 text-[var(--color-primary)]" />
                 {t('pdfToTiff.previewTitle')}
               </span>
               
@@ -265,7 +265,7 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
               </div>
 
               <div className="mt-8 text-center max-w-xs leading-normal">
-                <p className="text-[11px] font-semibold text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-[11px] font-semibold text-[var(--color-muted-foreground)]">
                   {colorMode === 'color' 
                     ? t('pdfToTiff.descColor')
                     : colorMode === 'grayscale'
@@ -283,18 +283,18 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
               variant="default" 
               className="p-6 rounded-2xl space-y-6 backdrop-blur-md bg-white/40 dark:bg-black/30 border border-white/20 dark:border-zinc-800/40"
             >
-              <h3 className="text-sm font-bold text-[hsl(var(--color-foreground))] border-b border-[hsl(var(--color-border))] pb-3 flex items-center gap-1.5">
-                <Printer className="w-4.5 h-4.5 text-[hsl(var(--color-primary))]" />
+              <h3 className="text-sm font-bold text-[var(--color-foreground)] border-b border-[var(--color-border)] pb-3 flex items-center gap-1.5">
+                <Printer className="w-4.5 h-4.5 text-[var(--color-primary)]" />
                 {t('pdfToTiff.optionsTitle')}
               </h3>
 
               {/* Color Mode Switcher */}
               <div className="space-y-2">
-                <span className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] flex items-center gap-1">
+                <span className="text-xs font-bold text-[var(--color-muted-foreground)] flex items-center gap-1">
                   <Sliders className="w-3.5 h-3.5 text-zinc-400" />
                   {t('pdfToTiff.colorModeLabel')}
                 </span>
-                <div className="flex bg-[hsl(var(--color-muted)/0.5)] p-0.5 rounded-xl border border-[hsl(var(--color-input)/0.4)]">
+                <div className="flex bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)] p-0.5 rounded-xl border border-[color-mix(in_srgb,var(--color-input)_40%,transparent)]">
                   {[
                     { mode: 'color', label: t('pdfToTiff.colorModeFull') },
                     { mode: 'grayscale', label: t('pdfToTiff.colorModeGrayscale') },
@@ -306,8 +306,8 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
                       onClick={() => setColorMode(item.mode as any)}
                       className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
                         colorMode === item.mode
-                          ? 'bg-[hsl(var(--color-card))] text-[hsl(var(--color-foreground))] shadow-sm'
-                          : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                          ? 'bg-[var(--color-card)] text-[var(--color-foreground)] shadow-sm'
+                          : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                       }`}
                     >
                       {item.label}
@@ -318,11 +318,11 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
 
               {/* Compression Algorithm */}
               <div className="space-y-2">
-                <span className="text-xs font-bold text-[hsl(var(--color-muted-foreground))] flex items-center gap-1">
+                <span className="text-xs font-bold text-[var(--color-muted-foreground)] flex items-center gap-1">
                   <Layers className="w-3.5 h-3.5 text-zinc-400" />
                   {t('pdfToTiff.compressionLabel')}
                 </span>
-                <div className="flex bg-[hsl(var(--color-muted)/0.5)] p-0.5 rounded-xl border border-[hsl(var(--color-input)/0.4)]">
+                <div className="flex bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)] p-0.5 rounded-xl border border-[color-mix(in_srgb,var(--color-input)_40%,transparent)]">
                   {[
                     { cmp: 'none', label: t('pdfToTiff.compressionNone') },
                     { cmp: 'packbits', label: t('pdfToTiff.compressionPackbits') }
@@ -333,8 +333,8 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
                       onClick={() => setCompression(item.cmp as any)}
                       className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
                         compression === item.cmp
-                          ? 'bg-[hsl(var(--color-card))] text-[hsl(var(--color-foreground))] shadow-sm'
-                          : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                          ? 'bg-[var(--color-card)] text-[var(--color-foreground)] shadow-sm'
+                          : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                       }`}
                     >
                       {item.label}
@@ -346,11 +346,11 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
               {/* DPI 无级滑轨 */}
               <div className="space-y-2.5">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="font-bold text-[hsl(var(--color-muted-foreground))] flex items-center gap-1">
+                  <span className="font-bold text-[var(--color-muted-foreground)] flex items-center gap-1">
                     <Settings className="w-3.5 h-3.5 text-zinc-400" />
                     {t('pdfToTiff.resolutionLabel')}
                   </span>
-                  <span className="font-black text-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.1)] px-2 py-0.5 rounded">
+                  <span className="font-black text-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] px-2 py-0.5 rounded">
                     {t('pdfToTiff.resolutionDpi', { dpi, percent: Math.round(dpi / 72 * 100) })}
                   </span>
                 </div>
@@ -362,10 +362,10 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
                   step="6"
                   value={dpi}
                   onChange={(e) => setDpi(parseInt(e.target.value, 10))}
-                  className="w-full accent-[hsl(var(--color-primary))] bg-[hsl(var(--color-muted))] h-1.5 rounded-lg appearance-none cursor-pointer"
+                  className="w-full accent-[var(--color-primary)] bg-[var(--color-muted)] h-1.5 rounded-lg appearance-none cursor-pointer"
                 />
                 
-                <div className="flex justify-between text-[9px] text-[hsl(var(--color-muted-foreground))] font-semibold">
+                <div className="flex justify-between text-[9px] text-[var(--color-muted-foreground)] font-semibold">
                   <span>{t('pdfToTiff.dpi72')}</span>
                   <span>{t('pdfToTiff.dpi150')}</span>
                   <span>{t('pdfToTiff.dpi300')}</span>
@@ -374,11 +374,11 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
               </div>
 
               {/* Halftone / 1-bit logic notice */}
-              <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/20 border border-[hsl(var(--color-border)/0.5)] text-[10px] text-[hsl(var(--color-muted-foreground))] leading-normal flex gap-2">
-                <Info className="w-4 h-4 text-[hsl(var(--color-primary))] shrink-0 mt-0.5" />
+              <div className="p-3 rounded-xl bg-zinc-50 dark:bg-zinc-950/20 border border-[color-mix(in_srgb,var(--color-border)_50%,transparent)] text-[10px] text-[var(--color-muted-foreground)] leading-normal flex gap-2">
+                <Info className="w-4 h-4 text-[var(--color-primary)] shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold text-[hsl(var(--color-foreground))]">{t('pdfToTiff.tipTitle')}</span>
-                  {t('pdfToTiff.tipDesc') || 'TIFF recommendations:'} <span className="text-[hsl(var(--color-primary))] font-extrabold mx-0.5">{t('pdfToTiff.tipRecommend') || '300 DPI'}</span> {t('pdfToTiff.tipTail') || 'to ensure clean edges.'}
+                  <span className="font-bold text-[var(--color-foreground)]">{t('pdfToTiff.tipTitle')}</span>
+                  {t('pdfToTiff.tipDesc') || 'TIFF recommendations:'} <span className="text-[var(--color-primary)] font-extrabold mx-0.5">{t('pdfToTiff.tipRecommend') || '300 DPI'}</span> {t('pdfToTiff.tipTail') || 'to ensure clean edges.'}
                 </div>
               </div>
 
@@ -391,7 +391,7 @@ export function PDFToTIFFTool({ className = '' }: PDFToTIFFToolProps) {
                 size="lg"
                 onClick={handleProcess}
                 disabled={isProcessing}
-                className="w-full py-4 font-bold shadow-lg shadow-[hsl(var(--color-primary)/0.15)] flex items-center justify-center gap-2"
+                className="w-full py-4 font-bold shadow-lg shadow-[color-mix(in_srgb,var(--color-primary)_15%,transparent)] flex items-center justify-center gap-2"
               >
                 <Printer className="w-5 h-5" />
                 {isProcessing ? (t('pdfToTiff.processing') || 'Processing...') : t('pdfToTiff.processButton')}

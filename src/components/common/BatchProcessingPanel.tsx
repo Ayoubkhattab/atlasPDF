@@ -184,12 +184,12 @@ export const BatchProcessingPanel: React.FC<BatchProcessingPanelProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Files className="h-5 w-5 text-[hsl(var(--color-primary))]" aria-hidden="true" />
-          <h3 className="font-medium text-[hsl(var(--color-foreground))]">
+          <Files className="h-5 w-5 text-[var(--color-primary)]" aria-hidden="true" />
+          <h3 className="font-medium text-[var(--color-foreground)]">
             {translations.title}
           </h3>
           {files.length > 0 && (
-            <span className="text-sm text-[hsl(var(--color-muted-foreground))]">
+            <span className="text-sm text-[var(--color-muted-foreground)]">
               ({files.length} {translations.filesSelected})
             </span>
           )}
@@ -197,7 +197,7 @@ export const BatchProcessingPanel: React.FC<BatchProcessingPanelProps> = ({
         {files.length > 0 && !isProcessing && (
           <button
             onClick={clearFiles}
-            className="text-xs text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-destructive))] transition-colors flex items-center gap-1"
+            className="text-xs text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)] transition-colors flex items-center gap-1"
             aria-label={translations.clearAll}
           >
             <Trash2 className="h-3 w-3" aria-hidden="true" />
@@ -210,7 +210,7 @@ export const BatchProcessingPanel: React.FC<BatchProcessingPanelProps> = ({
       <div
         onDrop={handleDrop}
         onDragOver={handleDragOver}
-        className="border-2 border-dashed border-[hsl(var(--color-border))] rounded-[var(--radius-lg)] p-6 text-center hover:border-[hsl(var(--color-primary))] transition-colors cursor-pointer"
+        className="border-2 border-dashed border-[var(--color-border)] rounded-[var(--radius-lg)] p-6 text-center hover:border-[var(--color-primary)] transition-colors cursor-pointer"
         role="region"
         aria-label="File drop zone"
       >
@@ -228,8 +228,8 @@ export const BatchProcessingPanel: React.FC<BatchProcessingPanelProps> = ({
           htmlFor="batch-file-input"
           className="cursor-pointer flex flex-col items-center gap-2"
         >
-          <Files className="h-8 w-8 text-[hsl(var(--color-muted-foreground))]" aria-hidden="true" />
-          <span className="text-sm text-[hsl(var(--color-muted-foreground))]">
+          <Files className="h-8 w-8 text-[var(--color-muted-foreground)]" aria-hidden="true" />
+          <span className="text-sm text-[var(--color-muted-foreground)]">
             {translations.addFiles}
           </span>
         </label>
@@ -246,25 +246,25 @@ export const BatchProcessingPanel: React.FC<BatchProcessingPanelProps> = ({
             <div
               key={file.id}
               ref={(el) => { fileItemRefs.current[index] = el; }}
-              className="flex items-center gap-3 p-2 rounded-[var(--radius-md)] bg-[hsl(var(--color-muted))] focus-within:ring-2 focus-within:ring-[hsl(var(--color-ring))]"
+              className="flex items-center gap-3 p-2 rounded-[var(--radius-md)] bg-[var(--color-muted)] focus-within:ring-2 focus-within:ring-[var(--color-ring)]"
               role="listitem"
               onKeyDown={(e) => handleFileKeyDown(e, index)}
             >
               <FileStatusIcon status={file.status} />
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
+                  <span className="text-sm font-medium text-[var(--color-foreground)] truncate">
                     {file.file.name}
                   </span>
-                  <span className="text-xs text-[hsl(var(--color-muted-foreground))] ml-2">
+                  <span className="text-xs text-[var(--color-muted-foreground)] ml-2">
                     {formatFileSize(file.file.size)}
                   </span>
                 </div>
                 {file.status === 'processing' && (
                   <div className="mt-1">
-                    <div className="h-1 bg-[hsl(var(--color-background))] rounded-full overflow-hidden">
+                    <div className="h-1 bg-[var(--color-background)] rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-[hsl(var(--color-primary))] transition-all"
+                        className="h-full bg-[var(--color-primary)] transition-all"
                         style={{ width: `${file.progress}%` }}
                         role="progressbar"
                         aria-valuenow={file.progress}
@@ -275,18 +275,18 @@ export const BatchProcessingPanel: React.FC<BatchProcessingPanelProps> = ({
                   </div>
                 )}
                 {file.status === 'error' && file.error && (
-                  <span className="text-xs text-[hsl(var(--color-destructive))]" role="alert">
+                  <span className="text-xs text-[var(--color-destructive)]" role="alert">
                     {file.error}
                   </span>
                 )}
-                <span className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <span className="text-xs text-[var(--color-muted-foreground)]">
                   {getStatusLabel(file.status)}
                 </span>
               </div>
               {!isProcessing && file.status !== 'processing' && (
                 <button
                   onClick={() => removeFile(file.id)}
-                  className="p-1 text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-destructive))] focus:text-[hsl(var(--color-destructive))] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--color-ring))] rounded-sm"
+                  className="p-1 text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)] focus:text-[var(--color-destructive)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)] rounded-sm"
                   aria-label={`Remove ${file.file.name}`}
                   tabIndex={focusedFileIndex === index ? 0 : -1}
                 >
@@ -301,15 +301,15 @@ export const BatchProcessingPanel: React.FC<BatchProcessingPanelProps> = ({
       {/* Overall Progress */}
       {isProcessing && (
         <div className="mt-4">
-          <div className="flex items-center justify-between text-sm text-[hsl(var(--color-muted-foreground))] mb-1">
+          <div className="flex items-center justify-between text-sm text-[var(--color-muted-foreground)] mb-1">
             <span>{translations.progress}</span>
             <span>
               {completedCount}/{files.length} ({overallProgress}%)
             </span>
           </div>
-          <div className="h-2 bg-[hsl(var(--color-muted))] rounded-full overflow-hidden">
+          <div className="h-2 bg-[var(--color-muted)] rounded-full overflow-hidden">
             <div
-              className="h-full bg-[hsl(var(--color-primary))] transition-all"
+              className="h-full bg-[var(--color-primary)] transition-all"
               style={{ width: `${overallProgress}%` }}
             />
           </div>
@@ -370,7 +370,7 @@ export const BatchProcessingPanel: React.FC<BatchProcessingPanelProps> = ({
 
       {/* Empty State */}
       {files.length === 0 && (
-        <p className="mt-4 text-center text-sm text-[hsl(var(--color-muted-foreground))]">
+        <p className="mt-4 text-center text-sm text-[var(--color-muted-foreground)]">
           {translations.noFiles}
         </p>
       )}

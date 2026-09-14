@@ -26,7 +26,7 @@ export const TourTrigger: React.FC<TourTriggerProps> = ({
     return (
       <button
         onClick={onClick}
-        className="text-sm text-[hsl(var(--color-primary))] hover:underline flex items-center gap-1"
+        className="text-sm text-[var(--color-primary)] hover:underline flex items-center gap-1"
         aria-label={label}
       >
         <HelpCircle className="h-4 w-4" aria-hidden="true" />

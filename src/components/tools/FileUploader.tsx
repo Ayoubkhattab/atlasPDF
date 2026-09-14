@@ -491,15 +491,15 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
   // Dynamic styles based on state
   const stateStyles = disabled
-    ? 'border-[hsl(var(--color-muted))] bg-[hsl(var(--color-muted)/0.3)] cursor-not-allowed opacity-50'
+    ? 'border-[var(--color-muted)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] cursor-not-allowed opacity-50'
     : isDragging
-      ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.05)] scale-[1.01] shadow-2xl shadow-primary/10'
+      ? 'border-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_5%,transparent)] scale-[1.01] shadow-2xl shadow-primary/10'
       : `
-      border-[hsl(var(--color-border))] 
-      bg-[hsl(var(--color-card)/0.5)] 
-      hover:border-[hsl(var(--color-primary))] 
-      hover:bg-[hsl(var(--color-background))] 
-      hover:shadow-xl hover:shadow-[hsl(var(--color-primary)/0.05)]
+      border-[var(--color-border)] 
+      bg-[color-mix(in_srgb,var(--color-card)_50%,transparent)] 
+      hover:border-[var(--color-primary)] 
+      hover:bg-[var(--color-background)] 
+      hover:shadow-xl hover:shadow-[color-mix(in_srgb,var(--color-primary)_5%,transparent)]
       glass-card
     `;
 
@@ -532,28 +532,28 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
       {/* Decorative background blob */}
       <div className="absolute inset-0 overflow-hidden rounded-[2rem] pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[hsl(var(--color-primary)/0.03)] rounded-full blur-3xl" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[color-mix(in_srgb,var(--color-primary)_3%,transparent)] rounded-full blur-3xl" />
       </div>
 
       {/* Upload icon */}
       <div className={`
         mb-6 p-4 rounded-full transition-transform duration-300 group-hover:scale-110
-        ${isDragging ? 'bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))]' : 'bg-[hsl(var(--color-muted))] text-[hsl(var(--color-muted-foreground))] group-hover:bg-[hsl(var(--color-primary)/0.1)] group-hover:text-[hsl(var(--color-primary))]'}
+        ${isDragging ? 'bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] text-[var(--color-primary)]' : 'bg-[var(--color-muted)] text-[var(--color-muted-foreground)] group-hover:bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] group-hover:text-[var(--color-primary)]'}
       `}>
         <UploadCloud className="w-10 h-10" aria-hidden="true" />
       </div>
 
       {/* Label */}
-      <p className="text-xl font-semibold text-[hsl(var(--color-foreground))] mb-3 text-center">
+      <p className="text-xl font-semibold text-[var(--color-foreground)] mb-3 text-center">
         {label || t('buttons.upload')}
       </p>
 
       {/* Description */}
-      <div className="text-sm text-[hsl(var(--color-muted-foreground))] text-center max-w-sm leading-relaxed">
+      <div className="text-sm text-[var(--color-muted-foreground)] text-center max-w-sm leading-relaxed">
         {description || (
           <>
             <p className="mb-2">{t('fileUploader.dragDrop')}</p>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[hsl(var(--color-muted)/0.5)] text-xs font-medium">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)] text-xs font-medium">
               <span className="opacity-70">{t('fileUploader.support')}:</span>
               <span>{accept && accept.length > 0 ? accept.join(', ') : t('fileUploader.paste')}</span>
               {maxSize && maxSize !== Infinity && (
@@ -569,7 +569,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
       {/* File info hints - only show when multiple files allowed */}
       {multiple && (
         <div className="mt-6 flex flex-wrap gap-2 justify-center">
-          <span className="text-xs px-2 py-1 rounded-md bg-[hsl(var(--color-muted))] text-[hsl(var(--color-muted-foreground))]">
+          <span className="text-xs px-2 py-1 rounded-md bg-[var(--color-muted)] text-[var(--color-muted-foreground)]">
             Max files: {maxFiles}
           </span>
         </div>
@@ -577,11 +577,11 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
 
       {/* Drag overlay */}
       {isDragging && (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[hsl(var(--color-background)/0.9)] backdrop-blur-sm rounded-[2rem] z-10 transition-opacity duration-200">
-          <div className="p-4 rounded-full bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))] mb-4 motion-safe:animate-bounce">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[color-mix(in_srgb,var(--color-background)_90%,transparent)] backdrop-blur-sm rounded-[2rem] z-10 transition-opacity duration-200">
+          <div className="p-4 rounded-full bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] text-[var(--color-primary)] mb-4 motion-safe:animate-bounce">
             <Plus className="w-8 h-8" />
           </div>
-          <p className="text-xl font-bold text-[hsl(var(--color-primary))]">
+          <p className="text-xl font-bold text-[var(--color-primary)]">
             {t('fileUploader.dropToUpload')}
           </p>
         </div>
@@ -609,7 +609,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
           `}</style>
           
           <div 
-            className={`bg-[hsl(var(--color-card))] border border-white/10 dark:border-zinc-800/40 p-6 rounded-[2rem] max-w-sm w-full shadow-2xl mx-4 transition-all duration-300 transform scale-100 ${
+            className={`bg-[var(--color-card)] border border-white/10 dark:border-zinc-800/40 p-6 rounded-[2rem] max-w-sm w-full shadow-2xl mx-4 transition-all duration-300 transform scale-100 ${
               shouldShake ? 'modal-shake' : ''
             }`}
             onClick={(e) => {
@@ -623,13 +623,13 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                 <Lock className="w-8 h-8" />
               </div>
               
-              <h3 className="text-lg font-bold text-[hsl(var(--color-foreground))] mb-1">
+              <h3 className="text-lg font-bold text-[var(--color-foreground)] mb-1">
                 {t('fileUploader.encryptedTitle')}
               </h3>
               
-              <p className="text-xs text-[hsl(var(--color-muted-foreground))] mb-4 max-w-[280px] break-all leading-relaxed">
+              <p className="text-xs text-[var(--color-muted-foreground)] mb-4 max-w-[280px] break-all leading-relaxed">
                 {t('fileUploader.enterPasswordHelp')}
-                <span className="font-semibold text-[hsl(var(--color-foreground))]">{encryptPendingFiles[encryptCurrentIndex]?.name}</span>
+                <span className="font-semibold text-[var(--color-foreground)]">{encryptPendingFiles[encryptCurrentIndex]?.name}</span>
               </p>
               
               {/* Form */}
@@ -646,7 +646,7 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                     onChange={(e) => setPassword(e.target.value)}
                     autoFocus
                     disabled={isDecrypting}
-                    className="w-full px-4 py-2.5 rounded-[var(--radius-md)] bg-[hsl(var(--color-muted)/0.4)] border border-[hsl(var(--color-input))] text-sm text-[hsl(var(--color-foreground))] placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] focus:border-transparent transition-all"
+                    className="w-full px-4 py-2.5 rounded-[var(--radius-md)] bg-[color-mix(in_srgb,var(--color-muted)_40%,transparent)] border border-[var(--color-input)] text-sm text-[var(--color-foreground)] placeholder:text-zinc-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:border-transparent transition-all"
                   />
                 </div>
                 
@@ -662,14 +662,14 @@ export const FileUploader: React.FC<FileUploaderProps> = ({
                     type="button"
                     onClick={handleDecryptCancel}
                     disabled={isDecrypting}
-                    className="flex-1 px-4 py-2 text-xs font-semibold rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] hover:bg-[hsl(var(--color-muted))] text-[hsl(var(--color-foreground))] transition-colors disabled:opacity-50"
+                    className="flex-1 px-4 py-2 text-xs font-semibold rounded-[var(--radius-md)] border border-[var(--color-border)] hover:bg-[var(--color-muted)] text-[var(--color-foreground)] transition-colors disabled:opacity-50"
                   >
                     {t('fileUploader.cancelButton')}
                   </button>
                   <button
                     type="submit"
                     disabled={isDecrypting || !password}
-                    className="flex-1 px-4 py-2 text-xs font-semibold rounded-[var(--radius-md)] bg-[hsl(var(--color-primary))] hover:bg-[hsl(var(--color-primary-hover))] text-[hsl(var(--color-primary-foreground))] transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 py-2 text-xs font-semibold rounded-[var(--radius-md)] bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] text-[var(--color-primary-foreground)] transition-colors flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isDecrypting ? (
                       <>

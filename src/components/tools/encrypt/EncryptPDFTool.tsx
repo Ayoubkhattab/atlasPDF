@@ -191,10 +191,10 @@ export function EncryptPDFTool({ className = '' }: EncryptPDFToolProps) {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                <p className="text-sm font-medium text-[var(--color-foreground)]">
                   {file.name}
                 </p>
-                <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                <p className="text-xs text-[var(--color-muted-foreground)]">
                   {formatSize(file.size)}
                 </p>
               </div>
@@ -215,7 +215,7 @@ export function EncryptPDFTool({ className = '' }: EncryptPDFToolProps) {
       {/* Password Options */}
       {file && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('encryptPdf.passwordTitle') || 'Password Settings'}
           </h3>
           
@@ -229,7 +229,7 @@ export function EncryptPDFTool({ className = '' }: EncryptPDFToolProps) {
 
             {/* User Password */}
             <div>
-              <label htmlFor="user-password" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <label htmlFor="user-password" className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTools('encryptPdf.userPasswordLabel') || 'User Password (to open document)'}
               </label>
               <div className="relative">
@@ -241,25 +241,25 @@ export function EncryptPDFTool({ className = '' }: EncryptPDFToolProps) {
                   disabled={isProcessing}
                   placeholder={tTools('encryptPdf.userPasswordPlaceholder') || 'Enter password to open PDF'}
                   aria-describedby="user-password-hint"
-                  className="w-full px-3 py-2 pr-10 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                  className="w-full px-3 py-2 pr-10 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowUserPassword(!showUserPassword)}
                   aria-label={showUserPassword ? 'Hide user password' : 'Show user password'}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
                 >
                   {showUserPassword ? '🙈' : '👁️'}
                 </button>
               </div>
-              <p id="user-password-hint" className="mt-1 text-xs text-[hsl(var(--color-muted-foreground))]">
+              <p id="user-password-hint" className="mt-1 text-xs text-[var(--color-muted-foreground)]">
                 {tTools('encryptPdf.userPasswordHint') || 'Required to open and view the PDF.'}
               </p>
             </div>
 
             {/* Owner Password */}
             <div>
-              <label htmlFor="owner-password" className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-2">
+              <label htmlFor="owner-password" className="block text-sm font-medium text-[var(--color-foreground)] mb-2">
                 {tTools('encryptPdf.ownerPasswordLabel') || 'Owner Password (to change permissions)'}
               </label>
               <div className="relative">
@@ -271,18 +271,18 @@ export function EncryptPDFTool({ className = '' }: EncryptPDFToolProps) {
                   disabled={isProcessing}
                   placeholder={tTools('encryptPdf.ownerPasswordPlaceholder') || 'Enter owner password'}
                   aria-describedby="owner-password-hint"
-                  className="w-full px-3 py-2 pr-10 rounded-[var(--radius-md)] border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                  className="w-full px-3 py-2 pr-10 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                 />
                 <button
                   type="button"
                   onClick={() => setShowOwnerPassword(!showOwnerPassword)}
                   aria-label={showOwnerPassword ? 'Hide owner password' : 'Show owner password'}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]"
                 >
                   {showOwnerPassword ? '🙈' : '👁️'}
                 </button>
               </div>
-              <p id="owner-password-hint" className="mt-1 text-xs text-[hsl(var(--color-muted-foreground))]">
+              <p id="owner-password-hint" className="mt-1 text-xs text-[var(--color-muted-foreground)]">
                 {tTools('encryptPdf.ownerPasswordHint') || 'Required to modify permissions or remove encryption.'}
               </p>
             </div>
@@ -293,7 +293,7 @@ export function EncryptPDFTool({ className = '' }: EncryptPDFToolProps) {
       {/* Permission Options */}
       {file && (
         <Card variant="outlined">
-          <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))] mb-4">
+          <h3 className="text-lg font-medium text-[var(--color-foreground)] mb-4">
             {tTools('encryptPdf.permissionsTitle') || 'Document Permissions'}
           </h3>
           
@@ -305,9 +305,9 @@ export function EncryptPDFTool({ className = '' }: EncryptPDFToolProps) {
                   checked={value}
                   onChange={() => handlePermissionChange(key as keyof PDFPermissions)}
                   disabled={isProcessing}
-                  className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                  className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                 />
-                <span className="text-sm text-[hsl(var(--color-foreground))]">
+                <span className="text-sm text-[var(--color-foreground)]">
                   {key === 'printing' && (tTools('encryptPdf.permPrinting') || 'Allow Printing')}
                   {key === 'modifying' && (tTools('encryptPdf.permModifying') || 'Allow Modifying')}
                   {key === 'copying' && (tTools('encryptPdf.permCopying') || 'Allow Copying')}
