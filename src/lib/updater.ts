@@ -7,11 +7,11 @@ import {
   UpdateSettings,
 } from '@/types/updater';
 
-export const GITHUB_REPO = 'PDFCraftTool/pdfcraft';
+export const GITHUB_REPO = 'Ayoubkhattab/atlasPDF';
 export const DEFAULT_CURRENT_VERSION =
   process.env.NEXT_PUBLIC_APP_VERSION || '0.1.0';
 
-const STORAGE_KEY = 'pdfcraft_update_settings';
+const STORAGE_KEY = 'atlaspdf_update_settings';
 const DEFAULT_CHECK_INTERVAL_HOURS = 24;
 
 /**
@@ -189,7 +189,7 @@ export function matchPlatformAssets(
 export function getUpdateSettings(): UpdateSettings {
   if (typeof window === 'undefined') {
     return {
-      autoCheck: true,
+      autoCheck: false,
       checkFrequencyHours: DEFAULT_CHECK_INTERVAL_HOURS,
       lastCheckedTimestamp: 0,
       ignoredVersions: [],
@@ -200,7 +200,7 @@ export function getUpdateSettings(): UpdateSettings {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
       return {
-        autoCheck: true,
+        autoCheck: false,
         checkFrequencyHours: DEFAULT_CHECK_INTERVAL_HOURS,
         lastCheckedTimestamp: 0,
         ignoredVersions: [],
@@ -208,14 +208,16 @@ export function getUpdateSettings(): UpdateSettings {
     }
     const parsed = JSON.parse(raw);
     return {
-      autoCheck: parsed.autoCheck ?? true,
+      // Network isolation: the update checker must stay off unless a future build explicitly
+      // re-enables it. Never default this to true again — see docs/PROJECT_STUDY.md §9.
+      autoCheck: parsed.autoCheck ?? false,
       checkFrequencyHours: parsed.checkFrequencyHours ?? DEFAULT_CHECK_INTERVAL_HOURS,
       lastCheckedTimestamp: parsed.lastCheckedTimestamp ?? 0,
       ignoredVersions: Array.isArray(parsed.ignoredVersions) ? parsed.ignoredVersions : [],
     };
   } catch {
     return {
-      autoCheck: true,
+      autoCheck: false,
       checkFrequencyHours: DEFAULT_CHECK_INTERVAL_HOURS,
       lastCheckedTimestamp: 0,
       ignoredVersions: [],
@@ -266,7 +268,7 @@ export function isVersionIgnored(version: string): boolean {
   return settings.ignoredVersions.includes(version);
 }
 
-const SESSION_SNOOZE_KEY = 'pdfcraft_update_snoozed_version';
+const SESSION_SNOOZE_KEY = 'atlaspdf_update_snoozed_version';
 
 /**
  * Checks if a specific version has been snoozed (reminded later) in the current browser/app session.
@@ -293,10 +295,11 @@ export function snoozeUpdateInSession(version: string): void {
   }
 }
 
+// Network isolation: unaffiliated third-party proxy mirrors (gh-proxy.com, mirror.ghproxy.com)
+// were removed permanently — never re-add them, they are an unreviewed MITM/supply-chain risk.
+// See docs/PROJECT_STUDY.md §5.1 and §9.
 export const GITHUB_RELEASE_ENDPOINTS = [
   `https://api.github.com/repos/${GITHUB_REPO}/releases/latest`,
-  `https://gh-proxy.com/https://api.github.com/repos/${GITHUB_REPO}/releases/latest`,
-  `https://mirror.ghproxy.com/https://api.github.com/repos/${GITHUB_REPO}/releases/latest`,
 ];
 
 /**
@@ -331,7 +334,6 @@ export async function fetchLatestRelease(): Promise<ReleaseInfo> {
             size: asset.size,
             platformType: categorizeAsset(asset.name),
             browserDownloadUrl: asset.browser_download_url,
-            mirrorDownloadUrl: `https://gh-proxy.com/${asset.browser_download_url}`,
           }))
         : [];
 

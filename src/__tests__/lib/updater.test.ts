@@ -73,26 +73,26 @@ describe('Software Updater', () => {
 
   describe('categorizeAsset & matchPlatformAssets', () => {
     it('categorizes assets correctly', () => {
-      expect(categorizeAsset('PDFCraft-Windows-x64-Portable.zip')).toBe('windows-portable');
-      expect(categorizeAsset('PDFCraft-Windows-x64-Setup.exe')).toBe('windows-installer');
-      expect(categorizeAsset('PDFCraft_0.1.0_x64_en-US.msi')).toBe('windows-installer');
-      expect(categorizeAsset('PDFCraft.dmg')).toBe('macos-dmg');
-      expect(categorizeAsset('PDFCraft.AppImage')).toBe('linux-appimage');
-      expect(categorizeAsset('PDFCraft.deb')).toBe('linux-deb');
+      expect(categorizeAsset('AtlasPDF-Windows-x64-Portable.zip')).toBe('windows-portable');
+      expect(categorizeAsset('AtlasPDF-Windows-x64-Setup.exe')).toBe('windows-installer');
+      expect(categorizeAsset('AtlasPDF_0.1.0_x64_en-US.msi')).toBe('windows-installer');
+      expect(categorizeAsset('AtlasPDF.dmg')).toBe('macos-dmg');
+      expect(categorizeAsset('AtlasPDF.AppImage')).toBe('linux-appimage');
+      expect(categorizeAsset('AtlasPDF.deb')).toBe('linux-deb');
       expect(categorizeAsset('source-code.zip')).toBe('source');
     });
 
     it('matches Windows platform assets with portable prioritized', () => {
       const assets: ReleaseAsset[] = [
         {
-          name: 'PDFCraft-Windows-x64-Portable.zip',
+          name: 'AtlasPDF-Windows-x64-Portable.zip',
           downloadUrl: 'https://example.com/portable.zip',
           size: 1024,
           platformType: 'windows-portable',
           browserDownloadUrl: 'https://example.com/portable.zip',
         },
         {
-          name: 'PDFCraft-Setup.exe',
+          name: 'AtlasPDF-Setup.exe',
           downloadUrl: 'https://example.com/setup.exe',
           size: 2048,
           platformType: 'windows-installer',
@@ -147,13 +147,13 @@ describe('Software Updater', () => {
     it('fetches release and discovers update via mocked fetch', async () => {
       const mockGitHubResponse = {
         tag_name: 'v2026.09.15-xyz',
-        name: 'PDFCraft v2026.09.15',
+        name: 'AtlasPDF v2026.09.15',
         published_at: '2026-09-15T12:00:00Z',
-        html_url: 'https://github.com/PDFCraftTool/pdfcraft/releases/tag/v2026.09.15-xyz',
+        html_url: 'https://github.com/Ayoubkhattab/atlasPDF/releases/tag/v2026.09.15-xyz',
         body: '## Release notes',
         assets: [
           {
-            name: 'PDFCraft-Windows-x64-Portable.zip',
+            name: 'AtlasPDF-Windows-x64-Portable.zip',
             browser_download_url: 'https://example.com/portable.zip',
             size: 10485760,
           },

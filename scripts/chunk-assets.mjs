@@ -88,6 +88,14 @@ async function main() {
         // Skip already chunked parts and manifests
         if (filePath.includes('.part_') || filePath.endsWith('.manifest.json')) return;
 
+        // Tesseract.js fetches its per-language .traineddata(.gz) files directly via its
+        // own internal fetch() (langPath option) — it has no knowledge of this project's
+        // chunk/manifest reassembly scheme (that's only wired up for LibreOffice WASM via
+        // asset-loader.ts). Chunking a file here would silently break OCR for that language
+        // on every platform, not just Cloudflare, so these are always excluded.
+        const normalized = filePath.split('\\').join('/');
+        if (normalized.includes('/tesseract/lang-data/')) return;
+
         const stat = statSync(filePath);
         if (stat.size > LIMIT_SIZE) {
             largeFiles.push(filePath);

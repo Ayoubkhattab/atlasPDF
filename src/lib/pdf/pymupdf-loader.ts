@@ -53,6 +53,10 @@ export async function loadPyMuPDF(): Promise<any> {
       const loadPyodide = pyodideModule.loadPyodide;
 
       // Initialize Pyodide
+      // Network isolation guardrail: `indexURL` must always stay local (basePath) and
+      // packages must always be loaded by explicit local .whl URL, never by bare package
+      // name — Pyodide otherwise falls back to fetching from cdn.jsdelivr.net.
+      // See docs/PROJECT_STUDY.md §5.7/§9.
       const pyodide = await loadPyodide({
         indexURL: basePath,
         fullStdLib: false
@@ -1264,7 +1268,7 @@ base64.b64encode(pdf_bytes).decode('ascii')
           pyodide.FS.writeFile(inputPath, pdfData);
 
           if (needsUnicodeFont) {
-            const fontResponse = await fetch(resolvePublicAssetPath('/fonts/NotoSansSC-Regular.ttf'));
+            const fontResponse = await fetch(resolvePublicAssetPath('/fonts/itfQomraArabic-Regular.ttf'));
             if (!fontResponse.ok) {
               throw new Error('Unable to load the Unicode replacement font.');
             }
@@ -1328,7 +1332,7 @@ def resolve_embedded_font(page, span_font):
             if not content:
                 continue
             safe_extension = extension if extension in ("ttf", "otf", "cff", "cid") else "font"
-            extracted_path = f"/tmp/pdfcraft_original_{xref}.{safe_extension}"
+            extracted_path = f"/tmp/atlaspdf_original_{xref}.{safe_extension}"
             with open(extracted_path, "wb") as extracted_file:
                 extracted_file.write(content)
             temporary_fonts.append(extracted_path)
@@ -1413,7 +1417,7 @@ for item in prepared:
 
     page = doc[item["page_index"]]
     original_font_file = item["font_file"]
-    font_name = f"pdfcraftorig{item['font_xref']}" if original_font_file else item["font_name"]
+    font_name = f"atlaspdforig{item['font_xref']}" if original_font_file else item["font_name"]
     font_file = original_font_file
     insertion_size = item["font_size"]
     lines = replacement_text.splitlines() or [""]
@@ -1467,7 +1471,7 @@ for item in prepared:
     except Exception:
         used_fallback_font = True
         fallback_file = font_path
-        fallback_name = "pdfcraft-unicode" if fallback_file else item["font_name"]
+        fallback_name = "atlaspdf-unicode" if fallback_file else item["font_name"]
         if len(lines) > 1 or fit_mode == "expand":
             page.insert_textbox(
                 insertion_rect,

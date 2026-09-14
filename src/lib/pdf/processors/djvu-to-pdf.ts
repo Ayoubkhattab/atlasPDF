@@ -13,6 +13,7 @@ import type {
 } from '@/types/pdf';
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
+import { withBasePath } from '@/lib/utils/path';
 
 /**
  * DJVU to PDF options
@@ -238,8 +239,10 @@ export class DJVUToPDFProcessor extends BasePDFProcessor {
 
             // Load script
             const script = document.createElement('script');
-            // Official DjVu.js library from djvu.js.org (v0.5.4)
-            script.src = 'https://djvu.js.org/assets/dist/djvu.js';
+            // DjVu.js library (v0.5.4), vendored locally for offline/network isolation.
+            // GPL-2.0-licensed (see /vendor/djvu.js.LICENSE.txt) — do not point this back at
+            // djvu.js.org; see docs/PROJECT_STUDY.md §9 for the network-isolation rationale.
+            script.src = withBasePath('/vendor/djvu.js');
             script.async = true;
 
             script.onload = () => {

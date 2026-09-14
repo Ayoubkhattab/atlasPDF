@@ -14,6 +14,7 @@ import type {
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
 import { loadPdfjs, loadPdfLib } from '../loader';
+import { withBasePath } from '@/lib/utils/path';
 
 /**
  * Supported OCR languages
@@ -162,7 +163,7 @@ export function generateMarkdownOutput(
 ): string {
   const sections: string[] = [
     `# ${docTitle.replace(/\.[^.]+$/, '')}`,
-    `> *Extracted via PDFCraft OCR on ${new Date().toLocaleDateString()}*`,
+    `> *Extracted via AtlasPDF OCR on ${new Date().toLocaleDateString()}*`,
     '',
   ];
 
@@ -198,7 +199,7 @@ export function generateJsonOutput(
       metadata: {
         ...meta,
         generatedAt: new Date().toISOString(),
-        engine: 'PDFCraft OCR Engine v2',
+        engine: 'AtlasPDF OCR Engine v2',
       },
       pages: pagesData.map(p => ({
         pageNumber: p.pageNum,
@@ -594,7 +595,14 @@ export class OCRProcessor extends BasePDFProcessor {
     const Tesseract = await import('tesseract.js');
     const langString = languages && languages.length > 0 ? languages.join('+') : 'eng';
 
+    // Network isolation: Tesseract.js defaults to fetching its worker script, WASM core,
+    // and per-language .traineddata files from cdn.jsdelivr.net. All three are hosted
+    // locally instead (see scripts/sync-tesseract-assets.js and public/tesseract/).
+    // See docs/PROJECT_STUDY.md §9.
     this.tesseractWorker = await Tesseract.createWorker(langString, 1, {
+      workerPath: withBasePath('/tesseract/worker.min.js'),
+      corePath: withBasePath('/tesseract/core'),
+      langPath: withBasePath('/tesseract/lang-data'),
       logger: (m: any) => {
         if (m && m.status) {
           const percent = typeof m.progress === 'number' ? Math.round(m.progress * 100) : 0;
@@ -719,7 +727,7 @@ export class OCRProcessor extends BasePDFProcessor {
       let fontBuffer: ArrayBuffer | null = null;
       if (typeof window !== 'undefined') {
         try {
-          const res = await fetch('/fonts/NotoSansSC-Regular.ttf');
+          const res = await fetch('/fonts/itfQomraArabic-Regular.ttf');
           if (res.ok) {
             fontBuffer = await res.arrayBuffer();
           }
@@ -730,7 +738,7 @@ export class OCRProcessor extends BasePDFProcessor {
         try {
           const fs = await import('fs');
           const path = await import('path');
-          const localPath = path.resolve(process.cwd(), 'public/fonts/NotoSansSC-Regular.ttf');
+          const localPath = path.resolve(process.cwd(), 'public/fonts/itfQomraArabic-Regular.ttf');
           if (fs.existsSync(localPath)) {
             const fileBuf = fs.readFileSync(localPath);
             fontBuffer = fileBuf.buffer.slice(fileBuf.byteOffset, fileBuf.byteOffset + fileBuf.byteLength);

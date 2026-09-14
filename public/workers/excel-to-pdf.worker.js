@@ -25,7 +25,7 @@ async function extractTextFromXLSX(arrayBuffer) {
 async function loadCJKFont() {
     if (cjkFontLoaded) return true;
     try {
-        const res = await fetch('/fonts/NotoSansSC-Regular.ttf');
+        const res = await fetch('/fonts/itfQomraArabic-Regular.ttf');
         if (res.ok) {
             const data = await res.arrayBuffer();
             if (data.byteLength > 100000) {
