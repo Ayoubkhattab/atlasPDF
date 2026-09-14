@@ -77,6 +77,7 @@ export function WorkflowPreview({ nodes, edges, inputFiles, isVisible, onToggle 
 
                             await page.render({
                                 canvasContext: context,
+                                canvas,
                                 viewport: viewport,
                             }).promise;
 
@@ -214,7 +215,7 @@ export function WorkflowPreview({ nodes, edges, inputFiles, isVisible, onToggle 
         return (
             <button
                 onClick={onToggle}
-                className="fixed bottom-4 right-4 z-40 flex items-center gap-2 px-4 py-2 bg-[hsl(var(--color-primary))] text-white rounded-lg shadow-lg hover:bg-[hsl(var(--color-primary)/0.9)] transition-colors"
+                className="fixed bottom-4 right-4 z-40 flex items-center gap-2 px-4 py-2 bg-[var(--color-primary)] text-white rounded-lg shadow-lg hover:bg-[color-mix(in_srgb,var(--color-primary)_90%,transparent)] transition-colors"
             >
                 <Eye className="w-4 h-4" />
                 {tWorkflow('showPreview') || 'Show Preview'}
@@ -226,7 +227,7 @@ export function WorkflowPreview({ nodes, edges, inputFiles, isVisible, onToggle 
         <div
             ref={previewContainerRef}
             className={`
-        fixed z-40 bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] rounded-lg shadow-2xl
+        fixed z-40 bg-[var(--color-background)] border border-[var(--color-border)] rounded-lg shadow-2xl
         transition-all duration-300
         ${isExpanded
                     ? 'inset-4'
@@ -235,38 +236,38 @@ export function WorkflowPreview({ nodes, edges, inputFiles, isVisible, onToggle 
       `}
         >
             {/* Header */}
-            <div className="flex items-center justify-between px-3 py-2 border-b border-[hsl(var(--color-border))] bg-[hsl(var(--color-muted)/0.3)] rounded-t-lg">
+            <div className="flex items-center justify-between px-3 py-2 border-b border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] rounded-t-lg">
                 <div className="flex items-center gap-2">
-                    <Eye className="w-4 h-4 text-[hsl(var(--color-primary))]" />
-                    <span className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                    <Eye className="w-4 h-4 text-[var(--color-primary)]" />
+                    <span className="text-sm font-medium text-[var(--color-foreground)]">
                         {tWorkflow('preview') || 'Preview'}
                     </span>
                     {isLoading && (
-                        <RefreshCw className="w-3 h-3 text-[hsl(var(--color-muted-foreground))] animate-spin" />
+                        <RefreshCw className="w-3 h-3 text-[var(--color-muted-foreground)] animate-spin" />
                     )}
                 </div>
                 <div className="flex items-center gap-1">
                     <button
                         onClick={() => generatePreview()}
-                        className="p-1.5 rounded hover:bg-[hsl(var(--color-muted))] transition-colors"
+                        className="p-1.5 rounded hover:bg-[var(--color-muted)] transition-colors"
                         title="Refresh preview"
                     >
-                        <RefreshCw className="w-3.5 h-3.5 text-[hsl(var(--color-muted-foreground))]" />
+                        <RefreshCw className="w-3.5 h-3.5 text-[var(--color-muted-foreground)]" />
                     </button>
                     <button
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="p-1.5 rounded hover:bg-[hsl(var(--color-muted))] transition-colors"
+                        className="p-1.5 rounded hover:bg-[var(--color-muted)] transition-colors"
                     >
                         {isExpanded
-                            ? <Minimize2 className="w-3.5 h-3.5 text-[hsl(var(--color-muted-foreground))]" />
-                            : <Maximize2 className="w-3.5 h-3.5 text-[hsl(var(--color-muted-foreground))]" />
+                            ? <Minimize2 className="w-3.5 h-3.5 text-[var(--color-muted-foreground)]" />
+                            : <Maximize2 className="w-3.5 h-3.5 text-[var(--color-muted-foreground)]" />
                         }
                     </button>
                     <button
                         onClick={onToggle}
-                        className="p-1.5 rounded hover:bg-[hsl(var(--color-muted))] transition-colors"
+                        className="p-1.5 rounded hover:bg-[var(--color-muted)] transition-colors"
                     >
-                        <X className="w-3.5 h-3.5 text-[hsl(var(--color-muted-foreground))]" />
+                        <X className="w-3.5 h-3.5 text-[var(--color-muted-foreground)]" />
                     </button>
                 </div>
             </div>
@@ -275,28 +276,28 @@ export function WorkflowPreview({ nodes, edges, inputFiles, isVisible, onToggle 
             <div className="flex-1 overflow-hidden" style={{ height: isExpanded ? 'calc(100% - 44px)' : 'calc(100% - 44px)' }}>
                 {inputFiles.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full p-4 text-center">
-                        <EyeOff className="w-12 h-12 text-[hsl(var(--color-muted-foreground))] opacity-50" />
-                        <p className="mt-3 text-sm text-[hsl(var(--color-muted-foreground))]">
+                        <EyeOff className="w-12 h-12 text-[var(--color-muted-foreground)] opacity-50" />
+                        <p className="mt-3 text-sm text-[var(--color-muted-foreground)]">
                             {tWorkflow('noFilesForPreview') || 'Select files to see preview'}
                         </p>
                     </div>
                 ) : isLoading ? (
                     <div className="flex flex-col items-center justify-center h-full">
-                        <div className="w-8 h-8 border-3 border-[hsl(var(--color-primary))] border-t-transparent rounded-full animate-spin" />
-                        <p className="mt-3 text-sm text-[hsl(var(--color-muted-foreground))]">
+                        <div className="w-8 h-8 border-3 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+                        <p className="mt-3 text-sm text-[var(--color-muted-foreground)]">
                             {tWorkflow('generatingPreview') || 'Generating preview...'}
                         </p>
                     </div>
                 ) : previews.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full p-4 text-center">
-                        <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                        <p className="text-sm text-[var(--color-muted-foreground)]">
                             {tWorkflow('noPreviewAvailable') || 'No preview available'}
                         </p>
                     </div>
                 ) : (
                     <div className="flex h-full">
                         {/* Thumbnails sidebar */}
-                        <div className="w-20 border-r border-[hsl(var(--color-border))] overflow-y-auto p-2 space-y-2">
+                        <div className="w-20 border-r border-[var(--color-border)] overflow-y-auto p-2 space-y-2">
                             {previews.map((preview, index) => (
                                 <button
                                     key={index}
@@ -304,8 +305,8 @@ export function WorkflowPreview({ nodes, edges, inputFiles, isVisible, onToggle 
                                     className={`
                     w-full aspect-[3/4] rounded overflow-hidden border-2 transition-all
                     ${index === selectedPageIndex
-                                            ? 'border-[hsl(var(--color-primary))] ring-2 ring-[hsl(var(--color-primary)/0.3)]'
-                                            : 'border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-primary)/0.5)]'
+                                            ? 'border-[var(--color-primary)] ring-2 ring-[color-mix(in_srgb,var(--color-primary)_30%,transparent)]'
+                                            : 'border-[var(--color-border)] hover:border-[color-mix(in_srgb,var(--color-primary)_50%,transparent)]'
                                         }
                   `}
                                 >
@@ -319,7 +320,7 @@ export function WorkflowPreview({ nodes, edges, inputFiles, isVisible, onToggle 
                         </div>
 
                         {/* Main preview */}
-                        <div className="flex-1 flex items-center justify-center p-4 bg-[hsl(var(--color-muted)/0.2)]">
+                        <div className="flex-1 flex items-center justify-center p-4 bg-[color-mix(in_srgb,var(--color-muted)_20%,transparent)]">
                             {previews[selectedPageIndex] && (
                                 <img
                                     src={previews[selectedPageIndex].thumbnail}

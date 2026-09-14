@@ -152,15 +152,15 @@ export function WorkflowLibrary({
     // Collapsed view
     if (isCollapsed) {
         return (
-            <div className="w-12 h-full bg-[hsl(var(--color-background))] border-l border-[hsl(var(--color-border))] flex flex-col items-center py-2">
+            <div className="w-12 h-full bg-[var(--color-background)] border-l border-[var(--color-border)] flex flex-col items-center py-2">
                 <button
                     onClick={onToggleCollapse}
-                    className="p-2 rounded-lg hover:bg-[hsl(var(--color-muted))] transition-colors mb-2"
+                    className="p-2 rounded-lg hover:bg-[var(--color-muted)] transition-colors mb-2"
                     title={tWorkflow('templates') || 'Templates'}
                 >
-                    <PanelRightOpen className="w-5 h-5 text-[hsl(var(--color-primary))]" />
+                    <PanelRightOpen className="w-5 h-5 text-[var(--color-primary)]" />
                 </button>
-                <div className="w-8 h-px bg-[hsl(var(--color-border))] mb-2" />
+                <div className="w-8 h-px bg-[var(--color-border)] mb-2" />
                 {/* Show tab icons when collapsed */}
                 {tabs.map(tab => {
                     const Icon = tab.icon;
@@ -168,10 +168,10 @@ export function WorkflowLibrary({
                         <button
                             key={tab.id}
                             onClick={onToggleCollapse}
-                            className="p-2 rounded-lg hover:bg-[hsl(var(--color-muted))] transition-colors mb-1"
+                            className="p-2 rounded-lg hover:bg-[var(--color-muted)] transition-colors mb-1"
                             title={tab.label}
                         >
-                            <Icon className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                            <Icon className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                         </button>
                     );
                 })}
@@ -180,23 +180,23 @@ export function WorkflowLibrary({
     }
 
     return (
-        <div className="w-80 h-full bg-[hsl(var(--color-background))] border-l border-[hsl(var(--color-border))] flex flex-col">
+        <div className="w-80 h-full bg-[var(--color-background)] border-l border-[var(--color-border)] flex flex-col">
             {/* Collapse button header */}
-            <div className="flex items-center justify-between px-4 py-2 border-b border-[hsl(var(--color-border))]">
-                <span className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--color-border)]">
+                <span className="text-sm font-medium text-[var(--color-foreground)]">
                     {tWorkflow('templates') || 'Library'}
                 </span>
                 <button
                     onClick={onToggleCollapse}
-                    className="p-1.5 rounded-lg hover:bg-[hsl(var(--color-muted))] transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-[var(--color-muted)] transition-colors"
                     title="Collapse sidebar"
                 >
-                    <PanelRightClose className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                    <PanelRightClose className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                 </button>
             </div>
 
             {/* Tabs */}
-            <div className="flex border-b border-[hsl(var(--color-border))]">
+            <div className="flex border-b border-[var(--color-border)]">
                 {tabs.map(tab => {
                     const Icon = tab.icon;
                     return (
@@ -206,8 +206,8 @@ export function WorkflowLibrary({
                             className={`
                 flex-1 flex items-center justify-center gap-2 py-3 text-sm font-medium transition-colors
                 ${activeTab === tab.id
-                                    ? 'text-[hsl(var(--color-primary))] border-b-2 border-[hsl(var(--color-primary))]'
-                                    : 'text-[hsl(var(--color-muted-foreground))] hover:text-[hsl(var(--color-foreground))]'
+                                    ? 'text-[var(--color-primary)] border-b-2 border-[var(--color-primary)]'
+                                    : 'text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]'
                                 }
               `}
                         >
@@ -234,8 +234,8 @@ export function WorkflowLibrary({
                                         className={`
                       flex items-center gap-1.5 px-2.5 py-1.5 rounded-full text-xs font-medium transition-colors
                       ${selectedCategory === cat.id
-                                                ? 'bg-[hsl(var(--color-primary))] text-white'
-                                                : 'bg-[hsl(var(--color-muted))] text-[hsl(var(--color-muted-foreground))] hover:bg-[hsl(var(--color-muted)/0.8)]'
+                                                ? 'bg-[var(--color-primary)] text-white'
+                                                : 'bg-[var(--color-muted)] text-[var(--color-muted-foreground)] hover:bg-[color-mix(in_srgb,var(--color-muted)_80%,transparent)]'
                                             }
                     `}
                                     >
@@ -251,24 +251,24 @@ export function WorkflowLibrary({
                             {filteredTemplates.map(template => (
                                 <div
                                     key={template.id}
-                                    className="p-3 rounded-lg border border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-primary)/0.5)] hover:shadow-md transition-all cursor-pointer group"
+                                    className="p-3 rounded-lg border border-[var(--color-border)] hover:border-[color-mix(in_srgb,var(--color-primary)_50%,transparent)] hover:shadow-md transition-all cursor-pointer group"
                                     onClick={() => onLoadTemplate(template)}
                                 >
                                     <div className="flex items-start justify-between">
                                         <div className="flex-1">
-                                            <h4 className="text-sm font-medium text-[hsl(var(--color-foreground))] group-hover:text-[hsl(var(--color-primary))]">
+                                            <h4 className="text-sm font-medium text-[var(--color-foreground)] group-hover:text-[var(--color-primary)]">
                                                 {getTemplateName(template)}
                                             </h4>
-                                            <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1 line-clamp-2">
+                                            <p className="text-xs text-[var(--color-muted-foreground)] mt-1 line-clamp-2">
                                                 {getTemplateDescription(template)}
                                             </p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-2 mt-2">
-                                        <span className="text-[10px] px-2 py-0.5 bg-[hsl(var(--color-muted))] rounded-full text-[hsl(var(--color-muted-foreground))]">
+                                        <span className="text-[10px] px-2 py-0.5 bg-[var(--color-muted)] rounded-full text-[var(--color-muted-foreground)]">
                                             {template.nodes.length} {tWorkflow('nodes') || 'nodes'}
                                         </span>
-                                        <span className="text-[10px] px-2 py-0.5 bg-[hsl(var(--color-muted))] rounded-full text-[hsl(var(--color-muted-foreground))]">
+                                        <span className="text-[10px] px-2 py-0.5 bg-[var(--color-muted)] rounded-full text-[var(--color-muted-foreground)]">
                                             {template.edges.length} {tWorkflow('connections') || 'connections'}
                                         </span>
                                     </div>
@@ -283,11 +283,11 @@ export function WorkflowLibrary({
                     <div className="p-4">
                         {savedWorkflows.length === 0 ? (
                             <div className="text-center py-8">
-                                <FolderOpen className="w-12 h-12 mx-auto text-[hsl(var(--color-muted-foreground))]" />
-                                <p className="mt-3 text-sm text-[hsl(var(--color-muted-foreground))]">
+                                <FolderOpen className="w-12 h-12 mx-auto text-[var(--color-muted-foreground)]" />
+                                <p className="mt-3 text-sm text-[var(--color-muted-foreground)]">
                                     {tWorkflow('noSavedWorkflows') || 'No saved workflows yet'}
                                 </p>
-                                <p className="mt-1 text-xs text-[hsl(var(--color-muted-foreground))]">
+                                <p className="mt-1 text-xs text-[var(--color-muted-foreground)]">
                                     {tWorkflow('saveWorkflowHint') || 'Create and save your first workflow'}
                                 </p>
                             </div>
@@ -296,7 +296,7 @@ export function WorkflowLibrary({
                                 {savedWorkflows.map(workflow => (
                                     <div
                                         key={workflow.id}
-                                        className="p-3 rounded-lg border border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-primary)/0.5)] transition-all group"
+                                        className="p-3 rounded-lg border border-[var(--color-border)] hover:border-[color-mix(in_srgb,var(--color-primary)_50%,transparent)] transition-all group"
                                     >
                                         <div className="flex items-start justify-between">
                                             <div
@@ -304,7 +304,7 @@ export function WorkflowLibrary({
                                                 onClick={() => onLoadWorkflow(workflow)}
                                             >
                                                 <div className="flex items-center gap-2">
-                                                    <h4 className="text-sm font-medium text-[hsl(var(--color-foreground))] group-hover:text-[hsl(var(--color-primary))]">
+                                                    <h4 className="text-sm font-medium text-[var(--color-foreground)] group-hover:text-[var(--color-primary)]">
                                                         {workflow.name}
                                                     </h4>
                                                     {workflow.isFavorite && (
@@ -312,11 +312,11 @@ export function WorkflowLibrary({
                                                     )}
                                                 </div>
                                                 {workflow.description && (
-                                                    <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1 line-clamp-1">
+                                                    <p className="text-xs text-[var(--color-muted-foreground)] mt-1 line-clamp-1">
                                                         {workflow.description}
                                                     </p>
                                                 )}
-                                                <p className="text-[10px] text-[hsl(var(--color-muted-foreground))] mt-1">
+                                                <p className="text-[10px] text-[var(--color-muted-foreground)] mt-1">
                                                     {formatDate(workflow.updatedAt)}
                                                 </p>
                                             </div>
@@ -328,20 +328,20 @@ export function WorkflowLibrary({
                                                         e.stopPropagation();
                                                         onDuplicateWorkflow(workflow.id);
                                                     }}
-                                                    className="p-1.5 rounded hover:bg-[hsl(var(--color-muted))] transition-colors"
+                                                    className="p-1.5 rounded hover:bg-[var(--color-muted)] transition-colors"
                                                     title="Duplicate"
                                                 >
-                                                    <Copy className="w-3.5 h-3.5 text-[hsl(var(--color-muted-foreground))]" />
+                                                    <Copy className="w-3.5 h-3.5 text-[var(--color-muted-foreground)]" />
                                                 </button>
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
                                                         onExportWorkflow(workflow);
                                                     }}
-                                                    className="p-1.5 rounded hover:bg-[hsl(var(--color-muted))] transition-colors"
+                                                    className="p-1.5 rounded hover:bg-[var(--color-muted)] transition-colors"
                                                     title="Export"
                                                 >
-                                                    <Download className="w-3.5 h-3.5 text-[hsl(var(--color-muted-foreground))]" />
+                                                    <Download className="w-3.5 h-3.5 text-[var(--color-muted-foreground)]" />
                                                 </button>
                                                 <button
                                                     onClick={(e) => {
@@ -367,11 +367,11 @@ export function WorkflowLibrary({
                     <div className="p-4">
                         {favoriteWorkflows.length === 0 ? (
                             <div className="text-center py-8">
-                                <Star className="w-12 h-12 mx-auto text-[hsl(var(--color-muted-foreground))]" />
-                                <p className="mt-3 text-sm text-[hsl(var(--color-muted-foreground))]">
+                                <Star className="w-12 h-12 mx-auto text-[var(--color-muted-foreground)]" />
+                                <p className="mt-3 text-sm text-[var(--color-muted-foreground)]">
                                     {tWorkflow('noFavorites') || 'No favorite workflows'}
                                 </p>
-                                <p className="mt-1 text-xs text-[hsl(var(--color-muted-foreground))]">
+                                <p className="mt-1 text-xs text-[var(--color-muted-foreground)]">
                                     {tWorkflow('favoriteHint') || 'Star workflows to add them here'}
                                 </p>
                             </div>
@@ -380,16 +380,16 @@ export function WorkflowLibrary({
                                 {favoriteWorkflows.map(workflow => (
                                     <div
                                         key={workflow.id}
-                                        className="p-3 rounded-lg border border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-primary)/0.5)] transition-all cursor-pointer group"
+                                        className="p-3 rounded-lg border border-[var(--color-border)] hover:border-[color-mix(in_srgb,var(--color-primary)_50%,transparent)] transition-all cursor-pointer group"
                                         onClick={() => onLoadWorkflow(workflow)}
                                     >
                                         <div className="flex items-center gap-2">
                                             <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                                            <h4 className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                                            <h4 className="text-sm font-medium text-[var(--color-foreground)]">
                                                 {workflow.name}
                                             </h4>
                                         </div>
-                                        <p className="text-[10px] text-[hsl(var(--color-muted-foreground))] mt-1">
+                                        <p className="text-[10px] text-[var(--color-muted-foreground)] mt-1">
                                             {formatDate(workflow.updatedAt)}
                                         </p>
                                     </div>

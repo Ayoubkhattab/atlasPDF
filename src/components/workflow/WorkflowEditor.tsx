@@ -29,6 +29,8 @@ import { executeNode, collectInputFiles } from '@/lib/workflow/executor';
 import { LIBREOFFICE_TOOL_IDS, preloadLibreOfficeConverter } from '@/lib/libreoffice/shared-converter';
 import { isCrossOriginIsolated } from '@/lib/utils/cross-origin-isolated';
 import { buildNodeOutputsFromResult, deriveWorkflowFailureContext } from '@/lib/workflow/execution-utils';
+import { translateWorkflowMessage } from '@/lib/workflow/error-message-i18n';
+import { deriveSelectedNode, isNodeAmongDeleted } from '@/lib/workflow/node-selection';
 import { saveWorkflow, getSavedWorkflows, deleteWorkflow, duplicateWorkflow, exportWorkflow, importWorkflow } from '@/lib/workflow/storage';
 import { createExecutionRecord, addExecutionRecord, completeExecutionRecord } from '@/lib/workflow/history';
 import type { WorkflowExecutionRecord } from '@/types/workflow-history';
@@ -96,8 +98,14 @@ function WorkflowEditorContent() {
     // Saved workflows
     const [savedWorkflows, setSavedWorkflows] = useState<SavedWorkflow[]>([]);
 
-    // Selected node for settings panel
-    const [selectedNode, setSelectedNode] = useState<WorkflowNode | null>(null);
+    // Selected node for settings panel — stored as an id and derived live from
+    // `nodes` each render, so the panel always reflects the current node state
+    // (or closes itself when the node no longer exists) instead of a stale snapshot.
+    const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+    const selectedNode = useMemo(
+        () => deriveSelectedNode(nodes as WorkflowNode[], selectedNodeId),
+        [nodes, selectedNodeId]
+    );
     const [isSettingsPanelOpen, setIsSettingsPanelOpen] = useState(false);
 
     // Preview state
@@ -232,7 +240,7 @@ function WorkflowEditorContent() {
             newNode,
         ];
         setNodes(updatedNodes);
-        setSelectedNode(newNode as WorkflowNode);
+        setSelectedNodeId(newNodeId);
         pushHistory(updatedNodes as WorkflowNode[], edges as WorkflowEdge[]);
     }, [selectedNode, nodes, edges, pushHistory, setNodes]);
 
@@ -331,9 +339,18 @@ function WorkflowEditorContent() {
      * Handle node click to open settings panel
      */
     const onNodeClick: NodeMouseHandler = useCallback((event, node) => {
-        setSelectedNode(node as WorkflowNode);
+        setSelectedNodeId(node.id);
         setIsSettingsPanelOpen(true);
     }, []);
+
+    /**
+     * Close the settings panel if the node it's showing was just deleted.
+     */
+    const handleNodesDeleted = useCallback((deleted: Node[]) => {
+        if (isNodeAmongDeleted(deleted.map((n) => n.id), selectedNodeId)) {
+            setIsSettingsPanelOpen(false);
+        }
+    }, [selectedNodeId]);
 
     /**
      * Update node settings
@@ -746,15 +763,21 @@ function WorkflowEditorContent() {
                             const errorCode = result.error?.code;
                             const suggestedAction = result.error?.suggestedAction;
 
-                            let fullErrorMessage = errorMessage;
+                            // Translate each piece for the node's displayed error badge.
+                            // The internal `errorMessage` variable itself stays untranslated
+                            // (propagated via error.rawMessage) so later re-use / cancellation
+                            // detection keeps matching on the original English text.
+                            let fullErrorMessage = translateWorkflowMessage(errorMessage, tWorkflow) || errorMessage;
                             if (errorCode) {
                                 fullErrorMessage = `[${errorCode}] ${fullErrorMessage}`;
                             }
                             if (errorDetails) {
-                                fullErrorMessage += `\n\nDetails: ${errorDetails}`;
+                                const translatedDetails = translateWorkflowMessage(errorDetails, tWorkflow) || errorDetails;
+                                fullErrorMessage += `\n\n${tWorkflow('errorMessages.detailsLabel') || 'Details'}: ${translatedDetails}`;
                             }
                             if (suggestedAction) {
-                                fullErrorMessage += `\n\nSuggested Action: ${suggestedAction}`;
+                                const translatedAction = translateWorkflowMessage(suggestedAction, tWorkflow) || suggestedAction;
+                                fullErrorMessage += `\n\n${tWorkflow('errorMessages.suggestedActionLabel') || 'Suggested Action'}: ${translatedAction}`;
                             }
 
                             currentExecutingNodeId = nodeId;
@@ -773,8 +796,9 @@ function WorkflowEditorContent() {
                             ));
 
                             const error = new Error(`Node "${currentNode.data.label}" failed: ${errorMessage}`);
-                            (error as Error & { nodeId?: string; code?: string }).nodeId = nodeId;
-                            (error as Error & { nodeId?: string; code?: string }).code = errorCode;
+                            (error as Error & { nodeId?: string; code?: string; rawMessage?: string }).nodeId = nodeId;
+                            (error as Error & { nodeId?: string; code?: string; rawMessage?: string }).code = errorCode;
+                            (error as Error & { nodeId?: string; code?: string; rawMessage?: string }).rawMessage = errorMessage;
                             throw error;
                         }
 
@@ -883,17 +907,22 @@ function WorkflowEditorContent() {
                 failedNodeId,
                 successfulCount,
                 errorMessage,
+                rawMessage,
                 isCancelled,
             } = deriveWorkflowFailureContext(error, currentExecutingNodeId, localExecutedNodes);
-            
+
             // Find the failed node name for better error reporting
             const failedNode = nodes.find(n => n.id === failedNodeId);
-            const failedNodeName = failedNode?.data.label || 'Unknown node';
-            
-            // Build user-friendly error message
-            const userMessage = isCancelled 
-                ? 'Workflow execution was cancelled'
-                : `Workflow failed at "${failedNodeName}": ${errorMessage}`;
+            const failedNodeName = failedNode?.data.label || tWorkflow('errorMessages.unknownNode') || 'Unknown node';
+
+            // Build user-friendly error message (translate the underlying processor
+            // message via the lookup-table translator; the "Workflow failed at ..."
+            // wrapper and cancellation text come from dedicated i18n keys).
+            const translatedRawMessage = translateWorkflowMessage(rawMessage, tWorkflow) || rawMessage || errorMessage;
+            const userMessage = isCancelled
+                ? (tWorkflow('errorMessages.workflowCancelledMsg') || 'Workflow execution was cancelled')
+                : (tWorkflow('errorMessages.workflowFailedAt', { node: failedNodeName, message: translatedRawMessage })
+                    || `Workflow failed at "${failedNodeName}": ${translatedRawMessage}`);
             
             // Update execution state with detailed error
             setExecutionState(prev => ({
@@ -931,8 +960,8 @@ function WorkflowEditorContent() {
                             data: { 
                                 ...node.data, 
                                 status: 'error' as const,
-                                error: node.data.error || errorMessage,
-                            } 
+                                error: node.data.error || translatedRawMessage,
+                            }
                           }
                         : node
                 ));
@@ -1084,7 +1113,7 @@ function WorkflowEditorContent() {
     const clearWorkflow = useCallback(() => {
         setNodes([]);
         setEdges([]);
-        setSelectedNode(null);
+        setSelectedNodeId(null);
         setIsSettingsPanelOpen(false);
         clearHistory();
         completedNodeOutputsRef.current.clear();
@@ -1176,61 +1205,61 @@ function WorkflowEditorContent() {
                             onClick={handleUndo}
                             disabled={!canUndo}
                             className={`
-                                p-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] shadow-sm
+                                p-2 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] shadow-sm
                                 ${canUndo
-                                    ? 'hover:bg-[hsl(var(--color-muted))] cursor-pointer'
+                                    ? 'hover:bg-[var(--color-muted)] cursor-pointer'
                                     : 'opacity-50 cursor-not-allowed'
                                 }
                             `}
                             title={`${tWorkflow('undo') || 'Undo'} (Ctrl+Z)`}
                         >
-                            <Undo2 className="w-4 h-4 text-[hsl(var(--color-foreground))]" />
+                            <Undo2 className="w-4 h-4 text-[var(--color-foreground)]" />
                         </button>
                         <button
                             onClick={handleRedo}
                             disabled={!canRedo}
                             className={`
-                                p-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] shadow-sm
+                                p-2 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] shadow-sm
                                 ${canRedo
-                                    ? 'hover:bg-[hsl(var(--color-muted))] cursor-pointer'
+                                    ? 'hover:bg-[var(--color-muted)] cursor-pointer'
                                     : 'opacity-50 cursor-not-allowed'
                                 }
                             `}
                             title={`${tWorkflow('redo') || 'Redo'} (Ctrl+Shift+Z)`}
                         >
-                            <Redo2 className="w-4 h-4 text-[hsl(var(--color-foreground))]" />
+                            <Redo2 className="w-4 h-4 text-[var(--color-foreground)]" />
                         </button>
 
-                        <div className="w-px h-8 bg-[hsl(var(--color-border))] mx-0.5" />
+                        <div className="w-px h-8 bg-[var(--color-border)] mx-0.5" />
 
                         <button
                             onClick={handleAutoLayout}
                             disabled={nodes.length === 0}
                             className={`
-                                p-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] shadow-sm
+                                p-2 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] shadow-sm
                                 ${nodes.length > 0
-                                    ? 'hover:bg-[hsl(var(--color-muted))] cursor-pointer'
+                                    ? 'hover:bg-[var(--color-muted)] cursor-pointer'
                                     : 'opacity-50 cursor-not-allowed'
                                 }
                             `}
                             title={tWorkflow('autoLayout') || 'Auto Layout (整理布局)'}
                         >
-                            <LayoutGrid className="w-4 h-4 text-[hsl(var(--color-foreground))]" />
+                            <LayoutGrid className="w-4 h-4 text-[var(--color-foreground)]" />
                         </button>
 
                         <button
                             onClick={duplicateSelectedNode}
                             disabled={!selectedNode && !nodes.some(n => n.selected)}
                             className={`
-                                p-2 rounded-lg bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] shadow-sm
+                                p-2 rounded-lg bg-[var(--color-background)] border border-[var(--color-border)] shadow-sm
                                 ${(selectedNode || nodes.some(n => n.selected))
-                                    ? 'hover:bg-[hsl(var(--color-muted))] cursor-pointer'
+                                    ? 'hover:bg-[var(--color-muted)] cursor-pointer'
                                     : 'opacity-50 cursor-not-allowed'
                                 }
                             `}
                             title={`${tWorkflow('duplicateNode') || 'Duplicate Node (复制节点)'} (Ctrl+D)`}
                         >
-                            <Copy className="w-4 h-4 text-[hsl(var(--color-foreground))]" />
+                            <Copy className="w-4 h-4 text-[var(--color-foreground)]" />
                         </button>
                     </div>
 
@@ -1244,6 +1273,7 @@ function WorkflowEditorContent() {
                         onDrop={onDrop}
                         onDragOver={onDragOver}
                         onNodeClick={onNodeClick}
+                        onNodesDelete={handleNodesDeleted}
                         nodeTypes={nodeTypes}
                         edgeTypes={edgeTypes}
                         defaultEdgeOptions={defaultEdgeOptions}
@@ -1264,20 +1294,20 @@ function WorkflowEditorContent() {
                         {/* Empty state */}
                         {nodes.length === 0 && (
                             <Panel position="top-center" className="mt-20">
-                                <div className="text-center p-8 bg-[hsl(var(--color-background))] rounded-lg border border-dashed border-[hsl(var(--color-border))] shadow-sm">
-                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[hsl(var(--color-muted))] flex items-center justify-center">
-                                        <svg className="w-8 h-8 text-[hsl(var(--color-muted-foreground))]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                <div className="text-center p-8 bg-[var(--color-background)] rounded-lg border border-dashed border-[var(--color-border)] shadow-sm">
+                                    <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-[var(--color-muted)] flex items-center justify-center">
+                                        <svg className="w-8 h-8 text-[var(--color-muted-foreground)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                             <path d="M4 14h6v6H4zM14 4h6v6h-6z" />
                                             <path d="M7 4v10M17 14v6M4 17h6M14 7h6" />
                                         </svg>
                                     </div>
-                                    <h3 className="text-lg font-medium text-[hsl(var(--color-foreground))]">
+                                    <h3 className="text-lg font-medium text-[var(--color-foreground)]">
                                         {tWorkflow('emptyTitle') || 'Create Your Workflow'}
                                     </h3>
-                                    <p className="text-sm text-[hsl(var(--color-muted-foreground))] mt-2 max-w-sm">
+                                    <p className="text-sm text-[var(--color-muted-foreground)] mt-2 max-w-sm">
                                         {tWorkflow('emptyDescription') || 'Drag tools from the sidebar to build your PDF processing pipeline. Connect nodes to define the processing order.'}
                                     </p>
-                                    <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-4">
+                                    <p className="text-xs text-[var(--color-muted-foreground)] mt-4">
                                         {tWorkflow('clickHint') || 'Click a node to configure its settings'}
                                     </p>
                                 </div>

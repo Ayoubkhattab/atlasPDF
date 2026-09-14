@@ -2,9 +2,12 @@
 
 import React, { memo, useState } from 'react';
 import { Handle, Position, useReactFlow } from 'reactflow';
+import { useTranslations } from 'next-intl';
 import { ToolNodeData } from '@/types/workflow';
 import * as LucideIcons from 'lucide-react';
 import { X } from 'lucide-react';
+
+type TranslateFn = ReturnType<typeof useTranslations>;
 
 interface ToolNodeProps {
     id: string;
@@ -54,113 +57,132 @@ const categoryBadgeStyles: Record<string, { bg: string; text: string; label: str
 };
 
 /**
- * Extract an intuitive 1-line parameter summary for the node card
+ * Extract an intuitive 1-line parameter summary for the node card.
+ * Takes `t` as a parameter since hooks can't be called from a plain helper.
  */
-function getNodeSettingsSummary(toolId: string, settings?: Record<string, unknown>): string | null {
+function getNodeSettingsSummary(t: TranslateFn, toolId: string, settings?: Record<string, unknown>): string | null {
+    const tn = (key: string, fallback: string) => t(`toolNode.${key}`) || fallback;
+
     if (!settings || Object.keys(settings).length === 0) {
-        if (toolId === 'rotate-pdf') return '旋转: 90° 顺时针';
-        if (toolId === 'compress-pdf') return '中等质量 (标准算法)';
-        if (toolId === 'split-pdf') return '按单页拆分';
-        if (toolId === 'download-pdf') return '保存: output.pdf';
-        if (toolId === 'download-zip') return '归档: output.zip';
+        if (toolId === 'rotate-pdf') return tn('rotateDefault', 'Rotate: 90° clockwise');
+        if (toolId === 'compress-pdf') return tn('compressDefault', 'Medium quality (standard algorithm)');
+        if (toolId === 'split-pdf') return tn('splitDefault', 'Split by single page');
+        if (toolId === 'download-pdf') return tn('downloadPdfDefault', 'Save: output.pdf');
+        if (toolId === 'download-zip') return tn('downloadZipDefault', 'Archive: output.zip');
         return null;
     }
 
     switch (toolId) {
         case 'rotate-pdf': {
             const angle = settings.angle ?? 90;
-            return `旋转: ${angle}°`;
+            return `${tn('rotateLabel', 'Rotate')}: ${angle}°`;
         }
         case 'add-watermark': {
             const isImage = settings.watermarkType === 'image';
             const isRepeat = Boolean(settings.repeat);
             if (isImage) {
-                return `图片水印${isRepeat ? ' (平铺)' : ''}`;
+                return isRepeat
+                    ? tn('watermarkImageTiled', 'Image watermark (tiled)')
+                    : tn('watermarkImage', 'Image watermark');
             }
             const text = String(settings.text || 'CONFIDENTIAL');
-            return `${isRepeat ? '平铺水印: ' : '水印: '}"${text}"`;
+            return isRepeat
+                ? `${tn('watermarkTiledLabel', 'Tiled watermark')}: "${text}"`
+                : `${tn('watermarkLabel', 'Watermark')}: "${text}"`;
         }
         case 'compress-pdf': {
             const quality = String(settings.quality || 'medium');
-            const qualityMap: Record<string, string> = { low: '低体积', medium: '中等质量', high: '高质量', maximum: '极佳质量' };
+            const qualityMap: Record<string, string> = {
+                low: tn('qualityLow', 'Low size'),
+                medium: tn('qualityMedium', 'Medium quality'),
+                high: tn('qualityHigh', 'High quality'),
+                maximum: tn('qualityMaximum', 'Best quality'),
+            };
             const algo = String(settings.algorithm || 'standard');
             return `${qualityMap[quality] || quality} (${algo})`;
         }
         case 'split-pdf': {
             const mode = String(settings.splitMode || 'every-page');
             if (mode === 'every-n-pages') {
-                return `每 ${settings.pagesPerSplit || 1} 页拆分`;
+                return `${tn('splitEveryNLabel', 'Split every')} ${settings.pagesPerSplit || 1} ${tn('splitEveryNSuffix', 'pages')}`;
             }
             if (mode === 'ranges' && settings.pageRanges) {
-                return `范围: ${settings.pageRanges}`;
+                return `${tn('rangeLabel', 'Range')}: ${settings.pageRanges}`;
             }
-            return '单页拆分';
+            return tn('splitDefault', 'Split by single page');
         }
         case 'page-numbers': {
             const pos = String(settings.position || 'bottom-center');
             const posMap: Record<string, string> = {
-                'top-left': '左上', 'top-center': '顶部居中', 'top-right': '右上',
-                'bottom-left': '左下', 'bottom-center': '底部居中', 'bottom-right': '右下'
+                'top-left': tn('posTopLeft', 'Top left'),
+                'top-center': tn('posTopCenter', 'Top center'),
+                'top-right': tn('posTopRight', 'Top right'),
+                'bottom-left': tn('posBottomLeft', 'Bottom left'),
+                'bottom-center': tn('posBottomCenter', 'Bottom center'),
+                'bottom-right': tn('posBottomRight', 'Bottom right'),
             };
-            return `页码: ${posMap[pos] || pos} (第${settings.startNumber || 1}页起)`;
+            return `${tn('pageNumbersLabel', 'Page numbers')}: ${posMap[pos] || pos} (${tn('startingAtPage', 'starting at page')} ${settings.startNumber || 1})`;
         }
         case 'download-pdf': {
-            return `保存: ${settings.filename || 'output.pdf'}`;
+            return `${tn('saveLabel', 'Save')}: ${settings.filename || 'output.pdf'}`;
         }
         case 'download-zip': {
-            return `ZIP: ${settings.filename || 'output.zip'}`;
+            return `${tn('zipLabel', 'ZIP')}: ${settings.filename || 'output.zip'}`;
         }
         case 'djvu-to-pdf': {
             const dpi = settings.dpi || 150;
-            return `DPI: ${dpi}`;
+            return `${tn('dpiLabel', 'DPI')}: ${dpi}`;
         }
         case 'condition-gateway': {
             const type = String(settings.conditionType || 'file-count');
             const op = String(settings.operator || 'greater-than');
             const opMap: Record<string, string> = {
-                'greater-than': '>', 'less-than': '<', 'equals': '=',
-                'not-equals': '!=', 'contains': '包含', 'ends-with': '结尾为'
+                'greater-than': '>', 'less-than': '<', 'equals': '=', 'not-equals': '!=',
+                'contains': tn('opContains', 'contains'),
+                'ends-with': tn('opEndsWith', 'ends with'),
             };
             const typeMap: Record<string, string> = {
-                'file-count': '文件数', 'file-size': '大小', 'file-format': '格式'
+                'file-count': tn('typeFileCount', 'File count'),
+                'file-size': tn('typeFileSize', 'Size'),
+                'file-format': tn('typeFileFormat', 'Format'),
             };
             return `${typeMap[type] || type} ${opMap[op] || op} ${settings.value ?? 1}${type === 'file-size' ? (settings.sizeUnit || 'MB') : ''}`;
         }
         case 'n-up-pdf': {
-            return `${settings.pagesPerSheet || 4} 拼一版 (${settings.pageSize || 'A4'})`;
+            return `${settings.pagesPerSheet || 4} ${tn('perSheet', 'per sheet')} (${settings.pageSize || 'A4'})`;
         }
         case 'extract-pages':
         case 'delete-pages': {
-            return `页码: ${settings.pageRange || '1'}`;
+            return `${tn('pagesLabel', 'Pages')}: ${settings.pageRange || '1'}`;
         }
         case 'ocr-pdf': {
             return `OCR: ${settings.language || settings.languages || 'eng'}`;
         }
         case 'encrypt-pdf': {
-            return settings.userPassword ? '设置密码保护' : '加密安全';
+            return settings.userPassword ? tn('passwordProtected', 'Password protected') : tn('encryptedSecure', 'Encrypted');
         }
         case 'flatten-pdf': {
-            return '扁平化表单与注释';
+            return tn('flattenSummary', 'Flatten forms & annotations');
         }
         case 'table-of-contents': {
-            return `目录: "${settings.title || 'Table of Contents'}"`;
+            return `${tn('tocLabel', 'TOC')}: "${settings.title || 'Table of Contents'}"`;
         }
         case 'header-footer': {
             const parts = [];
-            if (settings.headerText) parts.push(`眉: "${settings.headerText}"`);
-            if (settings.footerText) parts.push(`脚: "${settings.footerText}"`);
-            return parts.join(' | ') || '页眉页脚';
+            if (settings.headerText) parts.push(`${tn('headerLabel', 'Header')}: "${settings.headerText}"`);
+            if (settings.footerText) parts.push(`${tn('footerLabel', 'Footer')}: "${settings.footerText}"`);
+            return parts.join(' | ') || tn('headerFooterDefault', 'Header & footer');
         }
         case 'background-color': {
-            return `背景色: ${settings.color || '#FFFFFF'}`;
+            return `${tn('backgroundColorLabel', 'Background')}: ${settings.color || '#FFFFFF'}`;
         }
         case 'text-color': {
-            return `文字色: ${settings.color || '#000000'}`;
+            return `${tn('textColorLabel', 'Text color')}: ${settings.color || '#000000'}`;
         }
         default: {
             if (settings.filename) return `${settings.filename}`;
-            if (settings.quality) return `质量: ${settings.quality}`;
-            if (settings.color) return `颜色: ${settings.color}`;
+            if (settings.quality) return `${tn('qualityLabel', 'Quality')}: ${settings.quality}`;
+            if (settings.color) return `${tn('colorLabel', 'Color')}: ${settings.color}`;
             return null;
         }
     }
@@ -173,6 +195,7 @@ function getNodeSettingsSummary(toolId: string, settings?: Record<string, unknow
 const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: ToolNodeProps) => {
     const [isHovered, setIsHovered] = useState(false);
     const { deleteElements } = useReactFlow();
+    const t = useTranslations('workflow');
 
     // Get the icon component dynamically
     const iconName = toPascalCase(data.icon);
@@ -187,7 +210,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
 
     // Status colors
     const statusColors: Record<ToolNodeData['status'], string> = {
-        idle: 'bg-[hsl(var(--color-muted))]',
+        idle: 'bg-[var(--color-muted)]',
         processing: 'bg-blue-50/90 dark:bg-blue-950/40 border-blue-400',
         complete: 'bg-emerald-50/90 dark:bg-emerald-950/40 border-emerald-400',
         error: 'bg-rose-50/90 dark:bg-rose-950/40 border-rose-400',
@@ -223,7 +246,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
 
     const inputSocket = getSocketColor(data.acceptedFormats);
     const outputSocket = getSocketColor(data.outputFormat);
-    const settingsSummary = getNodeSettingsSummary(data.toolId, data.settings);
+    const settingsSummary = getNodeSettingsSummary(t, data.toolId, data.settings);
 
     return (
         <div
@@ -232,7 +255,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
         w-[240px]
         ${statusColors[data.status]}
         ${categoryBorders[data.category] || 'border-l-gray-400'}
-        ${selected ? 'ring-2 ring-[hsl(var(--color-primary))] ring-offset-2' : ''}
+        ${selected ? 'ring-2 ring-[var(--color-primary)] ring-offset-2' : ''}
         ${isHovered ? 'shadow-xl scale-[1.02]' : ''}
         ${data.status === 'processing' ? 'ring-2 ring-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.5)]' : ''}
       `}
@@ -260,7 +283,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
                     borderColor: '#ffffff',
                 }}
                 className="!w-3.5 !h-3.5 !border-2 shadow-sm transition-transform hover:scale-125"
-                title={`输入类型: ${inputSocket.label}`}
+                title={`${t('toolNode.inputType') || 'Input type'}: ${inputSocket.label}`}
             />
 
             {/* Top Category Badge */}
@@ -270,7 +293,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
                 </span>
                 <div className="flex items-center gap-1.5">
                     <div className={`w-2 h-2 rounded-full ${statusIndicatorColors[data.status]}`} />
-                    <span className="text-[11px] text-[hsl(var(--color-muted-foreground))] capitalize font-medium">
+                    <span className="text-[11px] text-[var(--color-muted-foreground)] capitalize font-medium">
                         {data.status}
                     </span>
                 </div>
@@ -283,16 +306,16 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
                     p-2 rounded-lg shrink-0 shadow-xs
                     ${data.status === 'processing' ? 'bg-blue-200 dark:bg-blue-900/60' : 'bg-white dark:bg-gray-800/80'}
                 `}>
-                    <IconComponent className="w-4 h-4 text-[hsl(var(--color-foreground))]" />
+                    <IconComponent className="w-4 h-4 text-[var(--color-foreground)]" />
                 </div>
 
                 {/* Label */}
                 <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[hsl(var(--color-foreground))] truncate leading-tight">
+                    <p className="text-sm font-semibold text-[var(--color-foreground)] truncate leading-tight">
                         {data.label}
                     </p>
                     {data.toolId && (
-                        <p className="text-[10px] text-[hsl(var(--color-muted-foreground))] truncate mt-0.5 font-mono opacity-80">
+                        <p className="text-[10px] text-[var(--color-muted-foreground)] truncate mt-0.5 font-mono opacity-80">
                             {data.toolId}
                         </p>
                     )}
@@ -301,8 +324,8 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
 
             {/* Inline Parameter Summary Badge */}
             {settingsSummary && (
-                <div className="mt-2 flex items-center gap-1.5 px-2 py-1 rounded-md bg-[hsl(var(--color-muted)/0.7)] dark:bg-gray-800/60 border border-[hsl(var(--color-border)/0.6)] text-[11px] text-[hsl(var(--color-foreground))] font-medium truncate" title={`参数: ${settingsSummary}`}>
-                    <LucideIcons.Sliders className="w-3 h-3 text-[hsl(var(--color-primary))] shrink-0" />
+                <div className="mt-2 flex items-center gap-1.5 px-2 py-1 rounded-md bg-[color-mix(in_srgb,var(--color-muted)_70%,transparent)] dark:bg-gray-800/60 border border-[color-mix(in_srgb,var(--color-border)_60%,transparent)] text-[11px] text-[var(--color-foreground)] font-medium truncate" title={`${t('toolNode.parameterLabel') || 'Parameter'}: ${settingsSummary}`}>
+                    <LucideIcons.Sliders className="w-3 h-3 text-[var(--color-primary)] shrink-0" />
                     <span className="truncate">{settingsSummary}</span>
                 </div>
             )}
@@ -329,19 +352,19 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
                 <div className="mt-2 flex items-center gap-1.5">
                     <LucideIcons.CheckCircle className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                     <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium">
-                        {data.outputFiles.length} 个生成文件
+                        {data.outputFiles.length} {t('toolNode.generatedFiles') || 'generated file(s)'}
                     </span>
                 </div>
             )}
 
             {/* Format tags with socket color dots */}
-            <div className="flex items-center justify-between gap-1 mt-2.5 pt-2 border-t border-[hsl(var(--color-border)/0.5)]">
-                <div className="flex items-center gap-1 text-[10px] text-[hsl(var(--color-muted-foreground))] truncate max-w-[100px]" title={data.acceptedFormats.join(', ')}>
+            <div className="flex items-center justify-between gap-1 mt-2.5 pt-2 border-t border-[color-mix(in_srgb,var(--color-border)_50%,transparent)]">
+                <div className="flex items-center gap-1 text-[10px] text-[var(--color-muted-foreground)] truncate max-w-[100px]" title={data.acceptedFormats.join(', ')}>
                     <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: inputSocket.bg }} />
                     <span className="truncate">{data.acceptedFormats.slice(0, 1).join(', ') || '*'}</span>
                 </div>
-                <LucideIcons.ArrowRight className="w-2.5 h-2.5 text-[hsl(var(--color-muted-foreground))] shrink-0 opacity-50" />
-                <div className="flex items-center gap-1 text-[10px] text-[hsl(var(--color-muted-foreground))] truncate max-w-[90px]" title={data.outputFormat}>
+                <LucideIcons.ArrowRight className="w-2.5 h-2.5 text-[var(--color-muted-foreground)] shrink-0 opacity-50" />
+                <div className="flex items-center gap-1 text-[10px] text-[var(--color-muted-foreground)] truncate max-w-[90px]" title={data.outputFormat}>
                     <span className="truncate">{data.outputFormat || '*'}</span>
                     <span className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: outputSocket.bg }} />
                 </div>
@@ -357,7 +380,7 @@ const ToolNode = memo(({ id, data, selected = false, isConnectable = true }: Too
                     borderColor: '#ffffff',
                 }}
                 className="!w-3.5 !h-3.5 !border-2 shadow-sm transition-transform hover:scale-125"
-                title={`输出类型: ${outputSocket.label}`}
+                title={`${t('toolNode.outputType') || 'Output type'}: ${outputSocket.label}`}
             />
         </div>
     );

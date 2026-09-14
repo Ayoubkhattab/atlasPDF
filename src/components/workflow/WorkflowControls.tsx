@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { FileListPanel } from './FileListPanel';
 import { createZip } from '@/lib/zip';
 import { logger } from '@/lib/utils/logger';
+import { translateWorkflowMessage } from '@/lib/workflow/error-message-i18n';
 import {
     Play,
     Pause,
@@ -152,7 +153,7 @@ export function WorkflowControls({
 
     return (
         <>
-            <div className="flex items-center justify-between px-4 py-3 bg-[hsl(var(--color-background))] border-b border-[hsl(var(--color-border))]">
+            <div className="flex items-center justify-between px-4 py-3 bg-[var(--color-background)] border-b border-[var(--color-border)]">
                 {/* Left: File input and execute */}
                 <div className="flex items-center gap-3">
                     {/* File selection */}
@@ -180,9 +181,9 @@ export function WorkflowControls({
                                 disabled={isRunning}
                                 className={`
                                     flex items-center gap-2 px-3 py-1.5 rounded-lg 
-                                    bg-[hsl(var(--color-primary)/0.1)] 
-                                    text-[hsl(var(--color-primary))]
-                                    hover:bg-[hsl(var(--color-primary)/0.2)]
+                                    bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] 
+                                    text-[var(--color-primary)]
+                                    hover:bg-[color-mix(in_srgb,var(--color-primary)_20%,transparent)]
                                     transition-colors
                                     ${isRunning ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
                                 `}
@@ -228,7 +229,7 @@ export function WorkflowControls({
                 {/* Right: Save, Import, Clear */}
                 <div className="flex items-center gap-2">
                     {/* Node count */}
-                    <span className="text-sm text-[hsl(var(--color-muted-foreground))] mr-2">
+                    <span className="text-sm text-[var(--color-muted-foreground)] mr-2">
                         {nodes.length} {tWorkflow('nodes') || 'nodes'}
                     </span>
 
@@ -443,7 +444,7 @@ export function WorkflowControls({
                         <div className="text-sm text-yellow-700">
                             <p className="font-semibold mb-1">{tWorkflow('validationErrors') || 'Validation Errors'}</p>
                             {validation.errors.map((error, index) => (
-                                <p key={index} className="ml-2">- {error.message}</p>
+                                <p key={index} className="ml-2">- {translateWorkflowMessage(error.message, tWorkflow)}</p>
                             ))}
                         </div>
                     </div>
@@ -458,7 +459,7 @@ export function WorkflowControls({
                         <div className="text-sm text-yellow-600">
                             <p className="font-semibold mb-1">{tWorkflow('warnings') || 'Warnings'}</p>
                             {validation.warnings.map((warning, index) => (
-                                <p key={index} className="ml-2">- {warning.message}</p>
+                                <p key={index} className="ml-2">- {translateWorkflowMessage(warning.message, tWorkflow)}</p>
                             ))}
                         </div>
                     </div>
@@ -468,14 +469,14 @@ export function WorkflowControls({
             {/* Save Dialog */}
             {showSaveDialog && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-[hsl(var(--color-background))] rounded-lg shadow-xl p-6 w-[400px]">
-                        <h3 className="text-lg font-semibold text-[hsl(var(--color-foreground))] mb-4">
+                    <div className="bg-[var(--color-background)] rounded-lg shadow-xl p-6 w-[400px]">
+                        <h3 className="text-lg font-semibold text-[var(--color-foreground)] mb-4">
                             {tWorkflow('saveWorkflow') || 'Save Workflow'}
                         </h3>
 
                         <div className="space-y-4">
                             <div>
-                                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                                <label className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                                     {tWorkflow('workflowName') || 'Workflow Name'}
                                 </label>
                                 <input
@@ -483,13 +484,13 @@ export function WorkflowControls({
                                     value={workflowName}
                                     onChange={(e) => setWorkflowName(e.target.value)}
                                     placeholder={tWorkflow('enterName') || 'Enter workflow name...'}
-                                    className="w-full px-3 py-2 rounded-lg border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                    className="w-full px-3 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                                     autoFocus
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))] mb-1">
+                                <label className="block text-sm font-medium text-[var(--color-foreground)] mb-1">
                                     {tWorkflow('description') || 'Description'} ({tWorkflow('optional') || 'optional'})
                                 </label>
                                 <textarea
@@ -497,7 +498,7 @@ export function WorkflowControls({
                                     onChange={(e) => setWorkflowDescription(e.target.value)}
                                     placeholder={tWorkflow('enterDescription') || 'Enter description...'}
                                     rows={3}
-                                    className="w-full px-3 py-2 rounded-lg border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] resize-none"
+                                    className="w-full px-3 py-2 rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] resize-none"
                                 />
                             </div>
                         </div>

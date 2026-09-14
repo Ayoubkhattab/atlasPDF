@@ -190,23 +190,23 @@ export function FileListPanel({ files, onFilesChange, onClose }: FileListPanelPr
         <>
             {/* File List Panel */}
             <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                <div className="bg-[hsl(var(--color-background))] rounded-lg shadow-xl w-[600px] max-h-[80vh] flex flex-col">
+                <div className="bg-[var(--color-background)] rounded-lg shadow-xl w-[600px] max-h-[80vh] flex flex-col">
                     {/* Header */}
-                    <div className="flex items-center justify-between px-4 py-3 border-b border-[hsl(var(--color-border))]">
+                    <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border)]">
                         <div className="flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-[hsl(var(--color-primary))]" />
-                            <h3 className="text-lg font-semibold text-[hsl(var(--color-foreground))]">
+                            <FileText className="w-5 h-5 text-[var(--color-primary)]" />
+                            <h3 className="text-lg font-semibold text-[var(--color-foreground)]">
                                 {tWorkflow('selectedFiles') || 'Selected Files'}
                             </h3>
-                            <span className="text-sm text-[hsl(var(--color-muted-foreground))] ml-2">
+                            <span className="text-sm text-[var(--color-muted-foreground)] ml-2">
                                 ({files.length} {tWorkflow('filesCount') || 'files'})
                             </span>
                         </div>
                         <button
                             onClick={handleClose}
-                            className="p-1 rounded hover:bg-[hsl(var(--color-muted))] transition-colors"
+                            className="p-1 rounded hover:bg-[var(--color-muted)] transition-colors"
                         >
-                            <X className="w-5 h-5 text-[hsl(var(--color-muted-foreground))]" />
+                            <X className="w-5 h-5 text-[var(--color-muted-foreground)]" />
                         </button>
                     </div>
 
@@ -224,14 +224,14 @@ export function FileListPanel({ files, onFilesChange, onClose }: FileListPanelPr
                                     className={`
                                         flex items-center gap-3 p-3 rounded-lg border
                                         ${dragIndex === index
-                                            ? 'border-[hsl(var(--color-primary))] bg-[hsl(var(--color-primary)/0.1)]'
-                                            : 'border-[hsl(var(--color-border))] bg-[hsl(var(--color-muted)/0.3)]'
+                                            ? 'border-[var(--color-primary)] bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)]'
+                                            : 'border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]'
                                         }
-                                        hover:border-[hsl(var(--color-primary)/0.5)] transition-colors cursor-grab active:cursor-grabbing
+                                        hover:border-[color-mix(in_srgb,var(--color-primary)_50%,transparent)] transition-colors cursor-grab active:cursor-grabbing
                                     `}
                                 >
                                     {/* Drag Handle */}
-                                    <div className="text-[hsl(var(--color-muted-foreground))]">
+                                    <div className="text-[var(--color-muted-foreground)]">
                                         <GripVertical className="w-4 h-4" />
                                     </div>
 
@@ -242,10 +242,10 @@ export function FileListPanel({ files, onFilesChange, onClose }: FileListPanelPr
 
                                     {/* File Info */}
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate">
+                                        <p className="text-sm font-medium text-[var(--color-foreground)] truncate">
                                             {file.name}
                                         </p>
-                                        <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                                        <p className="text-xs text-[var(--color-muted-foreground)]">
                                             {formatFileSize(file.size)}
                                         </p>
                                     </div>
@@ -256,31 +256,31 @@ export function FileListPanel({ files, onFilesChange, onClose }: FileListPanelPr
                                         <button
                                             onClick={() => handleMoveUp(index)}
                                             disabled={index === 0}
-                                            className={`p-1.5 rounded hover:bg-[hsl(var(--color-muted))] transition-colors
+                                            className={`p-1.5 rounded hover:bg-[var(--color-muted)] transition-colors
                                                 ${index === 0 ? 'opacity-30 cursor-not-allowed' : ''}`}
                                             title={tWorkflow('moveUp') || 'Move Up'}
                                         >
-                                            <ChevronUp className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                                            <ChevronUp className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                                         </button>
 
                                         {/* Move Down */}
                                         <button
                                             onClick={() => handleMoveDown(index)}
                                             disabled={index === files.length - 1}
-                                            className={`p-1.5 rounded hover:bg-[hsl(var(--color-muted))] transition-colors
+                                            className={`p-1.5 rounded hover:bg-[var(--color-muted)] transition-colors
                                                 ${index === files.length - 1 ? 'opacity-30 cursor-not-allowed' : ''}`}
                                             title={tWorkflow('moveDown') || 'Move Down'}
                                         >
-                                            <ChevronDown className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                                            <ChevronDown className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                                         </button>
 
                                         {/* Preview */}
                                         <button
                                             onClick={() => handlePreview(file)}
-                                            className="p-1.5 rounded hover:bg-[hsl(var(--color-muted))] transition-colors"
+                                            className="p-1.5 rounded hover:bg-[var(--color-muted)] transition-colors"
                                             title={tWorkflow('preview') || 'Preview'}
                                         >
-                                            <Eye className="w-4 h-4 text-[hsl(var(--color-primary))]" />
+                                            <Eye className="w-4 h-4 text-[var(--color-primary)]" />
                                         </button>
 
                                         {/* Remove */}
@@ -298,7 +298,7 @@ export function FileListPanel({ files, onFilesChange, onClose }: FileListPanelPr
                     </div>
 
                     {/* Footer */}
-                    <div className="flex items-center justify-between px-4 py-3 border-t border-[hsl(var(--color-border))]">
+                    <div className="flex items-center justify-between px-4 py-3 border-t border-[var(--color-border)]">
                         <Button
                             variant="ghost"
                             size="sm"
@@ -322,20 +322,20 @@ export function FileListPanel({ files, onFilesChange, onClose }: FileListPanelPr
             {/* Preview Modal */}
             {previewFile && previewUrl && (
                 <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[60]">
-                    <div className="bg-[hsl(var(--color-background))] rounded-lg shadow-xl max-w-[90vw] max-h-[90vh] flex flex-col">
+                    <div className="bg-[var(--color-background)] rounded-lg shadow-xl max-w-[90vw] max-h-[90vh] flex flex-col">
                         {/* Preview Header */}
-                        <div className="flex items-center justify-between px-4 py-3 border-b border-[hsl(var(--color-border))]">
+                        <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border)]">
                             <div className="flex items-center gap-2">
                                 {getFileIcon(previewFile)}
-                                <span className="text-sm font-medium text-[hsl(var(--color-foreground))] truncate max-w-[400px]">
+                                <span className="text-sm font-medium text-[var(--color-foreground)] truncate max-w-[400px]">
                                     {previewFile.name}
                                 </span>
                             </div>
                             <button
                                 onClick={closePreview}
-                                className="p-1 rounded hover:bg-[hsl(var(--color-muted))] transition-colors"
+                                className="p-1 rounded hover:bg-[var(--color-muted)] transition-colors"
                             >
-                                <X className="w-5 h-5 text-[hsl(var(--color-muted-foreground))]" />
+                                <X className="w-5 h-5 text-[var(--color-muted-foreground)]" />
                             </button>
                         </div>
 
@@ -351,12 +351,12 @@ export function FileListPanel({ files, onFilesChange, onClose }: FileListPanelPr
                                 <iframe
                                     src={previewUrl}
                                     title={previewFile.name}
-                                    className="w-[800px] h-[600px] rounded border border-[hsl(var(--color-border))]"
+                                    className="w-[800px] h-[600px] rounded border border-[var(--color-border)]"
                                 />
                             ) : (
                                 <div className="text-center p-8">
-                                    <File className="w-16 h-16 text-[hsl(var(--color-muted-foreground))] mx-auto mb-4" />
-                                    <p className="text-[hsl(var(--color-muted-foreground))]">
+                                    <File className="w-16 h-16 text-[var(--color-muted-foreground)] mx-auto mb-4" />
+                                    <p className="text-[var(--color-muted-foreground)]">
                                         {tWorkflow('previewNotAvailable') || 'Preview not available for this file type'}
                                     </p>
                                 </div>

@@ -83,6 +83,57 @@ import { PdfToPdfAProcessor } from '@/lib/pdf/processors/pdf-to-pdfa';
 import { PDFToDocxProcessor } from '@/lib/pdf/processors/pdf-to-docx';
 import { PDFToPptxProcessor } from '@/lib/pdf/processors/pdf-to-pptx';
 import { PDFToExcelProcessor } from '@/lib/pdf/processors/pdf-to-excel';
+import { CropProcessor, type CropData } from '@/lib/pdf/processors/crop';
+import { TimestampPDFProcessor } from '@/lib/pdf/processors/timestamp';
+import { OverlayPDFProcessor } from '@/lib/pdf/processors/overlay';
+import { PageLabelsProcessor, type PageLabelRule } from '@/lib/pdf/processors/page-labels';
+import { PDFToMarkdownProcessor } from '@/lib/pdf/processors/pdf-to-markdown';
+import { loadPdfLib } from '@/lib/pdf/loader';
+import { SmartDataRedactorProcessor } from '@/lib/pdf/processors/smart-data-redactor';
+import { PDFToCBZProcessor } from '@/lib/pdf/processors/pdf-to-cbz';
+import { PDFToSlideProcessor } from '@/lib/pdf/processors/pdf-to-slide';
+import { PdfPageResizerUniformProcessor } from '@/lib/pdf/processors/pdf-page-resizer-uniform';
+import { PdfDeskewAlignerProcessor } from '@/lib/pdf/processors/pdf-deskew-aligner';
+import { InteractiveTocGeneratorProcessor } from '@/lib/pdf/processors/interactive-toc-generator';
+import { BookmarksAutoGeneratorProcessor } from '@/lib/pdf/processors/bookmarks-auto-generator';
+import { BatchBarcodeInjectorProcessor } from '@/lib/pdf/processors/batch-barcode-injector';
+import { CertCryptorProcessor } from '@/lib/pdf/processors/cert-cryptor';
+import { VectorExtractorProcessor } from '@/lib/pdf/processors/vector-extractor';
+import { DeepSanitizeProcessor } from '@/lib/pdf/processors/deep-sanitize';
+import { BatchWatermarkRemoverProcessor } from '@/lib/pdf/processors/batch-watermark-remover';
+import { AnnotationExporterProcessor } from '@/lib/pdf/processors/annotation-exporter';
+import { AIPDFReflowerProcessor } from '@/lib/pdf/processors/ai-pdf-reflower';
+import { CitationLinkerProcessor } from '@/lib/pdf/processors/citation-linker';
+import { EinkOptimizerProcessor } from '@/lib/pdf/processors/eink-optimizer';
+import { PassportIdComposerProcessor } from '@/lib/pdf/processors/passport-id-composer';
+import { PhotoTilingPrepressProcessor } from '@/lib/pdf/processors/photo-tiling-prepress';
+import { BookletFoldingSimulatorProcessor } from '@/lib/pdf/processors/booklet-folding-simulator';
+import { PdfLosslessSlicerProcessor } from '@/lib/pdf/processors/pdf-lossless-slicer';
+import { PdfScratchpadCanvasProcessor } from '@/lib/pdf/processors/pdf-scratchpad-canvas';
+import { PdfSignatureAnchorHelperProcessor } from '@/lib/pdf/processors/pdf-signature-anchor-helper';
+import { PdfSpineBookbinderProcessor } from '@/lib/pdf/processors/pdf-spine-bookbinder';
+import { PdfTwoColumnReflowerProcessor } from '@/lib/pdf/processors/pdf-two-column-reflower';
+import { HandwritingInkContrastBoosterProcessor } from '@/lib/pdf/processors/handwriting-ink-contrast-booster';
+import { SignatureInkOptimizerProcessor } from '@/lib/pdf/processors/signature-ink-optimizer';
+import { GlobalInvoiceParserProcessor } from '@/lib/pdf/processors/global-invoice-parser';
+
+/**
+ * Sidebar-visible tools (see `INTERACTIVE_TOOLS_BLACKLIST` in ToolSidebar.tsx) that
+ * intentionally have no `case` below yet and always fall through to the "not
+ * supported in workflows yet" default branch. Each of these has a dedicated
+ * standalone processor but needs interactive input (pixel coordinates, canvas
+ * drawing, position picking, etc.) that has no sane non-interactive default,
+ * so wiring them into the workflow executor is pending dedicated settings UI.
+ * `executor-tool-coverage.test.ts` asserts every sidebar tool is either wired
+ * up or listed here, so future drift (a new standalone tool added to
+ * config/tools.ts without a matching executor case) is caught automatically.
+ */
+export const KNOWN_MISSING_WORKFLOW_TOOLS = new Set([
+    'redact-pdf',
+    'ocg-manager',
+    'dead-link-debugger',
+    'form-logic-designer',
+]);
 
 /** Default file extension when a workflow blob has no filename metadata */
 const TOOL_DEFAULT_EXTENSION: Record<string, string> = {
@@ -511,6 +562,29 @@ export async function executeNode(
                 return await processor.process(createProcessInput(files, options), onProgress);
             }
 
+            case 'overlay-pdf': {
+                if (files.length === 0) throw new Error('No input file');
+                const processor = new OverlayPDFProcessor();
+                const options = {
+                    mode: (settings.mode === 'underlay' ? 'underlay' : 'overlay') as 'overlay' | 'underlay',
+                    pageRange: String(settings.pageRange || ''),
+                    loop: settings.loop !== undefined ? Boolean(settings.loop) : true,
+                };
+                return await processor.process(createProcessInput(files, options), onProgress);
+            }
+
+            case 'add-page-labels': {
+                const rule: PageLabelRule = {
+                    pageRange: String(settings.pageRange || ''),
+                    style: (['D', 'R', 'r', 'A', 'a', 'none'].includes(String(settings.style))
+                        ? settings.style
+                        : 'D') as PageLabelRule['style'],
+                    prefix: settings.prefix !== undefined ? String(settings.prefix) : undefined,
+                    startValue: settings.startValue !== undefined ? Number(settings.startValue) : 1,
+                };
+                return await executeBatchOrSingle(files, () => new PageLabelsProcessor(), { rules: [rule] }, onProgress);
+            }
+
             // ==================== Edit & Annotate ====================
             case 'table-of-contents': {
                 if (files.length === 0) throw new Error('No input file');
@@ -540,15 +614,37 @@ export async function executeNode(
             }
 
             case 'add-watermark': {
+                const watermarkType = String(settings.watermarkType || 'text') as 'text' | 'image';
+                let imageData: ArrayBuffer | undefined;
+                let imageType: 'png' | 'jpg' | undefined;
+                if (watermarkType === 'image') {
+                    const imageFile = settings.imageFile;
+                    if (!(imageFile instanceof File)) {
+                        return {
+                            success: false,
+                            error: {
+                                code: PDFErrorCode.INVALID_OPTIONS,
+                                category: ErrorCategory.VALIDATION_ERROR,
+                                message: 'Watermark image is required. Please configure the node settings.',
+                                recoverable: true,
+                                suggestedAction: 'Click the node to upload an image for the watermark.',
+                            },
+                        };
+                    }
+                    imageData = await imageFile.arrayBuffer();
+                    imageType = /\.jpe?g$/i.test(imageFile.name) || imageFile.type === 'image/jpeg' ? 'jpg' : 'png';
+                }
                 // Parse hex color to RGB object (values 0-1)
                 const hexColor = String(settings.color || '#888888');
                 const hexMatch = hexColor.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
-                const color = hexMatch 
+                const color = hexMatch
                     ? { r: parseInt(hexMatch[1], 16) / 255, g: parseInt(hexMatch[2], 16) / 255, b: parseInt(hexMatch[3], 16) / 255 }
                     : { r: 0.5, g: 0.5, b: 0.5 };
                 const options = {
-                    type: String(settings.watermarkType || 'text') as 'text' | 'image',
+                    type: watermarkType,
                     text: String(settings.text || 'WATERMARK'),
+                    imageData,
+                    imageType,
                     fontSize: Number(settings.fontSize) || 48,
                     opacity: Number(settings.opacity) || 0.3,
                     rotation: Number(settings.rotation) || -45,
@@ -806,6 +902,15 @@ export async function executeNode(
                 return await processor.process(createProcessInput(files, options), onProgress);
             }
 
+            case 'pdf-to-markdown': {
+                const options = {
+                    includePageNumbers: settings.includePageNumbers !== undefined ? Boolean(settings.includePageNumbers) : false,
+                    pageRange: String(settings.pageRange || ''),
+                    preserveLineBreaks: settings.preserveLineBreaks !== undefined ? Boolean(settings.preserveLineBreaks) : true,
+                };
+                return await executeBatchOrSingle(files, () => new PDFToMarkdownProcessor(), options, onProgress);
+            }
+
             case 'extract-images': {
                 if (files.length === 0) throw new Error('No input file');
                 const processor = new ExtractImagesPDFProcessor();
@@ -847,6 +952,53 @@ export async function executeNode(
                     targetSize: String(settings.targetSize || 'A4'),
                 };
                 return await processor.process(createProcessInput(files, options), onProgress);
+            }
+
+            case 'crop-pdf': {
+                if (files.length === 0) throw new Error('No input file');
+                const marginTop = Number(settings.marginTop) || 0;
+                const marginBottom = Number(settings.marginBottom) || 0;
+                const marginLeft = Number(settings.marginLeft) || 0;
+                const marginRight = Number(settings.marginRight) || 0;
+
+                const pdfLib = await loadPdfLib();
+                const results: Blob[] = [];
+                const filenames: string[] = [];
+
+                for (const file of files) {
+                    const bytes = await file.arrayBuffer();
+                    const pdf = await pdfLib.PDFDocument.load(bytes, { ignoreEncryption: true });
+                    const pageCount = pdf.getPageCount();
+                    const cropData: Record<number, CropData> = {};
+
+                    for (let i = 0; i < pageCount; i++) {
+                        const { width, height } = pdf.getPage(i).getSize();
+                        const cropW = Math.max(0, width - marginLeft - marginRight);
+                        const cropH = Math.max(0, height - marginTop - marginBottom);
+                        cropData[i + 1] = {
+                            x: width > 0 ? marginLeft / width : 0,
+                            y: height > 0 ? marginTop / height : 0,
+                            width: width > 0 ? cropW / width : 1,
+                            height: height > 0 ? cropH / height : 1,
+                        };
+                    }
+
+                    const processor = new CropProcessor();
+                    const result = await processor.process(
+                        createProcessInput([file], { cropData, mode: 'metadata' }),
+                        onProgress
+                    );
+                    if (!result.success || !result.result) {
+                        throw new Error(result.error?.message || `Failed to crop ${file.name}`);
+                    }
+                    results.push(result.result as Blob);
+                    filenames.push(result.filename || file.name.replace(/\.pdf$/i, '_cropped.pdf'));
+                }
+
+                if (results.length === 1) {
+                    return { success: true, result: results[0], filename: filenames[0] };
+                }
+                return { success: true, result: results, filename: filenames[0] };
             }
 
             case 'linearize-pdf': {
@@ -948,8 +1100,8 @@ export async function executeNode(
 
             case 'digital-sign-pdf': {
                 if (files.length === 0) throw new Error('No input file');
-                const certFile = settings.certFile as File | undefined;
-                if (!certFile) {
+                const certFile = settings.certFile;
+                if (!(certFile instanceof File)) {
                     return {
                         success: false,
                         error: {
@@ -1004,6 +1156,60 @@ export async function executeNode(
                     });
                     results.push(new Blob([new Uint8Array(signedBytes)], { type: 'application/pdf' }));
                     filenames.push(file.name.replace(/\.pdf$/i, '_signed.pdf'));
+                }
+
+                if (results.length === 1) {
+                    return { success: true, result: results[0], filename: filenames[0] };
+                }
+                return { success: true, result: results, filename: filenames[0] };
+            }
+
+            case 'timestamp-pdf': {
+                const options = {
+                    tsaServer: String(settings.tsaServer || 'MeSign'),
+                };
+                return await executeBatchOrSingle(files, () => new TimestampPDFProcessor(), options, onProgress);
+            }
+
+            case 'find-and-redact': {
+                if (files.length === 0) throw new Error('No input file');
+                const searchTerm = String(settings.searchTerm || '').trim();
+                if (!searchTerm) {
+                    return {
+                        success: false,
+                        error: {
+                            code: PDFErrorCode.INVALID_OPTIONS,
+                            category: ErrorCategory.VALIDATION_ERROR,
+                            message: 'A search term is required to find and redact text.',
+                            recoverable: true,
+                            suggestedAction: 'Click the node to enter the text or pattern to redact.',
+                        },
+                    };
+                }
+
+                const { findAndRedact } = await import('@/lib/pdf/processors/find-and-redact');
+                const redactOptions = {
+                    searchTerm,
+                    caseSensitive: settings.caseSensitive !== undefined ? Boolean(settings.caseSensitive) : false,
+                    useRegex: settings.useRegex !== undefined ? Boolean(settings.useRegex) : false,
+                    wholeWord: settings.wholeWord !== undefined ? Boolean(settings.wholeWord) : false,
+                    addBorder: settings.addBorder !== undefined ? Boolean(settings.addBorder) : false,
+                    replacementText: settings.replacementText !== undefined ? String(settings.replacementText) : undefined,
+                };
+
+                const results: Blob[] = [];
+                const filenames: string[] = [];
+                for (const file of files) {
+                    const singleProgress: ProgressCallback = (percent, msg) => {
+                        const overall = Math.round(((results.length + percent / 100) / files.length) * 100);
+                        onProgress?.(overall, msg || file.name);
+                    };
+                    const redaction = await findAndRedact(file, redactOptions, singleProgress);
+                    if (!redaction.success || !redaction.result) {
+                        throw new Error(redaction.error || `Failed to redact ${file.name}`);
+                    }
+                    results.push(redaction.result);
+                    filenames.push(file.name.replace(/\.pdf$/i, '_redacted.pdf'));
                 }
 
                 if (results.length === 1) {
@@ -1178,6 +1384,277 @@ export async function executeNode(
                     detectTables: settings.detectTables !== undefined ? Boolean(settings.detectTables) : true,
                 };
                 return await processor.process(createProcessInput(files, options), onProgress);
+            }
+
+            // ==================== Newly-Wired Tools (batch 2) ====================
+            case 'smart-data-redactor': {
+                const patterns: ('email' | 'phone' | 'idcard' | 'custom')[] = [];
+                if (settings.patternEmail !== undefined ? Boolean(settings.patternEmail) : true) patterns.push('email');
+                if (settings.patternPhone !== undefined ? Boolean(settings.patternPhone) : true) patterns.push('phone');
+                if (Boolean(settings.patternIdcard)) patterns.push('idcard');
+                if (Boolean(settings.patternCustom)) patterns.push('custom');
+                const hexColor = String(settings.redactColor || '#000000');
+                const hexMatch = hexColor.match(/^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i);
+                const redactColor = hexMatch
+                    ? { r: parseInt(hexMatch[1], 16), g: parseInt(hexMatch[2], 16), b: parseInt(hexMatch[3], 16) }
+                    : { r: 0, g: 0, b: 0 };
+                const options = {
+                    patterns: patterns.length > 0 ? patterns : ['email', 'phone'],
+                    customKeywords: String(settings.customKeywords || '').split(',').map(s => s.trim()).filter(Boolean),
+                    redactColor,
+                };
+                return await executeBatchOrSingle(files, () => new SmartDataRedactorProcessor(), options, onProgress);
+            }
+
+            case 'pdf-to-cbz': {
+                const options = {
+                    title: String(settings.title || ''),
+                    series: String(settings.series || ''),
+                    number: String(settings.number || ''),
+                    volume: String(settings.volume || ''),
+                    writer: String(settings.writer || ''),
+                    publisher: String(settings.publisher || ''),
+                    genre: String(settings.genre || ''),
+                    manga: (settings.manga === 'YesAndRightToLeft' ? 'YesAndRightToLeft' : 'No') as 'No' | 'YesAndRightToLeft',
+                    grayscale: settings.grayscale !== undefined ? Boolean(settings.grayscale) : false,
+                    format: (['jpg', 'png', 'webp'].includes(String(settings.format)) ? settings.format : 'jpg') as 'jpg' | 'png' | 'webp',
+                    scale: settings.scale !== undefined ? Number(settings.scale) : 1.5,
+                    quality: settings.quality !== undefined ? Number(settings.quality) : 0.85,
+                };
+                return await executeBatchOrSingle(files, () => new PDFToCBZProcessor(), options, onProgress);
+            }
+
+            case 'pdf-to-slide': {
+                const options = {
+                    themeColor: String(settings.themeColor || '#1e3a8a'),
+                    exportFormat: 'markdown' as const,
+                };
+                return await executeBatchOrSingle(files, () => new PDFToSlideProcessor(), options, onProgress);
+            }
+
+            case 'pdf-page-resizer-uniform': {
+                if (files.length === 0) throw new Error('No input file');
+                const options = {
+                    targetSize: (['A4', 'A3', 'Letter'].includes(String(settings.targetSize)) ? settings.targetSize : 'A4') as 'A4' | 'A3' | 'Letter',
+                    scaleMode: (settings.scaleMode === 'fill' ? 'fill' : 'fit') as 'fit' | 'fill',
+                };
+                const processor = new PdfPageResizerUniformProcessor();
+                return await processor.process(createProcessInput(files, options), onProgress);
+            }
+
+            case 'pdf-deskew-aligner': {
+                const options = {
+                    threshold: settings.threshold !== undefined ? Number(settings.threshold) : 10,
+                    dpi: settings.dpi !== undefined ? Number(settings.dpi) : 150,
+                };
+                return await executeBatchOrSingle(files, () => new PdfDeskewAlignerProcessor(), options, onProgress);
+            }
+
+            case 'interactive-toc-generator': {
+                const options = {
+                    title: String(settings.title || 'Table of Contents'),
+                    insertIndex: settings.insertIndex !== undefined ? Number(settings.insertIndex) : 0,
+                };
+                return await executeBatchOrSingle(files, () => new InteractiveTocGeneratorProcessor(), options, onProgress);
+            }
+
+            case 'bookmarks-auto-generator': {
+                const options = {
+                    detectStrategy: (['regex', 'font-size', 'both'].includes(String(settings.detectStrategy)) ? settings.detectStrategy : 'both') as 'regex' | 'font-size' | 'both',
+                    minFontSize: settings.minFontSize !== undefined ? Number(settings.minFontSize) : 16,
+                };
+                return await executeBatchOrSingle(files, () => new BookmarksAutoGeneratorProcessor(), options, onProgress);
+            }
+
+            case 'batch-barcode-injector': {
+                const options = {
+                    barcodeType: (settings.barcodeType === 'code128' ? 'code128' : 'qr') as 'qr' | 'code128',
+                    value: String(settings.value || 'https://atlaspdf.org'),
+                    x: settings.x !== undefined ? Number(settings.x) : 50,
+                    y: settings.y !== undefined ? Number(settings.y) : 50,
+                    width: settings.width !== undefined ? Number(settings.width) : 80,
+                    height: settings.height !== undefined ? Number(settings.height) : 80,
+                    pages: (['all', 'first', 'last'].includes(String(settings.pages)) ? settings.pages : 'all') as 'all' | 'first' | 'last',
+                };
+                return await executeBatchOrSingle(files, () => new BatchBarcodeInjectorProcessor(), options, onProgress);
+            }
+
+            case 'cert-cryptor': {
+                const options = {
+                    waxColor: (['gold', 'red', 'bronze'].includes(String(settings.waxColor)) ? settings.waxColor : 'gold') as 'gold' | 'red' | 'bronze',
+                    sealPage: settings.sealPage !== undefined ? Number(settings.sealPage) : 0,
+                    sealX: settings.sealX !== undefined ? Number(settings.sealX) : 100,
+                    sealY: settings.sealY !== undefined ? Number(settings.sealY) : 100,
+                    pfxPassword: String(settings.pfxPassword || ''),
+                    encryptWithCert: settings.encryptWithCert !== undefined ? Boolean(settings.encryptWithCert) : false,
+                };
+                return await executeBatchOrSingle(files, () => new CertCryptorProcessor(), options, onProgress);
+            }
+
+            case 'vector-extractor': {
+                const options = {
+                    pageNum: settings.pageNum !== undefined ? Number(settings.pageNum) : 1,
+                    cleanGrid: settings.cleanGrid !== undefined ? Boolean(settings.cleanGrid) : true,
+                };
+                return await executeBatchOrSingle(files, () => new VectorExtractorProcessor(), options, onProgress);
+            }
+
+            case 'deep-sanitize': {
+                const options = {
+                    stripMetadata: settings.stripMetadata !== undefined ? Boolean(settings.stripMetadata) : true,
+                    stripPieceInfo: settings.stripPieceInfo !== undefined ? Boolean(settings.stripPieceInfo) : true,
+                    stripOcgWatermarks: settings.stripOcgWatermarks !== undefined ? Boolean(settings.stripOcgWatermarks) : true,
+                    stripAnnotations: settings.stripAnnotations !== undefined ? Boolean(settings.stripAnnotations) : false,
+                };
+                return await executeBatchOrSingle(files, () => new DeepSanitizeProcessor(), options, onProgress);
+            }
+
+            case 'batch-watermark-remover': {
+                const options = {
+                    watermarkText: String(settings.watermarkText || ''),
+                    removeImages: settings.removeImages !== undefined ? Boolean(settings.removeImages) : false,
+                };
+                return await executeBatchOrSingle(files, () => new BatchWatermarkRemoverProcessor(), options, onProgress);
+            }
+
+            case 'annotation-exporter': {
+                const options = {
+                    format: (settings.format === 'json' ? 'json' : 'md') as 'md' | 'json',
+                    includeHighlights: settings.includeHighlights !== undefined ? Boolean(settings.includeHighlights) : true,
+                    includeNotes: settings.includeNotes !== undefined ? Boolean(settings.includeNotes) : true,
+                    includeUnderlines: settings.includeUnderlines !== undefined ? Boolean(settings.includeUnderlines) : true,
+                    includeInk: settings.includeInk !== undefined ? Boolean(settings.includeInk) : true,
+                };
+                return await executeBatchOrSingle(files, () => new AnnotationExporterProcessor(), options, onProgress);
+            }
+
+            case 'ai-pdf-reflower': {
+                const options = {
+                    theme: (['sepia', 'dark', 'green', 'light'].includes(String(settings.theme)) ? settings.theme : 'light') as 'sepia' | 'dark' | 'green' | 'light',
+                    fontSize: settings.fontSize !== undefined ? Number(settings.fontSize) : 16,
+                    exportFormat: 'markdown' as const,
+                };
+                return await executeBatchOrSingle(files, () => new AIPDFReflowerProcessor(), options, onProgress);
+            }
+
+            case 'citation-linker': {
+                const options = {
+                    detectDoi: settings.detectDoi !== undefined ? Boolean(settings.detectDoi) : true,
+                    fallbackToPageJump: settings.fallbackToPageJump !== undefined ? Boolean(settings.fallbackToPageJump) : true,
+                };
+                return await executeBatchOrSingle(files, () => new CitationLinkerProcessor(), options, onProgress);
+            }
+
+            case 'eink-optimizer': {
+                const options = {
+                    contrastOffset: settings.contrastOffset !== undefined ? Number(settings.contrastOffset) : 0,
+                    dilationAmount: (settings.dilationAmount !== undefined ? Number(settings.dilationAmount) : 0) as 0 | 1 | 2,
+                };
+                return await executeBatchOrSingle(files, () => new EinkOptimizerProcessor(), options, onProgress);
+            }
+
+            case 'passport-id-composer': {
+                if (files.length === 0) throw new Error('No input file');
+                const options = {
+                    watermarkText: String(settings.watermarkText || ''),
+                    idCardWidth: settings.idCardWidth !== undefined ? Number(settings.idCardWidth) : 242.6,
+                    idCardHeight: settings.idCardHeight !== undefined ? Number(settings.idCardHeight) : 153,
+                };
+                const processor = new PassportIdComposerProcessor();
+                return await processor.process(createProcessInput(files, options), onProgress);
+            }
+
+            case 'photo-tiling-prepress': {
+                const options = {
+                    photoSpec: (settings.photoSpec === '2-inch' ? '2-inch' : '1-inch') as '1-inch' | '2-inch',
+                    paperSize: (settings.paperSize === '6-inch' ? '6-inch' : '5-inch') as '5-inch' | '6-inch',
+                    gapPt: settings.gapPt !== undefined ? Number(settings.gapPt) : 8,
+                };
+                return await executeBatchOrSingle(files, () => new PhotoTilingPrepressProcessor(), options, onProgress);
+            }
+
+            case 'booklet-folding-simulator': {
+                const options = {
+                    foldingMode: (['4-page-fold', '8-page-saddle', '4-page-accordion'].includes(String(settings.foldingMode)) ? settings.foldingMode : '4-page-fold') as '4-page-fold' | '8-page-saddle' | '4-page-accordion',
+                };
+                return await executeBatchOrSingle(files, () => new BookletFoldingSimulatorProcessor(), options, onProgress);
+            }
+
+            case 'pdf-lossless-slicer': {
+                const options = {
+                    sliceX: settings.sliceX !== undefined ? Number(settings.sliceX) : 0.1,
+                    sliceY: settings.sliceY !== undefined ? Number(settings.sliceY) : 0.1,
+                    sliceWidth: settings.sliceWidth !== undefined ? Number(settings.sliceWidth) : 0.8,
+                    sliceHeight: settings.sliceHeight !== undefined ? Number(settings.sliceHeight) : 0.8,
+                    pageNumber: settings.pageNumber !== undefined ? Number(settings.pageNumber) : 1,
+                };
+                return await executeBatchOrSingle(files, () => new PdfLosslessSlicerProcessor(), options, onProgress);
+            }
+
+            case 'pdf-scratchpad-canvas': {
+                const options = {
+                    padPosition: (settings.padPosition === 'bottom' ? 'bottom' : 'right') as 'right' | 'bottom',
+                    padSize: settings.padSize !== undefined ? Number(settings.padSize) : 200,
+                    gridType: (['grid', 'ruled', 'blank'].includes(String(settings.gridType)) ? settings.gridType : 'grid') as 'grid' | 'ruled' | 'blank',
+                };
+                return await executeBatchOrSingle(files, () => new PdfScratchpadCanvasProcessor(), options, onProgress);
+            }
+
+            case 'pdf-signature-anchor-helper': {
+                const options = {
+                    anchorX: settings.anchorX !== undefined ? Number(settings.anchorX) : 0.8,
+                    anchorY: settings.anchorY !== undefined ? Number(settings.anchorY) : 0.8,
+                    pageNumber: settings.pageNumber !== undefined ? Number(settings.pageNumber) : 1,
+                    anchorLabel: String(settings.anchorLabel || 'Sign Here'),
+                };
+                return await executeBatchOrSingle(files, () => new PdfSignatureAnchorHelperProcessor(), options, onProgress);
+            }
+
+            case 'pdf-spine-bookbinder': {
+                const options = {
+                    pageCount: settings.pageCount !== undefined ? Number(settings.pageCount) : 100,
+                    paperGsm: (Number(settings.paperGsm) || 80) as 80 | 100 | 120 | 150,
+                    coverWidthPt: settings.coverWidthPt !== undefined ? Number(settings.coverWidthPt) : 595.27,
+                    coverHeightPt: settings.coverHeightPt !== undefined ? Number(settings.coverHeightPt) : 841.89,
+                    bookTitle: String(settings.bookTitle || 'AtlasPDF Bound Book'),
+                };
+                // This processor never reads the input file(s) at all — it derives a spine/cover
+                // layout purely from the numeric options. Do not guard on files.length here.
+                const processor = new PdfSpineBookbinderProcessor();
+                return await processor.process(createProcessInput(files, options), onProgress);
+            }
+
+            case 'pdf-two-column-reflower': {
+                const options = {
+                    middleGapRatio: settings.middleGapRatio !== undefined ? Number(settings.middleGapRatio) : 0.5,
+                };
+                return await executeBatchOrSingle(files, () => new PdfTwoColumnReflowerProcessor(), options, onProgress);
+            }
+
+            case 'handwriting-ink-contrast-booster': {
+                const options = {
+                    threshold: settings.threshold !== undefined ? Number(settings.threshold) : 200,
+                    contrast: settings.contrast !== undefined ? Number(settings.contrast) : 1.5,
+                    inkType: (['dark-ink', 'red-stamp', 'auto'].includes(String(settings.inkType)) ? settings.inkType : 'auto') as 'dark-ink' | 'red-stamp' | 'auto',
+                };
+                return await executeBatchOrSingle(files, () => new HandwritingInkContrastBoosterProcessor(), options, onProgress);
+            }
+
+            case 'signature-ink-optimizer': {
+                const options = {
+                    threshold: settings.threshold !== undefined ? Number(settings.threshold) : 200,
+                    contrast: settings.contrast !== undefined ? Number(settings.contrast) : 1.5,
+                    inkType: (['dark-ink', 'red-stamp', 'auto'].includes(String(settings.inkType)) ? settings.inkType : 'auto') as 'dark-ink' | 'red-stamp' | 'auto',
+                };
+                return await executeBatchOrSingle(files, () => new SignatureInkOptimizerProcessor(), options, onProgress);
+            }
+
+            case 'global-invoice-parser': {
+                const options = {
+                    targetCurrency: String(settings.targetCurrency || 'CNY'),
+                    exchangeRate: settings.exchangeRate !== undefined && settings.exchangeRate !== '' ? Number(settings.exchangeRate) : undefined,
+                };
+                return await executeBatchOrSingle(files, () => new GlobalInvoiceParserProcessor(), options, onProgress);
             }
 
             // ==================== Output Nodes ====================

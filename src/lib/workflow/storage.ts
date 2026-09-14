@@ -5,8 +5,9 @@
 
 import { SavedWorkflow, WorkflowNode, WorkflowEdge } from '@/types/workflow';
 import { logger } from '@/lib/utils/logger';
+import { sanitizeSettingsForStorage } from './execution-utils';
 
-const STORAGE_KEY = 'pdfcraft_workflows';
+const STORAGE_KEY = 'atlaspdf_workflows';
 const MAX_WORKFLOWS = 50;
 
 /**
@@ -53,6 +54,7 @@ export function saveWorkflow(
             error: undefined,
             inputFiles: undefined,
             outputFiles: undefined,
+            settings: sanitizeSettingsForStorage(node.data.settings),
         },
     }));
 

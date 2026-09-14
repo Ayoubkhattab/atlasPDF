@@ -35,6 +35,32 @@ interface PointerDragState {
 }
 
 /**
+ * Tools that require interactive UI (canvas drawing, position picking, visual
+ * comparison, etc.) and are therefore excluded from the workflow sidebar/canvas.
+ * Exported so other modules (e.g. the executor-tool-coverage test) can derive
+ * "sidebar-visible toolIds" from this single source of truth instead of a
+ * second hand-maintained copy that could drift out of sync.
+ */
+export const INTERACTIVE_TOOLS_BLACKLIST = new Set([
+    'pdf-multi-tool',    // Interactive multi-tool
+    'edit-pdf',          // Canvas editor required
+    'sign-pdf',          // Signature drawing required
+    'crop-pdf',          // Visual crop selection required
+    'bookmark',          // Bookmark editing required
+    'add-stamps',        // Position interaction required
+    'form-filler',       // Form field interaction required
+    'form-creator',      // Form design required
+    'rotate-custom',     // Per-page rotation settings required
+    'view-metadata',     // Read-only viewer tool
+    'compare-pdfs',      // Visual comparison interface required
+    'add-attachments',   // File selection for attachments required
+    'edit-attachments',  // Attachment management interaction required
+    'page-dimensions',   // Analysis only, no PDF output
+    'validate-signature', // Read-only signature verification, no PDF output
+    'pdf-reader',        // Read-only PDF viewer, no processor, no PDF output
+]);
+
+/**
  * Tool Sidebar for the workflow editor
  * Displays available tools grouped by category
  */
@@ -64,13 +90,13 @@ export function ToolSidebar({
     // Helper function to get tool name with fallback using getToolContent
     const getToolName = (toolId: string): string => {
         if (toolId === 'condition-gateway') {
-            return tWorkflow('conditionGateway') || (locale === 'zh' ? '条件分支 (Condition Gateway)' : 'Condition Gateway');
+            return tWorkflow('conditionGateway') || 'Condition Gateway';
         }
         if (toolId === 'download-pdf') {
-            return tWorkflow('downloadPdf') || (locale === 'zh' ? '下载 PDF (Download PDF)' : 'Download PDF');
+            return tWorkflow('downloadPdf') || 'Download PDF';
         }
         if (toolId === 'download-zip') {
-            return tWorkflow('downloadZip') || (locale === 'zh' ? '打包 ZIP 下载 (Download ZIP)' : 'Download ZIP');
+            return tWorkflow('downloadZip') || 'Download ZIP';
         }
         const content = getToolContent(locale, toolId);
         if (content && content.title) {
@@ -129,27 +155,8 @@ export function ToolSidebar({
         ];
         categoryMap['output'] = outputTools;
 
-        // Tools that require interactive UI and should be excluded from workflow
-        const interactiveToolsBlacklist = new Set([
-            'pdf-multi-tool',    // Interactive multi-tool
-            'edit-pdf',          // Canvas editor required
-            'sign-pdf',          // Signature drawing required
-            'crop-pdf',          // Visual crop selection required
-            'bookmark',          // Bookmark editing required
-            'add-stamps',        // Position interaction required
-            'form-filler',       // Form field interaction required
-            'form-creator',      // Form design required
-            'rotate-custom',     // Per-page rotation settings required
-            'view-metadata',     // Read-only viewer tool
-            'compare-pdfs',      // Visual comparison interface required
-            'add-attachments',   // File selection for attachments required
-            'edit-attachments',  // Attachment management interaction required
-            'page-dimensions',   // Analysis only, no PDF output
-            'validate-signature', // Read-only signature verification, no PDF output
-        ]);
-
         tools
-            .filter(tool => !interactiveToolsBlacklist.has(tool.id))
+            .filter(tool => !INTERACTIVE_TOOLS_BLACKLIST.has(tool.id))
             .forEach(tool => {
                 if (!categoryMap[tool.category]) {
                     categoryMap[tool.category] = [];
@@ -169,14 +176,14 @@ export function ToolSidebar({
         ];
 
         const categoryNames: Record<string, string> = {
-            'flow-control': tWorkflow('flowControl') || (locale === 'zh' ? '流程控制 (Flow Control)' : 'Flow Control'),
+            'flow-control': tWorkflow('flowControl') || 'Flow Control',
             'organize-manage': 'Organize & Manage',
             'edit-annotate': 'Edit & Annotate',
             'convert-to-pdf': 'Convert to PDF',
             'convert-from-pdf': 'Convert from PDF',
             'optimize-repair': 'Optimize & Repair',
             'secure-pdf': 'Security & Privacy',
-            'output': tWorkflow('outputCategory') || (locale === 'zh' ? '输出与导出 (Output & Export)' : 'Output & Export'),
+            'output': tWorkflow('outputCategory') || 'Output & Export',
         };
 
         const categoryIcons: Record<string, string> = {
@@ -371,15 +378,15 @@ export function ToolSidebar({
     // Collapsed view
     if (isCollapsed) {
         return (
-            <div className="w-12 h-full bg-[hsl(var(--color-background))] border-r border-[hsl(var(--color-border))] flex flex-col items-center py-2">
+            <div className="w-12 h-full bg-[var(--color-background)] border-r border-[var(--color-border)] flex flex-col items-center py-2">
                 <button
                     onClick={onToggleCollapse}
-                    className="p-2 rounded-lg hover:bg-[hsl(var(--color-muted))] transition-colors mb-2"
+                    className="p-2 rounded-lg hover:bg-[var(--color-muted)] transition-colors mb-2"
                     title={tWorkflow('toolbox') || 'Toolbox'}
                 >
-                    <PanelLeftOpen className="w-5 h-5 text-[hsl(var(--color-primary))]" />
+                    <PanelLeftOpen className="w-5 h-5 text-[var(--color-primary)]" />
                 </button>
-                <div className="w-8 h-px bg-[hsl(var(--color-border))] mb-2" />
+                <div className="w-8 h-px bg-[var(--color-border)] mb-2" />
                 {/* Show category icons when collapsed */}
                 {categories.slice(0, 6).map(category => {
                     const CategoryIcon = getIcon(category.icon);
@@ -387,10 +394,10 @@ export function ToolSidebar({
                         <button
                             key={category.id}
                             onClick={onToggleCollapse}
-                            className="p-2 rounded-lg hover:bg-[hsl(var(--color-muted))] transition-colors mb-1"
+                            className="p-2 rounded-lg hover:bg-[var(--color-muted)] transition-colors mb-1"
                             title={category.name}
                         >
-                            <CategoryIcon className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                            <CategoryIcon className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                         </button>
                     );
                 })}
@@ -399,36 +406,36 @@ export function ToolSidebar({
     }
 
     return (
-        <div className="w-72 h-full bg-[hsl(var(--color-background))] border-r border-[hsl(var(--color-border))] flex flex-col">
+        <div className="w-72 h-full bg-[var(--color-background)] border-r border-[var(--color-border)] flex flex-col">
             {/* Header */}
-            <div className="p-4 border-b border-[hsl(var(--color-border))] flex items-center justify-between">
+            <div className="p-4 border-b border-[var(--color-border)] flex items-center justify-between">
                 <div>
-                    <h2 className="text-lg font-semibold text-[hsl(var(--color-foreground))]">
+                    <h2 className="text-lg font-semibold text-[var(--color-foreground)]">
                         {tWorkflow('toolbox') || 'Tool Box'}
                     </h2>
-                    <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">
+                    <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
                         {tWorkflow('dragToAdd') || 'Drag or double-click a tool to add it to the workflow'}
                     </p>
                 </div>
                 <button
                     onClick={onToggleCollapse}
-                    className="p-1.5 rounded-lg hover:bg-[hsl(var(--color-muted))] transition-colors"
+                    className="p-1.5 rounded-lg hover:bg-[var(--color-muted)] transition-colors"
                     title="Collapse sidebar"
                 >
-                    <PanelLeftClose className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                    <PanelLeftClose className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                 </button>
             </div>
 
             {/* Search */}
-            <div className="p-3 border-b border-[hsl(var(--color-border))]">
+            <div className="p-3 border-b border-[var(--color-border)]">
                 <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--color-muted-foreground)]" />
                     <input
                         type="text"
                         placeholder={tWorkflow('searchTools') || 'Search tools...'}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] placeholder:text-[hsl(var(--color-muted-foreground))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                        className="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-[var(--color-border)] bg-[var(--color-background)] text-[var(--color-foreground)] placeholder:text-[var(--color-muted-foreground)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                     />
                 </div>
             </div>
@@ -440,22 +447,22 @@ export function ToolSidebar({
                     const CategoryIcon = getIcon(category.icon);
 
                     return (
-                        <div key={category.id} className="border-b border-[hsl(var(--color-border))]">
+                        <div key={category.id} className="border-b border-[var(--color-border)]">
                             {/* Category Header */}
                             <button
                                 onClick={() => toggleCategory(category.id)}
-                                className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-[hsl(var(--color-muted)/0.5)] transition-colors"
+                                className="w-full flex items-center gap-2 px-4 py-3 text-left hover:bg-[color-mix(in_srgb,var(--color-muted)_50%,transparent)] transition-colors"
                             >
                                 {isExpanded ? (
-                                    <ChevronDown className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                                    <ChevronDown className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                                 ) : (
-                                    <ChevronRight className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                                    <ChevronRight className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                                 )}
-                                <CategoryIcon className="w-4 h-4 text-[hsl(var(--color-primary))]" />
-                                <span className="text-sm font-medium text-[hsl(var(--color-foreground))]">
+                                <CategoryIcon className="w-4 h-4 text-[var(--color-primary)]" />
+                                <span className="text-sm font-medium text-[var(--color-foreground)]">
                                     {category.name}
                                 </span>
-                                <span className="ml-auto text-xs text-[hsl(var(--color-muted-foreground))]">
+                                <span className="ml-auto text-xs text-[var(--color-muted-foreground)]">
                                     {category.tools.length}
                                 </span>
                             </button>
@@ -478,11 +485,11 @@ export function ToolSidebar({
                                                 onPointerDown={(e) => handlePointerDown(e, tool)}
                                                 onDoubleClick={() => handleDoubleClick(tool)}
                                                 title={`${toolName} \u2014 ${hint}`}
-                                                className="flex items-center gap-2 px-4 py-2 mx-2 rounded-md cursor-grab hover:bg-[hsl(var(--color-muted))] active:cursor-grabbing transition-colors group select-none"
+                                                className="flex items-center gap-2 px-4 py-2 mx-2 rounded-md cursor-grab hover:bg-[var(--color-muted)] active:cursor-grabbing transition-colors group select-none"
                                             >
-                                                <GripVertical className="w-3 h-3 text-[hsl(var(--color-muted-foreground))] opacity-0 group-hover:opacity-100 transition-opacity" />
-                                                <ToolIcon className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
-                                                <span className="text-sm text-[hsl(var(--color-foreground))] truncate flex-1">
+                                                <GripVertical className="w-3 h-3 text-[var(--color-muted-foreground)] opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                <ToolIcon className="w-4 h-4 text-[var(--color-muted-foreground)]" />
+                                                <span className="text-sm text-[var(--color-foreground)] truncate flex-1">
                                                     {toolName}
                                                 </span>
                                             </div>
@@ -496,8 +503,8 @@ export function ToolSidebar({
             </div>
 
             {/* Footer */}
-            <div className="p-3 border-t border-[hsl(var(--color-border))] bg-[hsl(var(--color-muted)/0.3)]">
-                <p className="text-xs text-center text-[hsl(var(--color-muted-foreground))]">
+            <div className="p-3 border-t border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]">
+                <p className="text-xs text-center text-[var(--color-muted-foreground)]">
                     {tools.length} {tWorkflow('toolsAvailable') || 'tools available'}
                 </p>
             </div>

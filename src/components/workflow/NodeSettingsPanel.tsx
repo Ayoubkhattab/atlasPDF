@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslations, useLocale, useMessages } from 'next-intl';
 import { WorkflowNode } from '@/types/workflow';
 import { getToolContent } from '@/config/tool-content';
+import { isMissingFileRef, type MissingFileRef } from '@/lib/workflow/execution-utils';
 import { Locale } from '@/lib/i18n/config';
 import { X, Settings, RotateCcw, Check } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -135,7 +136,7 @@ const getToolSettingsConfig = (): Record<string, ToolSettingsConfig> => ({
             },
             {
                 key: 'imageFile',
-                labelKey: 'watermark.uploadImage',
+                labelKey: 'watermark.watermarkImage',
                 type: 'file',
                 accept: 'image/*',
                 defaultValue: null,
@@ -546,6 +547,71 @@ const getToolSettingsConfig = (): Record<string, ToolSettingsConfig> => ({
         ],
     },
 
+    // ==================== Local Timestamp ====================
+    'timestamp-pdf': {
+        titleKey: 'timestampPdf.selectTsaTitle',
+        fields: [
+            {
+                key: 'tsaServer',
+                labelKey: 'timestampPdf.authority',
+                type: 'select',
+                defaultValue: 'MeSign',
+                options: [
+                    { value: 'MeSign', labelKey: 'MeSign' },
+                    { value: 'DigiCert', labelKey: 'DigiCert' },
+                    { value: 'Sectigo', labelKey: 'Sectigo' },
+                    { value: 'SSLcom', labelKey: 'SSL.com' },
+                    { value: 'FreeTSA', labelKey: 'FreeTSA' },
+                ],
+            },
+        ],
+    },
+
+    // ==================== Find and Redact ====================
+    'find-and-redact': {
+        titleKey: 'findAndRedact.redactionOptions',
+        fields: [
+            {
+                key: 'searchTerm',
+                labelKey: 'findAndRedact.searchTermLabel',
+                type: 'text',
+                defaultValue: '',
+                placeholderKey: 'findAndRedact.searchTermPlaceholder',
+            },
+            {
+                key: 'caseSensitive',
+                labelKey: 'findAndRedact.caseSensitive',
+                type: 'checkbox',
+                defaultValue: false,
+            },
+            {
+                key: 'useRegex',
+                labelKey: 'findAndRedact.useRegex',
+                type: 'checkbox',
+                defaultValue: false,
+            },
+            {
+                key: 'wholeWord',
+                labelKey: 'findAndRedact.wholeWord',
+                type: 'checkbox',
+                defaultValue: false,
+            },
+            {
+                key: 'replacementText',
+                labelKey: 'findAndRedact.replacementText',
+                type: 'text',
+                defaultValue: '',
+                placeholderKey: 'findAndRedact.replacementTextPlaceholder',
+            },
+            {
+                key: 'addBorder',
+                labelKey: 'findAndRedact.addBorder',
+                type: 'checkbox',
+                defaultValue: false,
+            },
+        ],
+    },
+
     // ==================== Crop PDF ====================
     'crop-pdf': {
         titleKey: 'cropPdf.optionsTitle',
@@ -581,6 +647,108 @@ const getToolSettingsConfig = (): Record<string, ToolSettingsConfig> => ({
                 defaultValue: 0,
                 min: 0,
                 max: 200,
+            },
+        ],
+    },
+
+    // ==================== Overlay & Underlay ====================
+    'overlay-pdf': {
+        titleKey: 'common.overlayPdf.optionsTitle',
+        fields: [
+            {
+                key: 'mode',
+                labelKey: 'common.overlayPdf.placementModeLabel',
+                type: 'select',
+                defaultValue: 'overlay',
+                options: [
+                    { value: 'overlay', labelKey: 'common.overlayPdf.placementOverlayBtn' },
+                    { value: 'underlay', labelKey: 'common.overlayPdf.placementUnderlayBtn' },
+                ],
+            },
+            {
+                key: 'pageRange',
+                labelKey: 'common.overlayPdf.targetRangeLabel',
+                type: 'text',
+                defaultValue: '',
+                placeholderKey: 'common.overlayPdf.targetRangePlaceholder',
+                descriptionKey: 'common.overlayPdf.targetRangeHelp',
+            },
+            {
+                key: 'loop',
+                labelKey: 'common.overlayPdf.loopOverlayLabel',
+                type: 'checkbox',
+                defaultValue: true,
+                descriptionKey: 'common.overlayPdf.loopOverlayDesc',
+            },
+        ],
+    },
+
+    // ==================== Page Labels ====================
+    'add-page-labels': {
+        titleKey: 'common.pageLabels.rulesTitle',
+        fields: [
+            {
+                key: 'pageRange',
+                labelKey: 'common.pageLabels.pageRangeLabel',
+                type: 'text',
+                defaultValue: '',
+                placeholderKey: 'common.pageLabels.pageRangePlaceholder',
+                descriptionKey: 'common.pageLabels.pageRangeHelp',
+            },
+            {
+                key: 'style',
+                labelKey: 'common.pageLabels.styleLabel',
+                type: 'select',
+                defaultValue: 'D',
+                options: [
+                    { value: 'D', labelKey: 'common.pageLabels.styleD' },
+                    { value: 'R', labelKey: 'common.pageLabels.styleR' },
+                    { value: 'r', labelKey: 'common.pageLabels.style_r' },
+                    { value: 'A', labelKey: 'common.pageLabels.styleA' },
+                    { value: 'a', labelKey: 'common.pageLabels.style_a' },
+                    { value: 'none', labelKey: 'common.pageLabels.styleNone' },
+                ],
+            },
+            {
+                key: 'prefix',
+                labelKey: 'common.pageLabels.prefixLabel',
+                type: 'text',
+                defaultValue: '',
+                placeholderKey: 'common.pageLabels.prefixPlaceholder',
+            },
+            {
+                key: 'startValue',
+                labelKey: 'common.pageLabels.startValueLabel',
+                type: 'number',
+                defaultValue: 1,
+                min: 1,
+            },
+        ],
+    },
+
+    // ==================== PDF to Markdown ====================
+    'pdf-to-markdown': {
+        titleKey: 'pdfToMarkdown.optionsTitle',
+        fields: [
+            {
+                key: 'pageRange',
+                labelKey: 'pdfToMarkdown.pageRange',
+                type: 'text',
+                defaultValue: '',
+                placeholderKey: 'pdfToMarkdown.pageRangePlaceholder',
+                descriptionKey: 'pdfToMarkdown.pageRangeHint',
+            },
+            {
+                key: 'includePageNumbers',
+                labelKey: 'pdfToMarkdown.includePageNumbers',
+                type: 'checkbox',
+                defaultValue: false,
+            },
+            {
+                key: 'preserveLineBreaks',
+                labelKey: 'pdfToMarkdown.preserveLineBreaks',
+                type: 'checkbox',
+                defaultValue: true,
             },
         ],
     },
@@ -2386,6 +2554,474 @@ const getToolSettingsConfig = (): Record<string, ToolSettingsConfig> => ({
         ],
     },
 
+    // ==================== Newly-Wired Tools (batch 2) ====================
+    'smart-data-redactor': {
+        titleKey: 'common.smartDataRedactor.optionsTitle',
+        fields: [
+            { key: 'patternEmail', labelKey: 'common.smartDataRedactor.emailRedactLabel', type: 'checkbox', defaultValue: true },
+            { key: 'patternPhone', labelKey: 'common.smartDataRedactor.phoneRedactLabel', type: 'checkbox', defaultValue: true },
+            { key: 'patternIdcard', labelKey: 'common.smartDataRedactor.idRedactLabel', type: 'checkbox', defaultValue: false },
+            { key: 'patternCustom', labelKey: 'common.smartDataRedactor.customKeywordsLabel', type: 'checkbox', defaultValue: false },
+            {
+                key: 'customKeywords',
+                labelKey: 'common.smartDataRedactor.customKeywordsLabel',
+                type: 'text',
+                defaultValue: '',
+                placeholderKey: 'common.smartDataRedactor.customKeywordsPlaceholder',
+                showWhen: { field: 'patternCustom', value: true },
+            },
+            { key: 'redactColor', labelKey: 'common.smartDataRedactor.redactColorLabel', type: 'color', defaultValue: '#000000' },
+        ],
+    },
+
+    'pdf-to-cbz': {
+        titleKey: 'common.pdfToCbz.workflowOptionsTitle',
+        fields: [
+            { key: 'title', labelKey: 'common.pdfToCbz.fieldTitle', type: 'text', defaultValue: '' },
+            { key: 'series', labelKey: 'common.pdfToCbz.fieldSeries', type: 'text', defaultValue: '', placeholderKey: 'common.pdfToCbz.seriesPlaceholder' },
+            { key: 'number', labelKey: 'common.pdfToCbz.fieldIssue', type: 'text', defaultValue: '' },
+            { key: 'volume', labelKey: 'common.pdfToCbz.fieldVolume', type: 'text', defaultValue: '' },
+            { key: 'writer', labelKey: 'common.pdfToCbz.fieldArtist', type: 'text', defaultValue: '', placeholderKey: 'common.pdfToCbz.artistPlaceholder' },
+            { key: 'publisher', labelKey: 'common.pdfToCbz.fieldPublisher', type: 'text', defaultValue: '', placeholderKey: 'common.pdfToCbz.publisherPlaceholder' },
+            { key: 'genre', labelKey: 'common.pdfToCbz.fieldGenre', type: 'text', defaultValue: '', placeholderKey: 'common.pdfToCbz.genrePlaceholder' },
+            {
+                key: 'manga',
+                labelKey: 'common.pdfToCbz.readingOrderLabel',
+                type: 'select',
+                defaultValue: 'No',
+                options: [
+                    { value: 'No', labelKey: 'common.pdfToCbz.readingOrderLtr' },
+                    { value: 'YesAndRightToLeft', labelKey: 'common.pdfToCbz.readingOrderRtl' },
+                ],
+            },
+            { key: 'grayscale', labelKey: 'common.pdfToCbz.einkGreyscale', type: 'checkbox', defaultValue: false, descriptionKey: 'common.pdfToCbz.einkGreyscaleDesc' },
+            {
+                key: 'format',
+                labelKey: 'common.pdfToCbz.formatLabel',
+                type: 'select',
+                defaultValue: 'jpg',
+                options: [
+                    { value: 'jpg', labelKey: 'JPG' },
+                    { value: 'png', labelKey: 'PNG' },
+                    { value: 'webp', labelKey: 'WebP' },
+                ],
+            },
+            { key: 'scale', labelKey: 'common.pdfToCbz.scaleLabel', type: 'number', defaultValue: 1.5, min: 1, max: 3, step: 0.1 },
+            { key: 'quality', labelKey: 'common.pdfToCbz.qualityLabel', type: 'range', defaultValue: 0.85, min: 0.1, max: 1, step: 0.05 },
+        ],
+    },
+
+    'pdf-to-slide': {
+        titleKey: 'tools.pdfToSlide.optionsTitle',
+        fields: [
+            { key: 'themeColor', labelKey: 'common.pdfToSlide.themeLabel', type: 'color', defaultValue: '#1e3a8a' },
+        ],
+    },
+
+    'pdf-page-resizer-uniform': {
+        titleKey: 'common.pdfPageResizerUniform.optionsTitle',
+        fields: [
+            {
+                key: 'targetSize',
+                labelKey: 'common.pdfPageResizerUniform.targetSpecLabel',
+                type: 'select',
+                defaultValue: 'A4',
+                options: [
+                    { value: 'A4', labelKey: 'common.pdfPageResizerUniform.specA4' },
+                    { value: 'A3', labelKey: 'common.pdfPageResizerUniform.specA3' },
+                    { value: 'Letter', labelKey: 'common.pdfPageResizerUniform.specLetter' },
+                ],
+            },
+            {
+                key: 'scaleMode',
+                labelKey: 'common.pdfPageResizerUniform.scaleModeLabel',
+                type: 'select',
+                defaultValue: 'fit',
+                options: [
+                    { value: 'fit', labelKey: 'common.pdfPageResizerUniform.modeFit' },
+                    { value: 'fill', labelKey: 'common.pdfPageResizerUniform.modeFill' },
+                ],
+            },
+        ],
+    },
+
+    'pdf-deskew-aligner': {
+        titleKey: 'common.pdfDeskewAligner.optionsTitle',
+        fields: [
+            { key: 'threshold', labelKey: 'common.pdfDeskewAligner.thresholdLabel', type: 'number', defaultValue: 10 },
+            {
+                key: 'dpi',
+                labelKey: 'common.pdfDeskewAligner.dpiLabel',
+                type: 'select',
+                defaultValue: '150',
+                options: [
+                    { value: '72', labelKey: 'common.pdfDeskewAligner.dpi72' },
+                    { value: '150', labelKey: 'common.pdfDeskewAligner.dpi150' },
+                    { value: '300', labelKey: 'common.pdfDeskewAligner.dpi300' },
+                ],
+            },
+        ],
+    },
+
+    'interactive-toc-generator': {
+        titleKey: 'common.interactiveTocGenerator.optionsTitle',
+        fields: [
+            { key: 'title', labelKey: 'common.interactiveTocGenerator.tocTitleLabel', type: 'text', defaultValue: 'Table of Contents' },
+            { key: 'insertIndex', labelKey: 'common.interactiveTocGenerator.insertPageLabel', type: 'number', defaultValue: 0, min: 0 },
+        ],
+    },
+
+    'bookmarks-auto-generator': {
+        titleKey: 'common.bookmarksAutoGenerator.optionsTitle',
+        fields: [
+            {
+                key: 'detectStrategy',
+                labelKey: 'common.bookmarksAutoGenerator.detectStrategyLabel',
+                type: 'select',
+                defaultValue: 'both',
+                options: [
+                    { value: 'both', labelKey: 'common.bookmarksAutoGenerator.detectStrategyBoth' },
+                    { value: 'regex', labelKey: 'common.bookmarksAutoGenerator.detectStrategyRegex' },
+                    { value: 'font-size', labelKey: 'common.bookmarksAutoGenerator.detectStrategyFontSize' },
+                ],
+            },
+            { key: 'minFontSize', labelKey: 'common.bookmarksAutoGenerator.minFontSizeLabel', type: 'number', defaultValue: 16 },
+        ],
+    },
+
+    'batch-barcode-injector': {
+        titleKey: 'common.batchBarcodeInjector.optionsTitle',
+        fields: [
+            {
+                key: 'barcodeType',
+                labelKey: 'common.batchBarcodeInjector.barcodeTypeLabel',
+                type: 'select',
+                defaultValue: 'qr',
+                options: [
+                    { value: 'qr', labelKey: 'common.batchBarcodeInjector.barcodeTypeQr' },
+                    { value: 'code128', labelKey: 'common.batchBarcodeInjector.barcodeTypeBar' },
+                ],
+            },
+            { key: 'value', labelKey: 'common.batchBarcodeInjector.barcodeValueLabel', type: 'text', defaultValue: 'https://atlaspdf.org' },
+            { key: 'x', labelKey: 'common.batchBarcodeInjector.xPosLabel', type: 'number', defaultValue: 50 },
+            { key: 'y', labelKey: 'common.batchBarcodeInjector.yPosLabel', type: 'number', defaultValue: 50 },
+            { key: 'width', labelKey: 'common.batchBarcodeInjector.widthLabel', type: 'number', defaultValue: 80 },
+            { key: 'height', labelKey: 'common.batchBarcodeInjector.heightLabel', type: 'number', defaultValue: 80 },
+            {
+                key: 'pages',
+                labelKey: 'common.batchBarcodeInjector.pagesLabel',
+                type: 'select',
+                defaultValue: 'all',
+                options: [
+                    { value: 'all', labelKey: 'common.batchBarcodeInjector.pagesAllLabel' },
+                    { value: 'first', labelKey: 'common.batchBarcodeInjector.pagesFirstLabel' },
+                    { value: 'last', labelKey: 'common.batchBarcodeInjector.pagesLastLabel' },
+                ],
+            },
+        ],
+    },
+
+    'cert-cryptor': {
+        titleKey: 'tools.certCryptor.optionsTitle',
+        fields: [
+            {
+                key: 'waxColor',
+                labelKey: 'tools.certCryptor.waxColor',
+                type: 'select',
+                defaultValue: 'gold',
+                options: [
+                    { value: 'gold', labelKey: 'common.certCryptor.goldWax' },
+                    { value: 'red', labelKey: 'common.certCryptor.redWax' },
+                    { value: 'bronze', labelKey: 'common.certCryptor.bronzeWax' },
+                ],
+            },
+            { key: 'sealPage', labelKey: 'common.certCryptor.sealPageLabel', type: 'number', defaultValue: 0, min: 0 },
+            { key: 'sealX', labelKey: 'common.certCryptor.sealXLabel', type: 'number', defaultValue: 100 },
+            { key: 'sealY', labelKey: 'common.certCryptor.sealYLabel', type: 'number', defaultValue: 100 },
+            { key: 'pfxPassword', labelKey: 'common.certCryptor.decryptPasswordHelp', type: 'password', defaultValue: '', placeholderKey: 'common.certCryptor.passwordPlaceholder' },
+            { key: 'encryptWithCert', labelKey: 'common.certCryptor.enableDoubleKey', type: 'checkbox', defaultValue: false },
+        ],
+    },
+
+    'vector-extractor': {
+        titleKey: 'common.vectorExtractor.optionsTitle',
+        fields: [
+            { key: 'pageNum', labelKey: 'common.vectorExtractor.pageNumLabel', type: 'number', defaultValue: 1, min: 1 },
+            { key: 'cleanGrid', labelKey: 'common.vectorExtractor.cleanGridLabel', type: 'checkbox', defaultValue: true },
+        ],
+    },
+
+    'deep-sanitize': {
+        titleKey: 'common.deepSanitize.optionsTitle',
+        fields: [
+            { key: 'stripMetadata', labelKey: 'common.deepSanitize.clearXmp', type: 'checkbox', defaultValue: true, descriptionKey: 'common.deepSanitize.clearXmpDesc' },
+            { key: 'stripPieceInfo', labelKey: 'common.deepSanitize.clearPieceInfo', type: 'checkbox', defaultValue: true, descriptionKey: 'common.deepSanitize.clearPieceInfoDesc' },
+            { key: 'stripOcgWatermarks', labelKey: 'common.deepSanitize.clearOcProperties', type: 'checkbox', defaultValue: true, descriptionKey: 'common.deepSanitize.clearOcPropertiesDesc' },
+            { key: 'stripAnnotations', labelKey: 'common.deepSanitize.clearAnnotations', type: 'checkbox', defaultValue: false, descriptionKey: 'common.deepSanitize.clearAnnotationsDesc' },
+        ],
+    },
+
+    'batch-watermark-remover': {
+        titleKey: 'common.batchWatermarkRemover.optionsTitle',
+        fields: [
+            { key: 'watermarkText', labelKey: 'common.batchWatermarkRemover.watermarkKeywordsLabel', type: 'text', defaultValue: '', placeholderKey: 'common.batchWatermarkRemover.watermarkKeywordsPlaceholder' },
+            { key: 'removeImages', labelKey: 'common.batchWatermarkRemover.removeImagesLabel', type: 'checkbox', defaultValue: false },
+        ],
+    },
+
+    'annotation-exporter': {
+        titleKey: 'common.annotationExporter.optionsTitle',
+        fields: [
+            {
+                key: 'format',
+                labelKey: 'common.annotationExporter.formatLabel',
+                type: 'select',
+                defaultValue: 'md',
+                options: [
+                    { value: 'md', labelKey: 'common.annotationExporter.formatMd' },
+                    { value: 'json', labelKey: 'common.annotationExporter.formatJson' },
+                ],
+            },
+            { key: 'includeHighlights', labelKey: 'common.annotationExporter.incHighlightsLabel', type: 'checkbox', defaultValue: true },
+            { key: 'includeNotes', labelKey: 'common.annotationExporter.incNotesLabel', type: 'checkbox', defaultValue: true },
+            { key: 'includeUnderlines', labelKey: 'common.annotationExporter.incUnderlinesLabel', type: 'checkbox', defaultValue: true },
+            { key: 'includeInk', labelKey: 'common.annotationExporter.incInkLabel', type: 'checkbox', defaultValue: true },
+        ],
+    },
+
+    'ai-pdf-reflower': {
+        titleKey: 'common.aiPdfReflower.optionsTitle',
+        fields: [
+            {
+                key: 'theme',
+                labelKey: 'common.aiPdfReflower.themeLabel',
+                type: 'select',
+                defaultValue: 'light',
+                options: [
+                    { value: 'sepia', labelKey: 'common.aiPdfReflower.themeSepia' },
+                    { value: 'light', labelKey: 'common.aiPdfReflower.themeLight' },
+                    { value: 'green', labelKey: 'common.aiPdfReflower.themeGreen' },
+                    { value: 'dark', labelKey: 'common.aiPdfReflower.themeDark' },
+                ],
+            },
+            { key: 'fontSize', labelKey: 'common.aiPdfReflower.fontSizeLabel', type: 'number', defaultValue: 16 },
+        ],
+    },
+
+    'citation-linker': {
+        titleKey: 'common.citationLinker.optionsTitle',
+        fields: [
+            { key: 'detectDoi', labelKey: 'common.citationLinker.detectDoi', type: 'checkbox', defaultValue: true },
+            { key: 'fallbackToPageJump', labelKey: 'common.citationLinker.enableGoto', type: 'checkbox', defaultValue: true },
+        ],
+    },
+
+    'eink-optimizer': {
+        titleKey: 'tools.einkOptimizer.optionsTitle',
+        fields: [
+            { key: 'contrastOffset', labelKey: 'tools.einkOptimizer.binarizationThreshold', type: 'range', defaultValue: 0, min: -100, max: 100, descriptionKey: 'common.einkOptimizer.otsueThresholdSuffix' },
+            {
+                key: 'dilationAmount',
+                labelKey: 'tools.einkOptimizer.dilationAmount',
+                type: 'select',
+                defaultValue: '0',
+                options: [
+                    { value: '0', labelKey: 'common.einkOptimizer.originalStroke' },
+                    { value: '1', labelKey: 'common.einkOptimizer.microDilation' },
+                    { value: '2', labelKey: 'common.einkOptimizer.strongDilation' },
+                ],
+            },
+        ],
+    },
+
+    'passport-id-composer': {
+        titleKey: 'common.passportIdComposer.optionsTitle',
+        fields: [
+            { key: 'watermarkText', labelKey: 'common.passportIdComposer.watermarkLabel', type: 'text', defaultValue: '', placeholderKey: 'common.passportIdComposer.watermarkPlaceholder' },
+            { key: 'idCardWidth', labelKey: 'common.passportIdComposer.idCardWidthLabel', type: 'number', defaultValue: 242.6 },
+            { key: 'idCardHeight', labelKey: 'common.passportIdComposer.idCardHeightLabel', type: 'number', defaultValue: 153 },
+        ],
+    },
+
+    'photo-tiling-prepress': {
+        titleKey: 'common.photoTilingPrepress.optionsTitle',
+        fields: [
+            {
+                key: 'photoSpec',
+                labelKey: 'common.photoTilingPrepress.photoSpecLabel',
+                type: 'select',
+                defaultValue: '1-inch',
+                options: [
+                    { value: '1-inch', labelKey: 'common.photoTilingPrepress.photoSpec1Inch' },
+                    { value: '2-inch', labelKey: 'common.photoTilingPrepress.photoSpec2Inch' },
+                ],
+            },
+            {
+                key: 'paperSize',
+                labelKey: 'common.photoTilingPrepress.paperSizeLabel',
+                type: 'select',
+                defaultValue: '5-inch',
+                options: [
+                    { value: '5-inch', labelKey: 'common.photoTilingPrepress.paperSize5Inch' },
+                    { value: '6-inch', labelKey: 'common.photoTilingPrepress.paperSize6Inch' },
+                ],
+            },
+            { key: 'gapPt', labelKey: 'common.photoTilingPrepress.gapPtLabel', type: 'number', defaultValue: 8 },
+        ],
+    },
+
+    'booklet-folding-simulator': {
+        titleKey: 'tools.bookletFoldingSimulator.optionsTitle',
+        fields: [
+            {
+                key: 'foldingMode',
+                labelKey: 'tools.bookletFoldingSimulator.foldingMode',
+                type: 'select',
+                defaultValue: '4-page-fold',
+                options: [
+                    { value: '4-page-fold', labelKey: 'common.bookletFoldingSimulator.fourPagesFold' },
+                    { value: '8-page-saddle', labelKey: 'common.bookletFoldingSimulator.eightPagesSaddle' },
+                    { value: '4-page-accordion', labelKey: 'common.bookletFoldingSimulator.fourPageAccordionLabel' },
+                ],
+            },
+        ],
+    },
+
+    'pdf-lossless-slicer': {
+        titleKey: 'common.pdfLosslessSlicer.optionsTitle',
+        fields: [
+            { key: 'sliceX', labelKey: 'common.pdfLosslessSlicer.sliceXLabel', type: 'range', defaultValue: 0.1, min: 0, max: 1, step: 0.01 },
+            { key: 'sliceY', labelKey: 'common.pdfLosslessSlicer.sliceYLabel', type: 'range', defaultValue: 0.1, min: 0, max: 1, step: 0.01 },
+            { key: 'sliceWidth', labelKey: 'common.pdfLosslessSlicer.sliceWidthFieldLabel', type: 'range', defaultValue: 0.8, min: 0, max: 1, step: 0.01 },
+            { key: 'sliceHeight', labelKey: 'common.pdfLosslessSlicer.sliceHeightFieldLabel', type: 'range', defaultValue: 0.8, min: 0, max: 1, step: 0.01 },
+            { key: 'pageNumber', labelKey: 'common.pdfLosslessSlicer.targetPageLabel', type: 'number', defaultValue: 1, min: 1 },
+        ],
+    },
+
+    'pdf-scratchpad-canvas': {
+        titleKey: 'common.pdfScratchpadCanvas.optionsTitle',
+        fields: [
+            {
+                key: 'padPosition',
+                labelKey: 'common.pdfScratchpadCanvas.padPositionLabel',
+                type: 'select',
+                defaultValue: 'right',
+                options: [
+                    { value: 'right', labelKey: 'common.pdfScratchpadCanvas.padPositionRight' },
+                    { value: 'bottom', labelKey: 'common.pdfScratchpadCanvas.padPositionBottom' },
+                ],
+            },
+            { key: 'padSize', labelKey: 'common.pdfScratchpadCanvas.padSizeLabel', type: 'number', defaultValue: 200 },
+            {
+                key: 'gridType',
+                labelKey: 'common.pdfScratchpadCanvas.gridTypeLabel',
+                type: 'select',
+                defaultValue: 'grid',
+                options: [
+                    { value: 'grid', labelKey: 'common.pdfScratchpadCanvas.gridTypeGrid' },
+                    { value: 'ruled', labelKey: 'common.pdfScratchpadCanvas.gridTypeRuled' },
+                    { value: 'blank', labelKey: 'common.pdfScratchpadCanvas.gridTypeBlank' },
+                ],
+            },
+        ],
+    },
+
+    'pdf-signature-anchor-helper': {
+        titleKey: 'common.pdfSignatureAnchorHelper.optionsTitle',
+        fields: [
+            { key: 'anchorX', labelKey: 'common.pdfSignatureAnchorHelper.anchorXLabel', type: 'range', defaultValue: 0.8, min: 0, max: 1, step: 0.01 },
+            { key: 'anchorY', labelKey: 'common.pdfSignatureAnchorHelper.anchorYLabel', type: 'range', defaultValue: 0.8, min: 0, max: 1, step: 0.01 },
+            { key: 'pageNumber', labelKey: 'common.pdfSignatureAnchorHelper.targetPageLabel', type: 'number', defaultValue: 1, min: 1 },
+            { key: 'anchorLabel', labelKey: 'common.pdfSignatureAnchorHelper.anchorLabelLabel', type: 'text', defaultValue: 'Sign Here' },
+        ],
+    },
+
+    'pdf-spine-bookbinder': {
+        titleKey: 'common.pdfSpineBookbinder.optionsTitle',
+        fields: [
+            { key: 'pageCount', labelKey: 'common.pdfSpineBookbinder.totalPagesLabel', type: 'number', defaultValue: 100, min: 1 },
+            {
+                key: 'paperGsm',
+                labelKey: 'common.pdfSpineBookbinder.gsmLabel',
+                type: 'select',
+                defaultValue: '80',
+                options: [
+                    { value: '80', labelKey: 'common.pdfSpineBookbinder.gsm80' },
+                    { value: '100', labelKey: 'common.pdfSpineBookbinder.gsm100' },
+                    { value: '120', labelKey: 'common.pdfSpineBookbinder.gsm120' },
+                    { value: '150', labelKey: 'common.pdfSpineBookbinder.gsm150' },
+                ],
+            },
+            { key: 'coverWidthPt', labelKey: 'common.pdfSpineBookbinder.coverWidthLabel', type: 'number', defaultValue: 595.27 },
+            { key: 'coverHeightPt', labelKey: 'common.pdfSpineBookbinder.coverHeightLabel', type: 'number', defaultValue: 841.89 },
+            { key: 'bookTitle', labelKey: 'common.pdfSpineBookbinder.spineTextLabel', type: 'text', defaultValue: 'AtlasPDF Bound Book', placeholderKey: 'common.pdfSpineBookbinder.spineTextPlaceholder' },
+        ],
+    },
+
+    'pdf-two-column-reflower': {
+        titleKey: 'common.pdfTwoColumnReflower.optionsTitle',
+        fields: [
+            { key: 'middleGapRatio', labelKey: 'common.pdfTwoColumnReflower.splitRatio', type: 'range', defaultValue: 0.5, min: 0.45, max: 0.55, step: 0.01 },
+        ],
+    },
+
+    'handwriting-ink-contrast-booster': {
+        titleKey: 'common.handwritingInkContrastBooster.optionsTitle',
+        fields: [
+            { key: 'threshold', labelKey: 'common.handwritingInkContrastBooster.bleachThreshold', type: 'number', defaultValue: 200, min: 100, max: 245 },
+            { key: 'contrast', labelKey: 'common.handwritingInkContrastBooster.strokeContrast', type: 'number', defaultValue: 1.5, min: 1, max: 3, step: 0.1 },
+            {
+                key: 'inkType',
+                labelKey: 'common.handwritingInkContrastBooster.targetTypeLabel',
+                type: 'select',
+                defaultValue: 'auto',
+                options: [
+                    { value: 'dark-ink', labelKey: 'common.handwritingInkContrastBooster.typeDarkInk' },
+                    { value: 'red-stamp', labelKey: 'common.handwritingInkContrastBooster.typeRedStamp' },
+                    { value: 'auto', labelKey: 'common.handwritingInkContrastBooster.typeAuto' },
+                ],
+            },
+        ],
+    },
+
+    'signature-ink-optimizer': {
+        titleKey: 'common.signatureInkOptimizer.optionsTitle',
+        fields: [
+            { key: 'threshold', labelKey: 'common.signatureInkOptimizer.thresholdLabel', type: 'number', defaultValue: 200 },
+            { key: 'contrast', labelKey: 'common.signatureInkOptimizer.contrastLabel', type: 'number', defaultValue: 1.5, step: 0.1 },
+            {
+                key: 'inkType',
+                labelKey: 'common.signatureInkOptimizer.optimizerTypeLabel',
+                type: 'select',
+                defaultValue: 'auto',
+                options: [
+                    { value: 'dark-ink', labelKey: 'common.signatureInkOptimizer.optimizerTypeDark' },
+                    { value: 'red-stamp', labelKey: 'common.signatureInkOptimizer.optimizerTypeRed' },
+                    { value: 'auto', labelKey: 'common.signatureInkOptimizer.optimizerTypeAuto' },
+                ],
+            },
+        ],
+    },
+
+    'global-invoice-parser': {
+        titleKey: 'common.globalInvoiceParser.optionsTitle',
+        fields: [
+            {
+                key: 'targetCurrency',
+                labelKey: 'common.globalInvoiceParser.targetCurrencyLabel',
+                type: 'select',
+                defaultValue: 'CNY',
+                options: [
+                    { value: 'CNY', labelKey: 'common.globalInvoiceParser.cnyLabel' },
+                    { value: 'USD', labelKey: 'common.globalInvoiceParser.usdLabel' },
+                    { value: 'EUR', labelKey: 'common.globalInvoiceParser.eurLabel' },
+                    { value: 'JPY', labelKey: 'common.globalInvoiceParser.jpyLabel' },
+                ],
+            },
+            { key: 'exchangeRate', labelKey: 'common.globalInvoiceParser.customRateLabel', type: 'number', defaultValue: '', placeholderKey: 'common.globalInvoiceParser.customRatePlaceholder' },
+        ],
+    },
+
     // ==================== Output Nodes ====================
     'download-pdf': {
         titleKey: 'workflow.downloadPdf',
@@ -2435,13 +3071,13 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
     const getToolTitle = (): string => {
         if (!node) return '';
         if (node.data.toolId === 'condition-gateway') {
-            return locale === 'zh' ? '条件分支配置' : 'Condition Gateway';
+            return 'Condition Gateway';
         }
         if (node.data.toolId === 'download-pdf') {
-            return tWorkflow('downloadPdf') || (locale === 'zh' ? '下载 PDF' : 'Download PDF');
+            return tWorkflow('downloadPdf') || 'Download PDF';
         }
         if (node.data.toolId === 'download-zip') {
-            return tWorkflow('downloadZip') || (locale === 'zh' ? '打包 ZIP 下载' : 'Download ZIP');
+            return tWorkflow('downloadZip') || 'Download ZIP';
         }
         const content = getToolContent(locale, node.data.toolId);
         return content?.title || node.data.label;
@@ -2559,13 +3195,11 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
     }, [node?.id, node?.data.toolId]);
 
     const handleFieldChange = (key: string, value: unknown) => {
-        setSettings(prev => {
-            const next = { ...prev, [key]: value };
-            if (node) {
-                onUpdateSettings(node.id, next);
-            }
-            return next;
-        });
+        const next = { ...settings, [key]: value };
+        setSettings(next);
+        if (node) {
+            onUpdateSettings(node.id, next);
+        }
     };
 
     const handleApply = () => {
@@ -2598,20 +3232,20 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
     if (!node) return null;
 
     return (
-        <div className="fixed right-0 top-0 h-full w-80 bg-[hsl(var(--color-background))] border-l border-[hsl(var(--color-border))] shadow-xl z-[100] flex flex-col animate-in slide-in-from-right duration-200">
+        <div className="fixed right-0 top-0 h-full w-80 bg-[var(--color-background)] border-l border-[var(--color-border)] shadow-xl z-[100] flex flex-col animate-in slide-in-from-right duration-200">
             {/* Header */}
-            <div className="flex items-center justify-between px-4 py-3 border-b border-[hsl(var(--color-border))] bg-[hsl(var(--color-muted)/0.3)]">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]">
                 <div className="flex items-center gap-2">
-                    <Settings className="w-5 h-5 text-[hsl(var(--color-primary))]" />
-                    <h3 className="font-medium text-[hsl(var(--color-foreground))] truncate max-w-[180px]">
+                    <Settings className="w-5 h-5 text-[var(--color-primary)]" />
+                    <h3 className="font-medium text-[var(--color-foreground)] truncate max-w-[180px]">
                         {getToolTitle()}
                     </h3>
                 </div>
                 <button
                     onClick={onClose}
-                    className="p-1.5 rounded-md hover:bg-[hsl(var(--color-muted))] transition-colors"
+                    className="p-1.5 rounded-md hover:bg-[var(--color-muted)] transition-colors"
                 >
-                    <X className="w-4 h-4 text-[hsl(var(--color-muted-foreground))]" />
+                    <X className="w-4 h-4 text-[var(--color-muted-foreground)]" />
                 </button>
             </div>
 
@@ -2620,15 +3254,13 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                 {isConditionGateway ? (
                     <div className="space-y-4">
                         <div className="p-3 rounded-lg bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-xs text-indigo-900 dark:text-indigo-200 leading-relaxed">
-                            {locale === 'zh'
-                                ? '根据流经此节点的文件特征进行规则判定。满足条件的文件流向 True 端口，不满足的文件流向 False 端口。'
-                                : 'Evaluates files dynamically based on your rule. Matching files flow to the True port, otherwise to False.'}
+                            {'Evaluates files dynamically based on your rule. Matching files flow to the True port, otherwise to False.'}
                         </div>
 
                         {/* Condition Type */}
                         <div className="space-y-1.5">
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
-                                {locale === 'zh' ? '判断维度 (Type)' : 'Dimension'}
+                            <label className="block text-sm font-medium text-[var(--color-foreground)]">
+                                {'Dimension'}
                             </label>
                             <select
                                 value={(settings.conditionType as string) || 'file-count'}
@@ -2641,39 +3273,39 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                         value: nextType === 'file-format' ? 'pdf' : (nextType === 'file-size' ? 10 : 1),
                                     }));
                                 }}
-                                className="w-full px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                className="w-full px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                             >
-                                <option value="file-count">{locale === 'zh' ? '文件数量 (File Count)' : 'File Count'}</option>
-                                <option value="file-size">{locale === 'zh' ? '总文件体积 (File Size)' : 'Total File Size'}</option>
-                                <option value="file-format">{locale === 'zh' ? '文件格式 (File Format / Ext)' : 'File Format / Ext'}</option>
+                                <option value="file-count">{'File Count'}</option>
+                                <option value="file-size">{'Total File Size'}</option>
+                                <option value="file-format">{'File Format / Ext'}</option>
                             </select>
                         </div>
 
                         {/* Operator */}
                         <div className="space-y-1.5">
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
-                                {locale === 'zh' ? '比较规则 (Operator)' : 'Operator'}
+                            <label className="block text-sm font-medium text-[var(--color-foreground)]">
+                                {'Operator'}
                             </label>
                             <select
                                 value={(settings.operator as string) || (settings.conditionType === 'file-format' ? 'equals' : 'greater-than')}
                                 onChange={(e) => handleFieldChange('operator', e.target.value)}
-                                className="w-full px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                className="w-full px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                             >
                                 {settings.conditionType === 'file-format' ? (
                                     <>
-                                        <option value="equals">{locale === 'zh' ? '等于 (Equals)' : 'Equals'}</option>
-                                        <option value="not-equals">{locale === 'zh' ? '不等于 (Not Equals)' : 'Not Equals'}</option>
-                                        <option value="contains">{locale === 'zh' ? '包含 (Contains)' : 'Contains'}</option>
-                                        <option value="matches">{locale === 'zh' ? '正则匹配 (Regex Matches)' : 'Regex Matches'}</option>
+                                        <option value="equals">{'Equals'}</option>
+                                        <option value="not-equals">{'Not Equals'}</option>
+                                        <option value="contains">{'Contains'}</option>
+                                        <option value="matches">{'Regex Matches'}</option>
                                     </>
                                 ) : (
                                     <>
-                                        <option value="greater-than">{locale === 'zh' ? '> 大于 (Greater Than)' : '> Greater Than'}</option>
-                                        <option value="less-than">{locale === 'zh' ? '< 小于 (Less Than)' : '< Less Than'}</option>
-                                        <option value="greater-or-equal">{locale === 'zh' ? '≥ 大于等于 (Greater or Equal)' : '≥ Greater or Equal'}</option>
-                                        <option value="less-or-equal">{locale === 'zh' ? '≤ 小于等于 (Less or Equal)' : '≤ Less or Equal'}</option>
-                                        <option value="equals">{locale === 'zh' ? '= 等于 (Equals)' : '= Equals'}</option>
-                                        <option value="not-equals">{locale === 'zh' ? '≠ 不等于 (Not Equals)' : '≠ Not Equals'}</option>
+                                        <option value="greater-than">{'> Greater Than'}</option>
+                                        <option value="less-than">{'< Less Than'}</option>
+                                        <option value="greater-or-equal">{'≥ Greater or Equal'}</option>
+                                        <option value="less-or-equal">{'≤ Less or Equal'}</option>
+                                        <option value="equals">{'= Equals'}</option>
+                                        <option value="not-equals">{'≠ Not Equals'}</option>
                                     </>
                                 )}
                             </select>
@@ -2681,8 +3313,8 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
 
                         {/* Value Input */}
                         <div className="space-y-1.5">
-                            <label className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
-                                {locale === 'zh' ? '目标阈值 (Target Value)' : 'Target Value'}
+                            <label className="block text-sm font-medium text-[var(--color-foreground)]">
+                                {'Target Value'}
                             </label>
 
                             {settings.conditionType === 'file-count' && (
@@ -2692,7 +3324,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                     step={1}
                                     value={Number(settings.value ?? 1)}
                                     onChange={(e) => handleFieldChange('value', Number(e.target.value))}
-                                    className="w-full px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                    className="w-full px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                                 />
                             )}
 
@@ -2704,12 +3336,12 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                         step={0.1}
                                         value={Number(settings.value ?? 10)}
                                         onChange={(e) => handleFieldChange('value', Number(e.target.value))}
-                                        className="flex-1 px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                        className="flex-1 px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                                     />
                                     <select
                                         value={(settings.sizeUnit as string) || 'MB'}
                                         onChange={(e) => handleFieldChange('sizeUnit', e.target.value)}
-                                        className="w-24 px-2 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                        className="w-24 px-2 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                                     >
                                         <option value="MB">MB</option>
                                         <option value="KB">KB</option>
@@ -2724,41 +3356,39 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                     placeholder="例如: pdf, docx, png, jpg"
                                     value={(settings.value as string) || ''}
                                     onChange={(e) => handleFieldChange('value', e.target.value)}
-                                    className="w-full px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                    className="w-full px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                                 />
                             )}
                         </div>
 
                         {/* Branch Route Explanation */}
-                        <div className="mt-4 p-3 rounded-lg border border-[hsl(var(--color-border))] bg-[hsl(var(--color-muted)/0.3)] space-y-2 text-xs">
-                            <p className="font-medium text-[hsl(var(--color-foreground))]">
-                                {locale === 'zh' ? '分支流向指引:' : 'Routing Guide:'}
+                        <div className="mt-4 p-3 rounded-lg border border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)] space-y-2 text-xs">
+                            <p className="font-medium text-[var(--color-foreground)]">
+                                {'Routing Guide:'}
                             </p>
                             <div className="flex items-start gap-1.5 text-emerald-700 dark:text-emerald-300">
                                 <span className="font-bold">✓ True:</span>
-                                <span>{locale === 'zh' ? '满足条件时流入此端口下游节点' : 'Files proceed here if condition is met'}</span>
+                                <span>{'Files proceed here if condition is met'}</span>
                             </div>
                             <div className="flex items-start gap-1.5 text-amber-700 dark:text-amber-300">
                                 <span className="font-bold">✗ False:</span>
-                                <span>{locale === 'zh' ? '不满足条件时流入此端口下游节点' : 'Files proceed here if condition is not met'}</span>
+                                <span>{'Files proceed here if condition is not met'}</span>
                             </div>
-                            <p className="text-[10px] text-[hsl(var(--color-muted-foreground))] pt-1 border-t border-[hsl(var(--color-border)/0.5)]">
-                                {locale === 'zh'
-                                    ? '* 执行时未命中的下游分支将被自动跳过并置灰，无需担心额外开销。'
-                                    : '* Inactive branch nodes will be skipped during execution.'}
+                            <p className="text-[10px] text-[var(--color-muted-foreground)] pt-1 border-t border-[color-mix(in_srgb,var(--color-border)_50%,transparent)]">
+                                {'* Inactive branch nodes will be skipped during execution.'}
                             </p>
                         </div>
                     </div>
                 ) : !config || config.fields.length === 0 ? (
                     <div className="text-center py-8">
-                        <Settings className="w-12 h-12 mx-auto text-[hsl(var(--color-muted-foreground))] opacity-50" />
-                        <p className="mt-3 text-sm text-[hsl(var(--color-muted-foreground))]">
+                        <Settings className="w-12 h-12 mx-auto text-[var(--color-muted-foreground)] opacity-50" />
+                        <p className="mt-3 text-sm text-[var(--color-muted-foreground)]">
                             {tWorkflow('noSettings') || 'No configurable settings for this tool'}
                         </p>
                     </div>
                 ) : (
                     <div className="space-y-4">
-                        <p className="text-sm text-[hsl(var(--color-muted-foreground))]">
+                        <p className="text-sm text-[var(--color-muted-foreground)]">
                             {getTranslation(config.titleKey, 'Settings')}
                         </p>
 
@@ -2774,12 +3404,12 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
 
                             return (
                             <div key={field.key} className="space-y-1.5">
-                                <label className="block text-sm font-medium text-[hsl(var(--color-foreground))]">
+                                <label className="block text-sm font-medium text-[var(--color-foreground)]">
                                     {getTranslation(field.labelKey)}
                                 </label>
 
                                 {field.descriptionKey && (
-                                    <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                                    <p className="text-xs text-[var(--color-muted-foreground)]">
                                         {getTranslation(field.descriptionKey)}
                                     </p>
                                 )}
@@ -2791,20 +3421,20 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                         value={(settings[field.key] as string) || ''}
                                         onChange={(e) => handleFieldChange(field.key, e.target.value)}
                                         placeholder={field.placeholderKey ? getTranslation(field.placeholderKey) : undefined}
-                                        className="w-full px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] placeholder:text-[hsl(var(--color-muted-foreground))]"
+                                        className="w-full px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] placeholder:text-[var(--color-muted-foreground)]"
                                     />
                                     {field.key === 'filename' && (
                                         <div className="pt-1">
-                                            <div className="flex items-center gap-1 text-[11px] text-[hsl(var(--color-muted-foreground))] mb-1">
-                                                <span>{locale === 'zh' ? '点击插入动态变量:' : 'Insert variable:'}</span>
+                                            <div className="flex items-center gap-1 text-[11px] text-[var(--color-muted-foreground)] mb-1">
+                                                <span>{'Insert variable:'}</span>
                                             </div>
                                             <div className="flex flex-wrap gap-1">
                                                 {[
-                                                    { token: '{filename}', label: '{filename}', desc: locale === 'zh' ? '原文件名' : 'Original file name' },
-                                                    { token: '{date}', label: '{date}', desc: locale === 'zh' ? '当前日期 (YYYY-MM-DD)' : 'Date' },
-                                                    { token: '{time}', label: '{time}', desc: locale === 'zh' ? '当前时间' : 'Time' },
-                                                    { token: '{index}', label: '{index}', desc: locale === 'zh' ? '文件序号' : 'File Index' },
-                                                    { token: '{total}', label: '{total}', desc: locale === 'zh' ? '文件总数' : 'Total Count' },
+                                                    { token: '{filename}', label: '{filename}', desc: 'Original file name' },
+                                                    { token: '{date}', label: '{date}', desc: 'Date' },
+                                                    { token: '{time}', label: '{time}', desc: 'Time' },
+                                                    { token: '{index}', label: '{index}', desc: 'File Index' },
+                                                    { token: '{total}', label: '{total}', desc: 'Total Count' },
                                                 ].map(({ token, desc }) => (
                                                     <button
                                                         key={token}
@@ -2823,7 +3453,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                                             }
                                                             handleFieldChange(field.key, next);
                                                         }}
-                                                        className="px-1.5 py-0.5 text-[10px] font-mono rounded bg-[hsl(var(--color-muted))] hover:bg-[hsl(var(--color-primary)/0.15)] text-[hsl(var(--color-foreground))] hover:text-[hsl(var(--color-primary))] border border-[hsl(var(--color-border))] transition-colors"
+                                                        className="px-1.5 py-0.5 text-[10px] font-mono rounded bg-[var(--color-muted)] hover:bg-[color-mix(in_srgb,var(--color-primary)_15%,transparent)] text-[var(--color-foreground)] hover:text-[var(--color-primary)] border border-[var(--color-border)] transition-colors"
                                                     >
                                                         + {token}
                                                     </button>
@@ -2842,16 +3472,16 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                         min={field.min}
                                         max={field.max}
                                         placeholder={field.placeholderKey ? getTranslation(field.placeholderKey) : undefined}
-                                        className="w-full px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] placeholder:text-[hsl(var(--color-muted-foreground))]"
+                                        className="w-full px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] placeholder:text-[var(--color-muted-foreground)]"
                                     />
                                 )}
 
                                 {field.type === 'select' && (
                                     <>
                                     {field.key === 'position' && field.options?.some(o => o.value === 'top-left' || o.value === 'center') && (
-                                        <div className="mb-2 p-2 bg-[hsl(var(--color-muted)/0.4)] rounded-lg border border-[hsl(var(--color-border))]">
-                                            <div className="text-[11px] text-[hsl(var(--color-muted-foreground))] mb-1.5 font-medium text-center">
-                                                {locale === 'zh' ? '九宫格快速定位' : 'Position Grid'}
+                                        <div className="mb-2 p-2 bg-[color-mix(in_srgb,var(--color-muted)_40%,transparent)] rounded-lg border border-[var(--color-border)]">
+                                            <div className="text-[11px] text-[var(--color-muted-foreground)] mb-1.5 font-medium text-center">
+                                                {'Position Grid'}
                                             </div>
                                             <div className="grid grid-cols-3 gap-1.5 max-w-[150px] mx-auto">
                                                 {POSITION_GRID_ITEMS.map(pos => {
@@ -2861,7 +3491,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                                         return (
                                                             <div
                                                                 key={pos.value}
-                                                                className="h-7 rounded border border-dashed border-[hsl(var(--color-border)/0.5)] bg-[hsl(var(--color-muted)/0.2)] opacity-30 cursor-not-allowed"
+                                                                className="h-7 rounded border border-dashed border-[color-mix(in_srgb,var(--color-border)_50%,transparent)] bg-[color-mix(in_srgb,var(--color-muted)_20%,transparent)] opacity-30 cursor-not-allowed"
                                                             />
                                                         );
                                                     }
@@ -2873,8 +3503,8 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                                             onClick={() => handleFieldChange(field.key, pos.value)}
                                                             className={`h-7 text-xs font-semibold rounded border transition-all flex items-center justify-center ${
                                                                 isSelected
-                                                                    ? 'bg-[hsl(var(--color-primary))] text-[hsl(var(--color-primary-foreground))] border-[hsl(var(--color-primary))] shadow-sm scale-105'
-                                                                    : 'bg-[hsl(var(--color-background))] text-[hsl(var(--color-foreground))] border-[hsl(var(--color-border))] hover:border-[hsl(var(--color-primary)/0.6)] hover:bg-[hsl(var(--color-primary)/0.05)]'
+                                                                    ? 'bg-[var(--color-primary)] text-[var(--color-primary-foreground)] border-[var(--color-primary)] shadow-sm scale-105'
+                                                                    : 'bg-[var(--color-background)] text-[var(--color-foreground)] border-[var(--color-border)] hover:border-[color-mix(in_srgb,var(--color-primary)_60%,transparent)] hover:bg-[color-mix(in_srgb,var(--color-primary)_5%,transparent)]'
                                                             }`}
                                                         >
                                                             {pos.label}
@@ -2887,7 +3517,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                     <select
                                         value={(settings[field.key] as string) || ''}
                                         onChange={(e) => handleFieldChange(field.key, e.target.value)}
-                                        className="w-full px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                        className="w-full px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                                     >
                                         {field.options?.map(opt => (
                                             <option key={opt.value} value={opt.value}>
@@ -2898,7 +3528,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                     {(() => {
                                         const selectedOpt = field.options?.find(o => o.value === (settings[field.key] as string));
                                         return selectedOpt?.descriptionKey ? (
-                                            <p className="text-xs text-[hsl(var(--color-muted-foreground))] mt-1">
+                                            <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
                                                 {getTranslation(selectedOpt.descriptionKey)}
                                             </p>
                                         ) : null;
@@ -2912,7 +3542,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                             type="checkbox"
                                             checked={(settings[field.key] as boolean) || false}
                                             onChange={(e) => handleFieldChange(field.key, e.target.checked)}
-                                            className="w-4 h-4 rounded border-[hsl(var(--color-border))] text-[hsl(var(--color-primary))] focus:ring-[hsl(var(--color-primary))]"
+                                            className="w-4 h-4 rounded border-[var(--color-border)] text-[var(--color-primary)] focus:ring-[var(--color-primary)]"
                                         />
                                     </label>
                                 )}
@@ -2926,11 +3556,11 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                             min={field.min}
                                             max={field.max}
                                             step={field.step}
-                                            className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-[hsl(var(--color-muted))]"
+                                            className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-[var(--color-muted)]"
                                         />
-                                        <div className="flex justify-between text-xs text-[hsl(var(--color-muted-foreground))]">
+                                        <div className="flex justify-between text-xs text-[var(--color-muted-foreground)]">
                                             <span>{field.min}</span>
-                                            <span className="font-medium text-[hsl(var(--color-foreground))]">
+                                            <span className="font-medium text-[var(--color-foreground)]">
                                                 {field.key.includes('opacity') || field.key.includes('quality')
                                                     ? `${Math.round((settings[field.key] as number || 0) * 100)}%`
                                                     : settings[field.key] as number
@@ -2947,13 +3577,13 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                             type="color"
                                             value={(settings[field.key] as string) || '#000000'}
                                             onChange={(e) => handleFieldChange(field.key, e.target.value)}
-                                            className="w-10 h-10 rounded border border-[hsl(var(--color-border))] cursor-pointer"
+                                            className="w-10 h-10 rounded border border-[var(--color-border)] cursor-pointer"
                                         />
                                         <input
                                             type="text"
                                             value={(settings[field.key] as string) || ''}
                                             onChange={(e) => handleFieldChange(field.key, e.target.value)}
-                                            className="flex-1 px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))]"
+                                            className="flex-1 px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]"
                                         />
                                     </div>
                                 )}
@@ -2967,11 +3597,16 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                                 const file = e.target.files?.[0] || null;
                                                 handleFieldChange(field.key, file);
                                             }}
-                                            className="w-full text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[hsl(var(--color-primary))] file:text-[hsl(var(--color-primary-foreground))] hover:file:opacity-90 cursor-pointer"
+                                            className="w-full text-sm file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-[var(--color-primary)] file:text-[var(--color-primary-foreground)] hover:file:opacity-90 cursor-pointer"
                                         />
                                         {settings[field.key] instanceof File && (
-                                            <p className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                                            <p className="text-xs text-[var(--color-muted-foreground)]">
                                                 {(settings[field.key] as File).name}
+                                            </p>
+                                        )}
+                                        {isMissingFileRef(settings[field.key]) && (
+                                            <p className="text-xs text-amber-600 dark:text-amber-400">
+                                                &quot;{(settings[field.key] as MissingFileRef).name}&quot; was not saved with this workflow — please re-select it.
                                             </p>
                                         )}
                                     </div>
@@ -2983,7 +3618,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                                         value={(settings[field.key] as string) || ''}
                                         onChange={(e) => handleFieldChange(field.key, e.target.value)}
                                         placeholder={field.placeholderKey ? getTranslation(field.placeholderKey) : undefined}
-                                        className="w-full px-3 py-2 text-sm rounded-md border border-[hsl(var(--color-border))] bg-[hsl(var(--color-background))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--color-primary))] placeholder:text-[hsl(var(--color-muted-foreground))]"
+                                        className="w-full px-3 py-2 text-sm rounded-md border border-[var(--color-border)] bg-[var(--color-background)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] placeholder:text-[var(--color-muted-foreground)]"
                                     />
                                 )}
                             </div>
@@ -2995,7 +3630,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
 
             {/* Footer */}
             {(isConditionGateway || (config && config.fields.length > 0)) && (
-                <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-[hsl(var(--color-border))] bg-[hsl(var(--color-muted)/0.3)]">
+                <div className="flex items-center justify-between gap-3 px-4 py-3 border-t border-[var(--color-border)] bg-[color-mix(in_srgb,var(--color-muted)_30%,transparent)]">
                     <Button
                         variant="ghost"
                         size="sm"
@@ -3006,7 +3641,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                     </Button>
                     <div className="flex items-center gap-2.5">
                         <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                            {locale === 'zh' ? '即时已同步' : 'Auto-synced'}
+                            {'Auto-synced'}
                         </span>
                         <Button
                             variant="primary"
@@ -3014,7 +3649,7 @@ export function NodeSettingsPanel({ node, onClose, onUpdateSettings }: NodeSetti
                             onClick={handleApply}
                         >
                             <Check className="w-4 h-4 mr-1.5" />
-                            {locale === 'zh' ? '完成' : (tWorkflow('done') || 'Done')}
+                            {(tWorkflow('done') || 'Done')}
                         </Button>
                     </div>
                 </div>

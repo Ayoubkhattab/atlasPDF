@@ -6,14 +6,56 @@ type WorkflowInputFile = File | Blob | WorkflowOutputFile;
 type ErrorWithContext = Error & {
   nodeId?: string;
   code?: string;
+  /** The original, untranslated processor/executor error message, before it
+   * was wrapped in the internal `Node "X" failed: ...` control-flow string.
+   * Lets the display layer translate just the meaningful part. */
+  rawMessage?: string;
 };
 
 export interface WorkflowFailureContext {
   failedNodeId: string;
   successfulCount: number;
   errorMessage: string;
+  /** See ErrorWithContext.rawMessage - falls back to errorMessage (with the
+   * internal "Node ... failed:" prefix stripped) when not available. */
+  rawMessage: string;
   errorCode?: string;
   isCancelled: boolean;
+}
+
+/**
+ * Placeholder written in place of a raw `File` value inside `node.data.settings`
+ * when a workflow (or its execution history) is persisted to localStorage.
+ * `File` objects collapse to `{}` under `JSON.stringify`, which previously caused
+ * confusing low-level crashes on reload/replay instead of a clear validation error.
+ */
+export interface MissingFileRef {
+  __fileMissing: true;
+  name: string;
+  size: number;
+  type: string;
+}
+
+export function isMissingFileRef(value: unknown): value is MissingFileRef {
+  return !!value && typeof value === 'object' && (value as { __fileMissing?: unknown }).__fileMissing === true;
+}
+
+/**
+ * Replace any `File` values in a node's settings bag with a serializable
+ * `MissingFileRef` placeholder so the settings object survives `JSON.stringify`
+ * intact instead of silently losing the file to `{}`.
+ */
+export function sanitizeSettingsForStorage(
+  settings?: Record<string, unknown>
+): Record<string, unknown> | undefined {
+  if (!settings) return settings;
+  const result: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(settings)) {
+    result[key] = value instanceof File
+      ? ({ __fileMissing: true, name: value.name, size: value.size, type: value.type } satisfies MissingFileRef)
+      : value;
+  }
+  return result;
 }
 
 function sanitizeLabel(label: string): string {
@@ -105,11 +147,15 @@ export function deriveWorkflowFailureContext(
   const err = error as ErrorWithContext;
   const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
   const isCancelled = /cancelled by user/i.test(errorMessage);
+  // Fall back to stripping the internal `Node "X" failed: ` prefix when a
+  // throw site didn't set .rawMessage explicitly (e.g. an unexpected error).
+  const rawMessage = err?.rawMessage ?? errorMessage.replace(/^Node ".*?" failed: /, '');
 
   return {
     failedNodeId: err?.nodeId || currentNodeId || '',
     successfulCount: executedNodeIds.length,
     errorMessage,
+    rawMessage,
     errorCode: err?.code,
     isCancelled,
   };

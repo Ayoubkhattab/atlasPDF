@@ -6,8 +6,9 @@
 import type { WorkflowExecutionRecord, WorkflowHistoryStorage } from '@/types/workflow-history';
 import type { WorkflowNode, WorkflowEdge } from '@/types/workflow';
 import { logger } from '@/lib/utils/logger';
+import { sanitizeSettingsForStorage } from './execution-utils';
 
-const STORAGE_KEY = 'pdfcraft_workflow_history';
+const STORAGE_KEY = 'atlaspdf_workflow_history';
 const MAX_RECORDS = 50; // Keep last 50 executions
 
 /**
@@ -68,6 +69,7 @@ export function createExecutionRecord(
             ...node.data,
             inputFiles: undefined,
             outputFiles: undefined,
+            settings: sanitizeSettingsForStorage(node.data.settings),
         },
     }));
 
