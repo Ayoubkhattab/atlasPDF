@@ -1,7 +1,7 @@
 /**
  * Tools configuration file
- * Contains all 67 PDF tools with their properties, categories, and related tools
- * Migrated from BentoPDF and enhanced for PDFCraft
+ * Contains all 132 PDF tools with their properties, categories, and related tools
+ * Migrated from BentoPDF and enhanced for AtlasPDF
  */
 
 import { Tool, ToolCategory } from '@/types/tool';
@@ -1558,8 +1558,8 @@ export const tools: Tool[] = [
     slug: 'handwriting-ink-contrast-booster',
     icon: 'pencil',
     category: 'optimize-repair',
-    acceptedFormats: ['.pdf'],
-    outputFormat: 'pdf',
+    acceptedFormats: ['.jpg', '.jpeg', '.png'],
+    outputFormat: 'png',
     maxFileSize: DEFAULT_MAX_FILE_SIZE,
     maxFiles: 1,
     features: ['ink-extraction-filter', 'contrast-clahe', 'paper-background-bleach', 'signature-sharpening'],
