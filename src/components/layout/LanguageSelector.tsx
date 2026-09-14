@@ -12,7 +12,7 @@ export interface LanguageSelectorProps {
 }
 
 // Storage key for language preference
-const LANGUAGE_PREFERENCE_KEY = 'pdfcraft-language-preference';
+const LANGUAGE_PREFERENCE_KEY = 'atlaspdf-language-preference';
 
 /**
  * Save language preference to localStorage
@@ -174,7 +174,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ currentLocal
       {/* Dropdown */}
       {isOpen && (
         <div
-          className="absolute top-full right-0 mt-1 w-48 py-1 bg-[hsl(var(--color-background))] border border-[hsl(var(--color-border))] rounded-[var(--radius-lg)] shadow-lg z-50"
+          className="absolute top-full right-0 mt-1 w-48 py-1 bg-[var(--color-background)] border border-[var(--color-border)] rounded-[var(--radius-lg)] shadow-lg z-50"
           role="listbox"
           aria-label={t('selectLanguage')}
           aria-activedescendant={focusedIndex >= 0 ? `language-option-${locales[focusedIndex]}` : undefined}
@@ -192,10 +192,10 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ currentLocal
                 onKeyDown={(e) => handleOptionKeyDown(e, locale, index)}
                 className={`
                   flex items-center justify-between w-full px-3 py-2 text-sm text-left
-                  transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[hsl(var(--color-ring))]
+                  transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--color-ring)]
                   ${isSelected 
-                    ? 'bg-[hsl(var(--color-primary)/0.1)] text-[hsl(var(--color-primary))]' 
-                    : 'text-[hsl(var(--color-foreground))] hover:bg-[hsl(var(--color-muted))] focus:bg-[hsl(var(--color-muted))]'
+                    ? 'bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] text-[var(--color-primary)]' 
+                    : 'text-[var(--color-foreground)] hover:bg-[var(--color-muted)] focus:bg-[var(--color-muted)]'
                   }
                 `}
                 role="option"
@@ -205,7 +205,7 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({ currentLocal
               >
                 <span className="flex items-center gap-2">
                   <span>{config.nativeName}</span>
-                  <span className="text-xs text-[hsl(var(--color-muted-foreground))]">
+                  <span className="text-xs text-[var(--color-muted-foreground)]">
                     ({config.name})
                   </span>
                 </span>

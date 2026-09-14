@@ -1,7 +1,7 @@
 /**
  * Supported locales
  */
-export type Locale = 'en' | 'ja' | 'ko' | 'es' | 'fr' | 'de' | 'zh' | 'zh-TW' | 'pt' | 'ar' | 'it' | 'id' | 'vi' | 'ro' | 'pl';
+export type Locale = 'en' | 'ar';
 
 /**
  * Locale configuration
@@ -23,10 +23,7 @@ export interface CommonMessages {
   navigation: {
     home: string;
     tools: string;
-    about: string;
     faq: string;
-    privacy: string;
-    contact: string;
   };
   buttons: {
     upload: string;

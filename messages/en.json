@@ -1,28 +1,16 @@
 {
   "metadata": {
     "home": {
-      "title": "PDFCraft - Professional PDF Tools",
+      "title": "AtlasPDF - Professional PDF Tools",
       "description": "Free, Private & Browser-Based. Merge, edit, and edit PDF files online without uploading to servers."
     },
     "tools": {
       "title": "All PDF Tools",
       "description": "Browse all 67+ professional PDF tools. Merge, split, compress, convert, edit, and secure your PDF files for free."
     },
-    "about": {
-      "title": "About",
-      "description": "Learn about PDFCraft - your free, private, and powerful PDF toolkit. All processing happens in your browser."
-    },
     "faq": {
       "title": "Frequently Asked Questions",
-      "description": "Find answers to common questions about PDFCraft. Learn how to use our PDF tools effectively."
-    },
-    "privacy": {
-      "title": "Privacy Policy",
-      "description": "PDFCraft privacy policy. Your files never leave your device - all processing happens locally in your browser."
-    },
-    "contact": {
-      "title": "Contact Us",
-      "description": "Get in touch with PDFCraft team. We'd love to hear from you."
+      "description": "Find answers to common questions about AtlasPDF. Learn how to use our PDF tools effectively."
     },
     "keywords": {
       "pdfTools": "PDF tools",
@@ -35,16 +23,13 @@
     }
   },
   "common": {
-    "brand": "PDFCraft",
+    "brand": "AtlasPDF",
     "tagline": "Professional PDF Tools - Free & Private",
     "navigation": {
       "home": "Home",
       "tools": "Tools",
       "workflow": "Workflow",
-      "about": "About",
-      "faq": "FAQ",
-      "privacy": "Privacy",
-      "contact": "Contact"
+      "faq": "FAQ"
     },
     "buttons": {
       "upload": "Upload Files",
@@ -83,10 +68,14 @@
       "loading": "Loading..."
     },
     "footer": {
-      "footer": "© 2025 PDFCraft. All rights reserved.",
-      "copyright": "© {year} PDFCraft. All rights reserved.",
       "privacyBadge": "100% Private - Files never leave your device",
-      "madeWith": "Made with <Heart /> and <Nextjs />"
+      "security": "Security",
+      "compliance": "Compliance",
+      "clientSideProcessing": "Client-side processing",
+      "filesNeverLeave": "Files never leave your device",
+      "noFileUploads": "No file uploads",
+      "privateSecure": "100% private & secure",
+      "gdprCompliant": "GDPR Compliant"
     },
     "recentFiles": {
       "title": "Recent Files",
@@ -129,7 +118,7 @@
       "finish": "Finish",
       "skip": "Skip",
       "stepOf": "of",
-      "welcomeTitle": "Welcome to PDFCraft!",
+      "welcomeTitle": "Welcome to AtlasPDF!",
       "welcomeMessage": "Would you like a quick tour to learn how to use our PDF tools? It only takes a minute.",
       "helpButton": "Help Tour"
     },
@@ -253,7 +242,9 @@
       "gsm80": "80g Standard Office Paper (0.05mm/side)",
       "gsm100": "100g Smooth Coated Paper (0.06mm/side)",
       "gsm120": "120g Matte Art Paper (0.07mm/side)",
-      "gsm150": "150g Heavy Matte Cardboard (0.09mm/side)"
+      "gsm150": "150g Heavy Matte Cardboard (0.09mm/side)",
+      "coverWidthLabel": "Cover Width (pt)",
+      "coverHeightLabel": "Cover Height (pt)"
     },
     "pdfSignatureAnchorHelper": {
       "uploadLabel": "Upload Contract or PDF Agreement",
@@ -265,7 +256,9 @@
       "magnifierTitle": "Agreement Radar Anchor Deck (Click preview to place signatures)",
       "clearButton": "Clear",
       "anchorLabelLabel": "Guide Overlay Text",
-      "targetPageLabel": "Active Target Page"
+      "targetPageLabel": "Active Target Page",
+      "anchorXLabel": "Anchor X Position (0-1)",
+      "anchorYLabel": "Anchor Y Position (0-1)"
     },
     "pdfLosslessSlicer": {
       "uploadLabel": "Upload Ultra-Large CAD PDF Blueprint",
@@ -277,7 +270,11 @@
       "clearButton": "Clear",
       "targetPageLabel": "Target Slice Page",
       "sliceWidth": "Slice Width: {percent}%",
-      "sliceHeight": "Slice Height: {percent}%"
+      "sliceHeight": "Slice Height: {percent}%",
+      "sliceXLabel": "Slice X Offset (0-1)",
+      "sliceYLabel": "Slice Y Offset (0-1)",
+      "sliceWidthFieldLabel": "Slice Width (0-1)",
+      "sliceHeightFieldLabel": "Slice Height (0-1)"
     },
     "pdfScratchpadCanvas": {
       "uploadLabel": "Upload Lecture Slides / PDF Papers",
@@ -348,6 +345,7 @@
       "layoutSpecA4": "Standard A4 Portrait (Both sides centered)",
       "layoutSpecA4Double": "Standard A4 Landscape (Both sides side-by-side)",
       "idCardHeightLabel": "ID Card Placement Height (points)",
+      "idCardWidthLabel": "ID Card Placement Width (points)",
       "layersCountLabel": "Added {count}/2 ID layout layers"
     },
     "annotationExporter": {
@@ -365,6 +363,7 @@
       "incHighlightsLabel": "Extract Highlight Markups",
       "incNotesLabel": "Extract Sticky Comment Notes",
       "incUnderlinesLabel": "Extract Underlines & Marked Areas",
+      "incInkLabel": "Extract Ink/Drawing Annotations",
       "emptyStateTitle": "Wait for parse complete, notes will compile to standard layout.",
       "emptyStateIconText": "✍️"
     },
@@ -379,7 +378,8 @@
       "emptyStateDescription": "Identify Tj/TJ contents stream keywords and automatically clean repetitive backdrop layouts, keeping raw vector resolution.",
       "watermarkKeywordsLabel": "Target Watermark Text Pattern",
       "watermarkKeywordsPlaceholder": "e.g. COPY, CONFIDENTIAL (comma-separated)",
-      "toleranceLabel": "Glyph Matching Tolerance"
+      "toleranceLabel": "Glyph Matching Tolerance",
+      "removeImagesLabel": "Also Remove Image Watermarks"
     },
     "smartDataRedactor": {
       "uploadLabel": "Upload PDF Documents to Redact",
@@ -394,7 +394,8 @@
       "phoneRedactLabel": "Filter Phone Numbers",
       "idRedactLabel": "Filter Passport & ID Cards",
       "customKeywordsLabel": "Custom Redaction Phrases",
-      "customKeywordsPlaceholder": "Comma-separated phrases"
+      "customKeywordsPlaceholder": "Comma-separated phrases",
+      "redactColorLabel": "Redaction Block Color"
     },
     "bookmarksAutoGenerator": {
       "uploadLabel": "Upload PDF Lacking Bookmark Outlines",
@@ -425,7 +426,13 @@
       "barcodeTypeBar": "Barcode Code128",
       "barcodeValueLabel": "Embedded Code Data Value",
       "xPosLabel": "Horizontal Alignment X Offset (pt)",
-      "yPosLabel": "Vertical Alignment Y Offset (pt)"
+      "yPosLabel": "Vertical Alignment Y Offset (pt)",
+      "widthLabel": "Barcode Width (pt)",
+      "heightLabel": "Barcode Height (pt)",
+      "pagesLabel": "Target Pages",
+      "pagesAllLabel": "All Pages",
+      "pagesFirstLabel": "First Page Only",
+      "pagesLastLabel": "Last Page Only"
     },
     "signatureInkOptimizer": {
       "uploadLabel": "Upload Signature / Stamp Contract Photo",
@@ -485,6 +492,7 @@
       "pullToExportHint": "Pull down ring to save (Markdown)"
     },
     "bookletFoldingSimulator": {
+      "fourPageAccordionLabel": "4-Page Accordion (Z-Fold)",
       "fourPagesFold": "4-Page Fold",
       "oneSheetDoubleSide": "1 Sheet Double-Sided",
       "eightPagesSaddle": "8-Page Saddle Stitch",
@@ -504,9 +512,12 @@
       "bronzeWax": "Antique Crimson Bronze",
       "enableDoubleKey": "Enable Certificate Double-Key Encryption (256-bit Strong Lock)",
       "decryptPasswordHelp": "Set PFX Decryption Key Password",
-      "passwordPlaceholder": "Default password: pdfcraft",
+      "passwordPlaceholder": "Default password: atlaspdf",
       "sealCoordinates": "Seal Coordinates: X: {x}px, Y: {y}px",
-      "clickToReposition": "Click anywhere to reposition the wax seal"
+      "clickToReposition": "Click anywhere to reposition the wax seal",
+      "sealPageLabel": "Seal Page Number",
+      "sealXLabel": "Seal X Position (pt)",
+      "sealYLabel": "Seal Y Position (pt)"
     },
     "citationLinker": {
       "uploadLabel": "Upload Academic PDF with Bibliographies",
@@ -680,7 +691,7 @@
       "copyText": "Copy Recognized Text",
       "copied": "Copied to clipboard!",
       "openInEditor": "Edit in PDF Editor",
-      "openInEditorDesc": "Directly edit text and layout in PDFCraft Editor without downloading",
+      "openInEditorDesc": "Directly edit text and layout in AtlasPDF Editor without downloading",
       "statsPages": "Pages",
       "statsWords": "Words",
       "statsChars": "Characters",
@@ -763,6 +774,7 @@
       "loadFullPreview": "Load complete {count} page preview"
     },
     "pdfToCbz": {
+      "workflowOptionsTitle": "CBZ Metadata & Export Options",
       "errorMetadata": "Failed to parse PDF comic metadata. File may be corrupted.",
       "errorUpload": "Please upload a comic PDF first.",
       "progressExtracting": "Extracting comic sheets...",
@@ -931,7 +943,10 @@
       "rgbColor": "RGB Color Pre-fill",
       "codeCopied": "SVG code copied to clipboard",
       "copyCode": "Copy SVG Code",
-      "downloadSvg": "Download SVG Asset"
+      "downloadSvg": "Download SVG Asset",
+      "optionsTitle": "Vector Extraction Options",
+      "pageNumLabel": "Page Number to Extract",
+      "cleanGridLabel": "Clean SVG for Responsive Embedding"
     },
     "updater": {
       "title": "Software Update",
@@ -940,7 +955,7 @@
       "errorTitle": "Unable to check for updates",
       "retry": "Retry",
       "latest": "You are up to date!",
-      "latestDesc": "PDFCraft is currently at the latest version ({version}).",
+      "latestDesc": "AtlasPDF is currently at the latest version ({version}).",
       "available": "New Version Available",
       "currentVersion": "Current Version",
       "released": "Released",
@@ -998,16 +1013,16 @@
     "sections": {
       "general": {
         "whatIs": {
-          "question": "What is PDFCraft?",
-          "answer": "PDFCraft is a free, privacy-focused PDF toolkit that runs entirely in your browser. It offers 80+ professional tools for editing, converting, merging, splitting, and securing PDF files without uploading them to any server."
+          "question": "What is AtlasPDF?",
+          "answer": "AtlasPDF is a free, privacy-focused PDF toolkit that runs entirely in your browser. It offers 80+ professional tools for editing, converting, merging, splitting, and securing PDF files without uploading them to any server."
         },
         "isFree": {
-          "question": "Is PDFCraft really free?",
-          "answer": "Yes, PDFCraft is completely free to use. There are no hidden costs, no premium tiers, and no registration required. All features are available to everyone."
+          "question": "Is AtlasPDF really free?",
+          "answer": "Yes, AtlasPDF is completely free to use. There are no hidden costs, no premium tiers, and no registration required. All features are available to everyone."
         },
         "account": {
           "question": "Do I need to create an account?",
-          "answer": "No, you don't need to create an account or register to use PDFCraft. Simply visit the website and start using any tool immediately."
+          "answer": "No, you don't need to create an account or register to use AtlasPDF. Simply visit the website and start using any tool immediately."
         }
       },
       "privacy": {
@@ -1016,8 +1031,8 @@
           "answer": "No, your files are never uploaded to any server. All PDF processing happens locally in your browser using JavaScript and WebAssembly. Your files never leave your device."
         },
         "safe": {
-          "question": "Is it safe to use PDFCraft with sensitive documents?",
-          "answer": "Yes, PDFCraft is designed with privacy in mind. Since all processing happens locally in your browser, your sensitive documents remain on your device and are never transmitted over the internet."
+          "question": "Is it safe to use AtlasPDF with sensitive documents?",
+          "answer": "Yes, AtlasPDF is designed with privacy in mind. Since all processing happens locally in your browser, your sensitive documents remain on your device and are never transmitted over the internet."
         },
         "storage": {
           "question": "What happens to my files after processing?",
@@ -1027,7 +1042,7 @@
       "features": {
         "operations": {
           "question": "What PDF operations can I perform?",
-          "answer": "PDFCraft offers 67+ tools including: merge, split, compress, convert (to/from images, text, JSON), edit, annotate, sign, add watermarks, encrypt/decrypt, OCR, and many more."
+          "answer": "AtlasPDF offers 67+ tools including: merge, split, compress, convert (to/from images, text, JSON), edit, annotate, sign, add watermarks, encrypt/decrypt, OCR, and many more."
         },
         "merge": {
           "question": "Can I merge multiple PDF files?",
@@ -1035,17 +1050,17 @@
         },
         "images": {
           "question": "Can I convert images to PDF?",
-          "answer": "Yes, PDFCraft supports converting various image formats (JPG, PNG, WebP, BMP, TIFF, SVG, HEIC) to PDF. You can convert single or multiple images at once."
+          "answer": "Yes, AtlasPDF supports converting various image formats (JPG, PNG, WebP, BMP, TIFF, SVG, HEIC) to PDF. You can convert single or multiple images at once."
         },
         "edit": {
           "question": "Can I edit text in a PDF?",
-          "answer": "PDFCraft provides annotation and editing tools including highlighting, adding text, shapes, images, and signatures. For full text editing, the PDF Editor tool offers comprehensive annotation capabilities."
+          "answer": "AtlasPDF provides annotation and editing tools including highlighting, adding text, shapes, images, and signatures. For full text editing, the PDF Editor tool offers comprehensive annotation capabilities."
         }
       },
       "technical": {
         "browsers": {
           "question": "What browsers are supported?",
-          "answer": "PDFCraft works on all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version of your browser for the best experience."
+          "answer": "AtlasPDF works on all modern browsers including Chrome, Firefox, Safari, and Edge. We recommend using the latest version of your browser for the best experience."
         },
         "sizeLimit": {
           "question": "Is there a file size limit?",
@@ -1056,146 +1071,20 @@
           "answer": "Since all processing happens in your browser, performance depends on your device's capabilities. Large files require more memory and processing power. For best results, close other browser tabs and applications."
         },
         "offline": {
-          "question": "Does PDFCraft work offline?",
-          "answer": "Currently, PDFCraft requires an internet connection to load the application. However, once loaded, the PDF processing itself happens locally and doesn't require a connection."
+          "question": "Does AtlasPDF work offline?",
+          "answer": "Currently, AtlasPDF requires an internet connection to load the application. However, once loaded, the PDF processing itself happens locally and doesn't require a connection."
         }
       },
       "languages": {
         "supported": {
           "question": "What languages are supported?",
-          "answer": "PDFCraft is available in 9 languages: English, Japanese, Korean, Spanish, French, German, Chinese, Portuguese, and Arabic (with RTL support)."
+          "answer": "AtlasPDF is available in English and Arabic (with RTL support)."
         },
         "change": {
           "question": "How do I change the language?",
           "answer": "You can change the language using the language selector in the header. Your preference will be saved for future visits."
         }
       }
-    },
-    "cta": {
-      "title": "Still have questions?",
-      "description": "Can't find the answer you're looking for? Feel free to reach out to us.",
-      "button": "Contact Us"
-    }
-  },
-  "aboutPage": {
-    "title": "About {brand}",
-    "description": "{brand} is a free, privacy-focused PDF toolkit that runs entirely in your browser. With {count}+ professional tools, you can edit, convert, merge, split, and secure your PDF files without ever uploading them to a server.",
-    "mission": {
-      "title": "Our Mission",
-      "p1": "We believe that everyone should have access to powerful PDF tools without compromising their privacy or paying expensive subscription fees. That's why we created {brand} – a comprehensive PDF toolkit that puts your privacy first.",
-      "p2": "Unlike traditional PDF services that require you to upload your files to remote servers, {brand} processes everything locally in your browser. Your sensitive documents never leave your device, giving you complete control over your data.",
-      "p3": "Whether you're a student, professional, or casual user, {brand} provides all the tools you need to work with PDFs efficiently and securely."
-    },
-    "values": {
-      "title": "Our Values",
-      "privacy": {
-        "title": "Privacy First",
-        "description": "Your files never leave your device. All processing happens locally in your browser, ensuring complete privacy and security."
-      },
-      "fast": {
-        "title": "Fast & Efficient",
-        "description": "Powered by modern web technologies, PDFCraft delivers lightning-fast PDF processing without the need for uploads or downloads."
-      },
-      "accessible": {
-        "title": "Accessible Everywhere",
-        "description": "Available in 9 languages and works on any device with a modern browser. No installation required."
-      },
-      "free": {
-        "title": "Free Forever",
-        "description": "PDFCraft is completely free to use with no hidden costs, no registration required, and no limits on usage."
-      },
-      "openSource": {
-        "title": "Open Source",
-        "description": "Built with transparency in mind. Our code is open source, allowing anyone to verify our privacy claims."
-      },
-      "community": {
-        "title": "Community Driven",
-        "description": "Developed with feedback from users around the world. We continuously improve based on your needs."
-      }
-    },
-    "technology": {
-      "title": "Built with Modern Technology",
-      "description": "{brand} is built using cutting-edge web technologies to ensure the best possible experience:",
-      "list": {
-        "nextjs": "<strong1>Next.js</strong1> - For fast, SEO-friendly page rendering",
-        "wasm": "<strong1>WebAssembly</strong1> - For near-native PDF processing performance",
-        "workers": "<strong1>Web Workers</strong1> - For non-blocking background processing",
-        "pdflib": "<strong1>pdf-lib & PDF.js</strong1> - Industry-standard PDF manipulation libraries",
-        "indexeddb": "<strong1>IndexedDB</strong1> - For secure local storage of your work"
-      },
-      "summary": "This combination of technologies allows us to provide professional-grade PDF tools that run entirely in your browser, without any server-side processing."
-    },
-    "cta": {
-      "title": "Ready to Get Started?",
-      "description": "Explore our {count}+ PDF tools and see what {brand} can do for you.",
-      "button": "Browse All Tools"
-    }
-  },
-  "contactPage": {
-    "hero": {
-      "title": "Contact Us",
-      "description": "Have a question, suggestion, or found a bug? We'd love to hear from you."
-    },
-    "methods": {
-      "email": {
-        "title": "Email",
-        "description": "Send us an email and we'll respond within 24-48 hours.",
-        "action": "contact@pdfcraft.app"
-      },
-      "github": {
-        "title": "GitHub",
-        "description": "Report bugs, request features, or contribute to the project.",
-        "action": "View on GitHub"
-      },
-      "twitter": {
-        "title": "Twitter",
-        "description": "Follow us for updates and announcements.",
-        "action": "@pdfcraft"
-      }
-    },
-    "form": {
-      "title": "Send us a Message",
-      "description": "Fill out the form below and we'll get back to you as soon as possible.",
-      "success": {
-        "title": "Message Sent!",
-        "description": "Thank you for reaching out. We'll get back to you within 24-48 hours.",
-        "button": "Send Another Message"
-      },
-      "fields": {
-        "name": {
-          "label": "Name",
-          "placeholder": "Your name"
-        },
-        "email": {
-          "label": "Email",
-          "placeholder": "your@email.com"
-        },
-        "subject": {
-          "label": "Subject",
-          "placeholder": "Select a subject",
-          "options": {
-            "general": "General Inquiry",
-            "bug": "Bug Report",
-            "feature": "Feature Request",
-            "feedback": "Feedback",
-            "other": "Other"
-          }
-        },
-        "message": {
-          "label": "Message",
-          "placeholder": "Tell us more about your inquiry..."
-        }
-      },
-      "error": "Something went wrong. Please try again or contact us directly via email.",
-      "submit": {
-        "loading": "Sending...",
-        "default": "Send Message"
-      }
-    },
-    "faq": {
-      "title": "Looking for Quick Answers?",
-      "description": "Check out our FAQ page for answers to common questions about {brand}.",
-      "button": "View FAQ"
     }
   },
   "errors": {
@@ -1266,8 +1155,7 @@
     "stats": {
       "pdfTools": "PDF Tools",
       "freeToUse": "Free to Use",
-      "languages": "Languages",
-      "filesUploaded": "Files Uploaded"
+      "languages": "Languages"
     },
     "categories": {
       "popular": "Popular Tools",
@@ -1282,7 +1170,7 @@
   "workflow": {
     "title": "PDF Workflow Builder",
     "subtitle": "Create custom PDF processing pipelines by connecting tools",
-    "metaTitle": "PDF Workflow Builder - PDFCraft",
+    "metaTitle": "PDF Workflow Builder - AtlasPDF",
     "metaDescription": "Create custom PDF processing pipelines by visually connecting tools. Build, save, and reuse your workflows.",
     "toolbox": "Tool Box",
     "dragToAdd": "Drag or double-click a tool to add it to the workflow",
@@ -1333,6 +1221,7 @@
     "reset": "Reset",
     "cancel": "Cancel",
     "apply": "Apply",
+    "done": "Done",
     "preview": "Preview",
     "showPreview": "Show Preview",
     "noFilesForPreview": "Select files to see preview",
@@ -1472,9 +1361,466 @@
     "conditionGateway": "Condition Gateway",
     "downloadPdf": "Download PDF",
     "outputCategory": "Output & Export",
-    "filenameLabel": "Output Filename"
+    "filenameLabel": "Output Filename",
+    "conditionalNode": {
+      "deleteNode": "Delete node",
+      "inputConnection": "Input connection",
+      "trueBranchTaken": "True branch taken",
+      "falseBranchTaken": "False branch taken",
+      "upstreamSkipped": "Upstream branch not active (skipped)",
+      "trueBranchCondition": "If true:",
+      "falseBranchDefault": "If false/default:",
+      "trueHandleTitle": "True branch (condition met)",
+      "falseHandleTitle": "False branch (condition not met)",
+      "conditionTypeFileCount": "File count",
+      "conditionTypeFileSize": "File size",
+      "conditionTypeFileFormat": "Format",
+      "conditionTypeGeneric": "Condition",
+      "opContains": "contains",
+      "opNotContains": "not contains",
+      "opMatches": "matches"
+    },
+    "toolNode": {
+      "inputType": "Input type",
+      "outputType": "Output type",
+      "parameterLabel": "Parameter",
+      "generatedFiles": "generated file(s)",
+      "rotateLabel": "Rotate",
+      "rotateDefault": "Rotate: 90° clockwise",
+      "compressDefault": "Medium quality (standard algorithm)",
+      "splitDefault": "Split by single page",
+      "downloadPdfDefault": "Save: output.pdf",
+      "downloadZipDefault": "Archive: output.zip",
+      "watermarkImage": "Image watermark",
+      "watermarkImageTiled": "Image watermark (tiled)",
+      "watermarkTiledLabel": "Tiled watermark",
+      "watermarkLabel": "Watermark",
+      "qualityLow": "Low size",
+      "qualityMedium": "Medium quality",
+      "qualityHigh": "High quality",
+      "qualityMaximum": "Best quality",
+      "splitEveryNLabel": "Split every",
+      "splitEveryNSuffix": "pages",
+      "rangeLabel": "Range",
+      "posTopLeft": "Top left",
+      "posTopCenter": "Top center",
+      "posTopRight": "Top right",
+      "posBottomLeft": "Bottom left",
+      "posBottomCenter": "Bottom center",
+      "posBottomRight": "Bottom right",
+      "pageNumbersLabel": "Page numbers",
+      "startingAtPage": "starting at page",
+      "saveLabel": "Save",
+      "zipLabel": "ZIP",
+      "dpiLabel": "DPI",
+      "opContains": "contains",
+      "opEndsWith": "ends with",
+      "typeFileCount": "File count",
+      "typeFileSize": "Size",
+      "typeFileFormat": "Format",
+      "perSheet": "per sheet",
+      "pagesLabel": "Pages",
+      "passwordProtected": "Password protected",
+      "encryptedSecure": "Encrypted",
+      "flattenSummary": "Flatten forms & annotations",
+      "tocLabel": "TOC",
+      "headerLabel": "Header",
+      "footerLabel": "Footer",
+      "headerFooterDefault": "Header & footer",
+      "backgroundColorLabel": "Background",
+      "textColorLabel": "Text color",
+      "qualityLabel": "Quality",
+      "colorLabel": "Color"
+    },
+    "errorMessages": {
+      "detailsLabel": "Details",
+      "suggestedActionLabel": "Suggested Action",
+      "workflowFailedAt": "Workflow failed at \"{node}\": {message}",
+      "workflowCancelledMsg": "Workflow execution was cancelled",
+      "unknownNode": "Unknown node",
+      "processingCancelled": "Processing was cancelled.",
+      "processingCancelledShort": "Processing cancelled",
+      "pdfEncrypted": "The PDF file is encrypted.",
+      "exactly1PdfRequired": "Exactly 1 PDF file is required.",
+      "provideExactlyOnePdf": "Please provide exactly one PDF file.",
+      "invalidPasswordCode": "INVALID_PASSWORD",
+      "invalidTypeUploadPdf": "Invalid file type. Please upload a PDF file.",
+      "exactlyOnePdfRequired": "Exactly one PDF file is required.",
+      "failedInitConversionWorker": "Failed to initialize conversion worker.",
+      "uploadExactlyOnePdf": "Please upload exactly one PDF file.",
+      "pdfNoPages": "The PDF file contains no pages.",
+      "noValidPagesConvert": "No valid pages to convert.",
+      "noValidPagesProcess": "No valid pages to process.",
+      "noValidPagesSpecified": "No valid pages specified.",
+      "noValidPagesOcr": "No valid pages to OCR.",
+      "provideAtLeastOnePdf": "Please provide at least one PDF file.",
+      "provideAPdf": "Please provide a PDF file.",
+      "invalidFileType": "Invalid file type.",
+      "failedRenderAnyPages": "Failed to render any pages.",
+      "atLeast1BlankPage": "At least 1 blank page must be added.",
+      "failedAddBlankPages": "Failed to add blank pages to PDF.",
+      "exactlyOnePdfReflow": "Exactly one PDF file is required for reflowing.",
+      "reflowCancelled": "Reflow cancelled.",
+      "failedReflowContent": "Failed to reflow PDF content.",
+      "atLeast2PdfAlternateMerge": "At least 2 PDF files are required for alternate merging.",
+      "failedAlternateMerge": "Failed to alternate merge PDF files.",
+      "failedExportAnnotations": "Failed to export PDF annotations.",
+      "provideAPdfAndAttachment": "Please provide a PDF file and at least one file to attach.",
+      "firstFileMustBePdf": "The first file must be a PDF.",
+      "failedAddAttachments": "Failed to add attachments to PDF.",
+      "noValidPdfFilesProvided": "No valid PDF files provided.",
+      "failedExtractAttachments": "Failed to extract attachments.",
+      "failedEditAttachments": "Failed to edit attachments.",
+      "failedAddBackgroundColor": "Failed to add background color.",
+      "failedInjectBarcodes": "Failed to inject barcodes.",
+      "failedPurgeWatermarks": "Failed to purge watermarks.",
+      "failedBookletImposition": "Failed to perform booklet imposition.",
+      "failedCreateBooklet": "Failed to create booklet.",
+      "failedProcessBookmarks": "Failed to process bookmarks.",
+      "failedAutoGenBookmarks": "Failed to auto-generate PDF bookmarks.",
+      "provideExactlyOneCbz": "Please provide exactly one CBZ file.",
+      "noImagesInArchive": "No images found in the archive.",
+      "noImagesCouldBeProcessed": "No images could be processed.",
+      "failedConvertCbzToPdf": "Failed to convert CBZ to PDF.",
+      "atLeastOnePdfRequired": "At least one PDF file is required.",
+      "failedCertCryptor": "Failed to apply certificate cryptor and wax seal.",
+      "passwordRequiredCode": "PASSWORD_REQUIRED",
+      "failedChangePermissions": "Failed to change PDF permissions.",
+      "citationLinkingCancelled": "Citation linking was cancelled.",
+      "failedLinkReferences": "Failed to link references in PDF.",
+      "pdfHasNoPages": "The PDF file has no pages.",
+      "failedCombinePages": "Failed to combine PDF pages.",
+      "provideOnePdfCompress": "Please provide exactly one PDF file to compress.",
+      "failedCompressPdf": "Failed to compress PDF file.",
+      "cropDataRequired": "Crop data is required.",
+      "failedCropPdf": "Failed to crop PDF.",
+      "failedDebugUpdateLinks": "Failed to debug or update PDF links.",
+      "provideOnePdfDecrypt": "Please provide exactly one PDF file to decrypt.",
+      "providePdfPassword": "Please provide the PDF password.",
+      "failedDecryptPdf": "Failed to decrypt PDF file.",
+      "sanitizationCancelled": "Sanitization was cancelled.",
+      "failedDeepSanitize": "Failed to deep sanitize PDF metadata.",
+      "exactly1PdfDeletion": "Exactly 1 PDF file is required for deletion.",
+      "atLeastOnePageDeletion": "At least one page is required for deletion.",
+      "cannotDeleteAllPages": "Cannot delete all pages from the PDF.",
+      "failedDeletePages": "Failed to delete pages from PDF file.",
+      "provideOnePdfDeskew": "Please provide exactly one PDF file to deskew.",
+      "failedDeskewPdf": "Failed to deskew PDF file.",
+      "failedDividePages": "Failed to divide PDF pages.",
+      "provideOneDjvu": "Please provide exactly one DJVU file.",
+      "invalidTypeUploadDjvu": "Invalid file type. Please upload a DJVU file (.djvu or .djv).",
+      "djvuNoPages": "DJVU file contains no pages.",
+      "failedRenderDjvuPages": "Failed to render any pages from the DJVU file.",
+      "failedConvertDjvuToPdf": "Failed to convert DJVU to PDF.",
+      "metadataObjectRequired": "Metadata object is required.",
+      "exactly1PdfEditMetadata": "Exactly 1 PDF file is required for editing metadata.",
+      "thisPdfEncrypted": "This PDF is encrypted.",
+      "failedEditMetadata": "Failed to edit PDF metadata.",
+      "failedEinkOptimization": "Failed to perform e-Ink reader optimization.",
+      "provideOneEmailFile": "Please provide exactly one email file.",
+      "failedConvertEmailToPdf": "Failed to convert email to PDF.",
+      "provideOnePdfEncrypt": "Please provide exactly one PDF file to encrypt.",
+      "provideAtLeastOnePassword": "Please provide at least one password.",
+      "failedEncryptPdf": "Failed to encrypt PDF file.",
+      "provideOneEpub": "Please provide exactly one EPUB file.",
+      "invalidTypeUploadEpub": "Invalid file type. Please upload an EPUB file.",
+      "failedConvertEpubToPdf": "Failed to convert EPUB to PDF.",
+      "provideOneExcel": "Please provide exactly one Excel spreadsheet.",
+      "invalidTypeUploadExcel": "Invalid file type. Please upload .xlsx, .xls, .ods, or .csv.",
+      "failedInitExtractionWorker": "Failed to initialize extraction worker.",
+      "noImagesInSelectedPdfs": "No images found in the selected PDF(s).",
+      "failedExtractImages": "Failed to extract images from PDF.",
+      "noTablesFound": "No tables found in the PDF.",
+      "failedExtractTables": "Failed to extract tables from PDF.",
+      "exactly1PdfExtraction": "Exactly 1 PDF file is required for extraction.",
+      "atLeastOnePageExtraction": "At least one page is required for extraction.",
+      "failedExtractPages": "Failed to extract pages from PDF file.",
+      "provideAtLeastOneFb2": "Please provide at least one FB2 file.",
+      "invalidTypeUploadFb2": "Invalid file type. Please upload FB2 files (.fb2, .fb2.zip).",
+      "failedConvertFb2ToPdf": "Failed to convert FB2 to PDF.",
+      "failedFixPageSizes": "Failed to fix page sizes.",
+      "provideOnePdfFlatten": "Please provide exactly one PDF file to flatten.",
+      "failedFlattenPdf": "Failed to flatten PDF file.",
+      "failedFontsToOutlines": "Failed to convert fonts to outlines.",
+      "atLeastOneFormField": "At least one form field is required.",
+      "failedCreateForm": "Failed to create form.",
+      "pdfNoFormFields": "This PDF does not contain any form fields.",
+      "failedFillForm": "Failed to fill form.",
+      "pdfNoAcroFormFields": "This PDF does not contain any AcroForm interactive fields. Please create fields first.",
+      "failedFormLogic": "Failed to design and inject form logic.",
+      "uploadOnePdfInvoice": "Please upload exactly one PDF invoice.",
+      "failedTranslateInvoice": "Failed to translate global invoice.",
+      "atLeast2PdfGridCombine": "At least 2 PDF files are required for grid combine.",
+      "noPagesRenderedFromSources": "No pages could be rendered from the source PDFs.",
+      "provideOneDocOrPhotoInk": "Please provide exactly one document or photo to boost ink contrast.",
+      "failedBoostHandwritingInk": "Failed to boost handwriting ink.",
+      "failedAddHeaderFooter": "Failed to add header/footer.",
+      "atLeast1ImageFile": "At least 1 image file is required.",
+      "failedConvertImagesToPdf": "Failed to convert images to PDF.",
+      "failedGenerateToc": "Failed to generate interactive TOC.",
+      "failedInvertColors": "Failed to invert colors.",
+      "atLeast1JsonFile": "At least 1 JSON file is required.",
+      "failedConvertJsonToPdf": "Failed to convert JSON to PDF.",
+      "provideAtLeastOnePdfLinearize": "Please provide at least one PDF file to linearize.",
+      "failedLinearizePdf": "Failed to linearize PDF file.",
+      "noPdfFilesCouldBeProcessed": "No PDF files could be processed.",
+      "provideOneMarkdown": "Please provide exactly one Markdown file.",
+      "failedConvertMarkdownToPdf": "Failed to convert Markdown to PDF.",
+      "atLeast2PdfMerging": "At least 2 PDF files are required for merging.",
+      "failedMergePdf": "Failed to merge PDF files.",
+      "provideOneMobi": "Please provide exactly one MOBI file.",
+      "invalidTypeUploadMobi": "Invalid file type. Please upload a MOBI file (.mobi, .azw, .azw3).",
+      "failedConvertMobiToPdf": "Failed to convert MOBI to PDF.",
+      "failedCreateNUp": "Failed to create N-Up PDF.",
+      "failedProcessLayers": "Failed to process PDF layers.",
+      "layerIdRequiredToggle": "Layer ID is required for toggle action.",
+      "layerNameRequiredAdd": "Layer name is required for add action.",
+      "layerIdRequiredDelete": "Layer ID is required for delete action.",
+      "layerIdNameRequiredRename": "Layer ID and new name are required for rename action.",
+      "noPdfOrImageForOcr": "No PDF or image file found. Please provide a file to perform OCR on.",
+      "provideOnePdfOrImage": "Please provide exactly one PDF or image file.",
+      "invalidTypeUploadPdfOrImage": "Invalid file type. Please upload a PDF or image file (PNG, JPG, WebP).",
+      "failedOcrFile": "Failed to perform OCR on file.",
+      "exactly1PdfOrganizing": "Exactly 1 PDF file is required for organizing.",
+      "pageOrderRequiredOrganizing": "Page order is required for organizing.",
+      "failedOrganizePdf": "Failed to organize PDF file.",
+      "exactly2PdfOverlay": "Exactly 2 PDF files (Base PDF and Layer PDF) are required for overlay/underlay.",
+      "baseFileProtected": "The Base PDF file is protected.",
+      "layerFileProtected": "The Layer PDF file is protected.",
+      "failedApplyOverlay": "Failed to apply overlay/underlay.",
+      "provideOnePdfAnalyze": "Please provide exactly one PDF file to analyze.",
+      "unableToLoadPdf": "Unable to load the PDF file.",
+      "failedAnalyzeDimensions": "Failed to analyze PDF page dimensions.",
+      "exactly1PdfPageLabeling": "Exactly 1 PDF file is required for page labeling.",
+      "atLeastOneLabelRule": "At least one page labeling rule must be specified.",
+      "pdfFileProtected": "The PDF file is protected.",
+      "failedInjectPageLabels": "Failed to inject page labels.",
+      "failedAddPageNumbers": "Failed to add page numbers.",
+      "atLeast1FrontBack": "At least 1 file (front or front + back) is required.",
+      "failedComposePassportId": "Failed to compose passport ID PDF.",
+      "provideOnePdfForDeskewing": "Please provide exactly one PDF file for deskewing.",
+      "failedAlignDeskewScanned": "Failed to align and deskew scanned PDF.",
+      "uploadOnePdfForSlicing": "Please upload exactly one PDF file for slicing.",
+      "failedSliceBlueprint": "Failed to slice engineering blueprint losslessly.",
+      "uploadAtLeastOnePdfResize": "Please upload at least one PDF file to resize.",
+      "failedUnifyDimensions": "Failed to unify page dimensions.",
+      "uploadOnePdfScratchpad": "Please upload exactly one PDF document to stitch scratchpad canvases.",
+      "failedStitchScratchpad": "Failed to stitch scratchpad canvases.",
+      "provideOnePdfSignatureGuides": "Please provide exactly one PDF document to inject signature guides.",
+      "failedInjectSignatureGuides": "Failed to inject signature guides.",
+      "failedDesignSpine": "Failed to design book cover spine.",
+      "uploadOnePdfForCbz": "Please upload exactly one PDF file for CBZ conversion.",
+      "documentHasZeroPages": "The document has zero pages.",
+      "failedCompileCbz": "Failed to compile CBZ comic bundle.",
+      "failedConvertPdfToDocx": "Failed to convert PDF to DOCX.",
+      "failedConvertPdfToExcel": "Failed to convert PDF to Excel.",
+      "failedConvertPdfGreyscale": "Failed to convert PDF to greyscale.",
+      "failedConvertPdfToImages": "Failed to convert PDF to images.",
+      "failedConvertPdfToJson": "Failed to convert PDF to JSON.",
+      "failedConvertPdfToMarkdown": "Failed to convert PDF to Markdown.",
+      "failedConvertToPdfA": "Failed to convert to PDF/A.",
+      "failedConvertPdfToPpt": "Failed to convert PDF to PowerPoint.",
+      "failedReconstructSlides": "Failed to reconstruct PDF slides.",
+      "failedConvertPdfToSvg": "Failed to convert PDF to SVG.",
+      "exactly1PdfTiff": "Exactly 1 PDF file is required for TIFF compilation.",
+      "pdfHas0Pages": "PDF has 0 pages.",
+      "failedCompileTiff": "Failed to compile PDF pages to professional TIFF.",
+      "provideOnePdfReflow": "Please provide exactly one PDF document to reflow.",
+      "failedReflowTwoColumn": "Failed to reflow academic two-column PDF.",
+      "uploadAtLeastOnePhotoTiling": "Please upload at least one photo (PNG/JPEG) for tiling.",
+      "failedPhotoTiling": "Failed to process photo tiling prepress layout.",
+      "invalidGridDimensions": "Invalid grid dimensions.",
+      "failedPosterizePdf": "Failed to posterize PDF.",
+      "provideOnePpt": "Please provide exactly one PowerPoint presentation.",
+      "invalidTypeUploadPpt": "Invalid file type. Please upload .pptx, .ppt, or .odp.",
+      "failedConvertPptToPdf": "Failed to convert PowerPoint to PDF.",
+      "failedRasterizePdf": "Failed to rasterize PDF.",
+      "failedRemoveAnnotations": "Failed to remove annotations.",
+      "allPagesBlankCannotRemove": "All pages appear to be blank. Cannot remove all pages.",
+      "failedRemoveBlankPages": "Failed to remove blank pages.",
+      "failedRemoveMetadata": "Failed to remove PDF metadata.",
+      "failedRemoveRestrictions": "Failed to remove PDF restrictions.",
+      "provideOnePdfRepair": "Please provide exactly one PDF file to repair.",
+      "unableToRepairPdf": "Unable to repair the PDF file.",
+      "failedRepairPdf": "Failed to repair PDF file.",
+      "pdfAtLeast2PagesReverse": "PDF must have at least 2 pages to reverse.",
+      "failedReversePages": "Failed to reverse PDF pages.",
+      "exactly1PdfRotation": "Exactly 1 PDF file is required for rotation.",
+      "failedRotatePages": "Failed to rotate PDF pages.",
+      "provideOneRtf": "Please provide exactly one RTF file.",
+      "invalidTypeUploadRtf": "Invalid file type. Please upload an .rtf file.",
+      "failedConvertRtfToPdf": "Failed to convert RTF to PDF.",
+      "provideOnePdfSanitize": "Please provide exactly one PDF file to sanitize.",
+      "failedSanitizePdf": "Failed to sanitize PDF file.",
+      "atLeastOneSignature": "At least one signature is required.",
+      "failedSignPdf": "Failed to sign PDF.",
+      "uploadExactlyOneImage": "Please upload exactly one image file.",
+      "failedPurifySignatureInk": "Failed to purify signature ink.",
+      "failedRedactPrivacyData": "Failed to redact PDF privacy data.",
+      "exactly1PdfSplitting": "Exactly 1 PDF file is required for splitting.",
+      "atLeastOnePageRangeSplit": "At least one page range is required for splitting.",
+      "failedSplitPdf": "Failed to split PDF file.",
+      "atLeastOneStamp": "At least one stamp is required.",
+      "failedAddStamps": "Failed to add stamps.",
+      "internalErrorEmptyPdf": "Internal Error: Generated PDF data was empty.",
+      "failedGenerateTocTable": "Failed to generate table of contents.",
+      "failedChangeTextColor": "Failed to change text color.",
+      "atLeast1TextFileOrInput": "At least 1 text file or direct text input is required.",
+      "failedConvertTextToPdf": "Failed to convert text to PDF.",
+      "exactly1PdfTimestamp": "Exactly 1 PDF file is required for trusted timestamping.",
+      "pdfEncryptedUnlockFirst": "The PDF file is encrypted. Please unlock it first.",
+      "failedApplyTimestamp": "Failed to apply trusted timestamp.",
+      "failedCompileSvgPaths": "Failed to compile PDF path rendering into SVG.",
+      "failedAddWatermark": "Failed to add watermark.",
+      "provideOneWord": "Please provide exactly one Word document.",
+      "invalidTypeUploadWord": "Invalid file type. Please upload .docx, .doc, .odt, or .rtf.",
+      "provideOneXps": "Please provide exactly one XPS file.",
+      "invalidTypeUploadXps": "Invalid file type. Please upload an XPS file.",
+      "failedConvertXpsToPdf": "Failed to convert XPS to PDF.",
+      "noInputFile": "No input file",
+      "noInputFileOcr": "No input file provided for OCR",
+      "atLeast2FilesRequired": "At least 2 files required",
+      "watermarkImageRequired": "Watermark image is required. Please configure the node settings.",
+      "certificateFileRequired": "Certificate file is required. Please configure the node settings.",
+      "searchTermRequired": "A search term is required to find and redact text.",
+      "toolMayRequireInteraction": "This tool may require user interaction or is not yet implemented for workflow execution.",
+      "unknownErrorDuringExecution": "Unknown error occurred during workflow execution",
+      "clickNodeUploadWatermarkImage": "Click the node to upload an image for the watermark.",
+      "clickNodeUploadCertificate": "Click the node to upload a PFX/P12/PEM certificate file.",
+      "checkCertificateAndPassword": "Check the certificate file and password.",
+      "clickNodeEnterRedactText": "Click the node to enter the text or pattern to redact.",
+      "useToolDirectly": "Use this tool directly instead of in a workflow.",
+      "checkInputFilesAndRetry": "Check the input files and settings, then try again.",
+      "workflowEmpty": "Workflow is empty. Add at least one tool node.",
+      "workflowHasCycle": "Workflow contains a cycle. Remove circular connections.",
+      "invalidConnectionGeneric": "Invalid connection",
+      "workflowNoInputNodes": "Workflow has no input nodes. All nodes are connected in a cycle or isolated.",
+      "multipleInputNodes": "Workflow has {count} input nodes ({names}). Uploaded files are routed to each input node by file type (e.g. .png to PNG to PDF, .jpg to JPG to PDF).",
+      "nodeNotConnected": "Node \"{label}\" is not connected to the main workflow.",
+      "connectionIncompatible": "Output format \"{format}\" is not compatible with accepted formats: {accepted}",
+      "toolNotSupportedYet": "Tool \"{toolId}\" is not supported in workflows yet.",
+      "extRequiresLibreOffice": ".{ext} files require LibreOffice, which needs Cross-Origin Isolation on your server.",
+      "failedProcessFileNamed": "Failed to process file \"{name}\".",
+      "failedLoadFileNamed": "Failed to load file \"{name}\".",
+      "failedCopyPageFrom": "Failed to copy page {pageNum} from \"{name}\".",
+      "failedConvertExcelToPdfDetails": "Failed to convert Excel to PDF: {details}",
+      "failedReadFileNamed": "Failed to read \"{name}\".",
+      "failedLoadFileNamed2": "Failed to load \"{name}\".",
+      "failedGridCombineDetails": "Failed to create grid combined PDF: {details}",
+      "invalidFileTypeNamed": "Invalid file type: {name}",
+      "failedProcessImageNamed": "Failed to process image \"{name}\".",
+      "invalidJsonInFile": "Invalid JSON in file \"{name}\".",
+      "invalidPageNumberBlueprint": "Invalid page number {pageNum}. Blueprint has {pageCount} pages.",
+      "invalidPageNumberAnchor": "Invalid page number {pageNum}. PDF only has {pageCount} pages.",
+      "failedConvertPageGreyscale": "Failed to convert page {pageNum} to greyscale.",
+      "failedConvertPageRange": "Failed to convert pages {range}.",
+      "failedConvertPageNum": "Failed to convert page {pageNum}.",
+      "pageOutOfRange": "Page {pageNum} is out of range.",
+      "failedEmbedImageDetails": "Failed to embed image: {details}",
+      "failedConvertWordDetails": "Failed to convert Word document to PDF: {details}",
+      "fileTooLargeSizeMax": "File is too large ({size} MB). Maximum supported size is {max} MB.",
+      "fileNamedEncrypted": "File \"{name}\" is encrypted.",
+      "positionBetween0AndTotal": "Position must be between 0 and {totalPages}.",
+      "failedProcessFileTemplate": "Failed to process {name}",
+      "failedCropFileTemplate": "Failed to crop {name}",
+      "failedRedactFileTemplate": "Failed to redact {name}",
+      "actionTryCompressOrSplit": "Try compressing or splitting the file first.",
+      "actionUploadValidPdf": "Please upload a valid PDF file.",
+      "actionFileMayBeDamaged": "The file may be damaged. Try a different file.",
+      "actionDecryptFirstTool": "Please decrypt the PDF first using the Decrypt tool.",
+      "actionTryRepairTool": "Try using the Repair PDF tool first.",
+      "actionTrySmallerFile": "Try with a smaller file or fewer pages.",
+      "actionCloseTabsRetry": "Close other browser tabs and try again.",
+      "actionRefreshRetry": "Refresh the page and try again.",
+      "actionPleaseTryAgain": "Please try again.",
+      "detailsDecryptFirst": "Please decrypt the file first.",
+      "detailsPasswordIncorrect": "The password you entered is incorrect. Please check and try again.",
+      "detailsNoFilesProvided": "No files provided.",
+      "detailsDecryptBeforeMerging": "Please decrypt the file before merging.",
+      "detailsCurrentPasswordIncorrect": "The current password you entered is incorrect. Please check and try again.",
+      "detailsUnknownRenderingError": "Unknown rendering error",
+      "detailsPleaseSelectPdfFiles": "Please select PDF files.",
+      "detailsDecryptBeforeBooklet": "Please decrypt the file before creating a booklet.",
+      "detailsProvideCbzOrZip": "Please provide a CBZ or ZIP file containing images.",
+      "detailsCbzNoSupportedImages": "The CBZ file does not contain any supported image files.",
+      "detailsFailedConvertArchiveImages": "Failed to convert any images from the archive.",
+      "detailsPdfPasswordProtectedEnter": "This PDF is password-protected. Please enter the current password to proceed.",
+      "detailsProvidePdfAtLeastOnePage": "Please provide a PDF with at least one page.",
+      "detailsDecryptBeforeCompressing": "Please decrypt the file before compressing.",
+      "detailsPasswordRequiredDecrypt": "A password is required to decrypt the PDF.",
+      "detailsSpecifyPagesDelete": "Please specify pages to delete.",
+      "detailsDecryptBeforeDeletingPages": "Please decrypt the file before deleting pages.",
+      "detailsAtLeastOnePageMustRemain": "At least one page must remain in the document.",
+      "detailsDecryptBeforeDeskewing": "Please decrypt the file before deskewing.",
+      "detailsProvideMetadataFields": "Please provide metadata fields to update.",
+      "detailsDecryptBeforeEditingMetadata": "Please decrypt the file before editing metadata.",
+      "detailsProvideEmlOrMsg": "Please provide an .eml or .msg file.",
+      "detailsEitherPasswordRequired": "Either user password or owner password is required.",
+      "detailsNoEmbeddedImagesMatch": "The PDF may not contain any embedded images that match the filter criteria.",
+      "detailsAdjustColumnsRows": "Try adjusting the minimum columns/rows settings or check a different page range.",
+      "detailsSpecifyPagesExtract": "Please specify pages to extract.",
+      "detailsDecryptBeforeExtractingPages": "Please decrypt the file before extracting pages.",
+      "detailsNoFilesReceived": "No files received.",
+      "detailsProvideValidPdfAtLeastOnePage": "Please provide a valid PDF with at least one page.",
+      "detailsDecryptBeforeFlattening": "Please decrypt the file before flattening.",
+      "detailsCannotFlattenEmpty": "Cannot flatten an empty PDF.",
+      "detailsSupportedImageFormats": "Supported formats: JPG, PNG, WebP, BMP, TIFF, SVG, HEIC",
+      "detailsNoFilesWereProvided": "No files were provided.",
+      "detailsAllFilesCorruptOrInvalid": "All files may be corrupted or invalid.",
+      "detailsReceived0Files": "Received 0 files.",
+      "detailsSpecifyNewPageOrder": "Please specify the new page order.",
+      "detailsDecryptBeforeOrganizing": "Please decrypt the file before organizing.",
+      "detailsCannotAnalyzeEmptyPdf": "Cannot analyze dimensions of an empty PDF.",
+      "detailsVerifyPdfValid": "Please verify the PDF file is valid.",
+      "detailsDecryptBeforePdfA": "Please decrypt the file before converting to PDF/A.",
+      "detailsVerifyDocumentIntegrity": "Please verify document integrity.",
+      "detailsRowsColumnsAtLeast1": "Rows and columns must be at least 1.",
+      "detailsCheckPageRange": "Please check your page range.",
+      "detailsEnterValidPageRange": "Please enter a valid page range.",
+      "detailsDecryptBeforeRemovingMetadata": "Please decrypt the file before removing metadata.",
+      "detailsCannotProcessEmptyPdf": "Cannot process an empty PDF.",
+      "detailsFileTooCorruptedRecover": "The file may be too corrupted to recover.",
+      "detailsDecryptBeforeRotating": "Please decrypt the file before rotating pages.",
+      "receivedTypeAndFilename": "Received: {value}, filename: {name}",
+      "receivedNFiles": "Received {count} file(s).",
+      "receivedValue": "Received: {value}",
+      "receivedCount": "Received count: {count}",
+      "receivedPosition": "Received position: {position}",
+      "fileSizeLimitBytes": "File size: {size} bytes, limit: {limit} bytes",
+      "pdfHasOnlyNPages": "The PDF has only {count} page(s).",
+      "pdfHasNPages": "PDF has {count} pages."
+    }
   },
   "tools": {
+    "timestampPdf": {
+      "selectTsaTitle": "1. Choose a Local Timestamp Profile",
+      "privacyGuaranteed": "100% local — your file never leaves your device and no data is sent anywhere.",
+      "disclosure": "This tool generates a self-signed cryptographic proof-of-existence stamp entirely on your device. It does not contact DigiCert, Sectigo, SSL.com, FreeTSA, or any other real Time Stamping Authority. The profile names below are display labels only — not a certified RFC 3161 timestamp and not a real third-party connection.",
+      "processButton": "Apply Local Timestamp",
+      "waitingTitle": "Waiting to Generate Seal",
+      "waitingDescription": "Choose a profile above and click \"Apply Local Timestamp\" to generate a local proof-of-existence stamp for this PDF.",
+      "certificateTitle": "Local Timestamp Certificate",
+      "localSealBadge": "Local Seal (Self-Signed)",
+      "authority": "Profile Label",
+      "fileHash": "SHA-256 File Hash (computed locally)",
+      "serialNumber": "Local Certificate Serial",
+      "tsaTime": "Local Device Time (UTC)",
+      "tsa": {
+        "desc": {
+          "MeSign": "Local simulated profile (display name only — not a connection to the real MeSign).",
+          "DigiCert": "Local simulated profile (display name only — not a connection to the real DigiCert).",
+          "Sectigo": "Local simulated profile (display name only — not a connection to the real Sectigo).",
+          "SSLcom": "Local simulated profile (display name only — not a connection to the real SSL.com).",
+          "FreeTSA": "Local simulated profile (display name only — not a connection to the real FreeTSA.org)."
+        },
+        "speed": {
+          "fast": "Local (instant)",
+          "blazing": "Local (instant)",
+          "stable": "Local (instant)",
+          "medium": "Local (instant)"
+        }
+      }
+    },
     "search": {
       "placeholder": "Search tools...",
       "noResults": "No tools found for \"{query}\""

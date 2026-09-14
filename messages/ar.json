@@ -1,28 +1,16 @@
 {
   "metadata": {
     "home": {
-      "title": "PDFCraft - أدوات PDF احترافية",
+      "title": "AtlasPDF - أدوات PDF احترافية",
       "description": "مجاني، خاص، ويعمل داخل المتصفح. دمج وتحرير ومعالجة ملفات PDF دون رفعها إلى أي خوادم."
     },
     "tools": {
       "title": "جميع أدوات PDF",
-      "description": "تصفح أكثر من {count}+ أداة PDF احترافية. دمج، تقسيم، ضغط، تحويل، تحرير، وتأمين ملفات PDF مجانًا."
-    },
-    "about": {
-      "title": "من نحن",
-      "description": "تعرّف على PDFCraft — مجموعة أدوات PDF مجانية وخاصة وقوية. تتم جميع المعالجة داخل متصفحك."
+      "description": "تصفح أكثر من 67+ أداة PDF احترافية. دمج، تقسيم، ضغط، تحويل، تحرير، وتأمين ملفات PDF مجانًا."
     },
     "faq": {
       "title": "الأسئلة الشائعة",
-      "description": "اعثر على إجابات للأسئلة الشائعة حول PDFCraft وتعرّف على كيفية استخدام أدوات PDF بفعالية."
-    },
-    "privacy": {
-      "title": "سياسة الخصوصية",
-      "description": "سياسة خصوصية PDFCraft. ملفاتك لا تغادر جهازك أبدًا، وجميع المعالجة تتم محليًا داخل المتصفح."
-    },
-    "contact": {
-      "title": "تواصل معنا",
-      "description": "تواصل مع فريق PDFCraft. يسعدنا سماع استفساراتك وملاحظاتك."
+      "description": "اعثر على إجابات للأسئلة الشائعة حول AtlasPDF وتعرّف على كيفية استخدام أدوات PDF بفعالية."
     },
     "keywords": {
       "pdfTools": "أدوات PDF",
@@ -35,16 +23,13 @@
     }
   },
   "common": {
-    "brand": "PDFCraft",
+    "brand": "AtlasPDF",
     "tagline": "أدوات PDF احترافية - مجانية وخاصة",
     "navigation": {
-      "home": "بيت",
+      "home": "الرئيسية",
       "tools": "الأدوات",
       "workflow": "سير العمل",
-      "about": "من نحن",
-      "faq": "الأسئلة الشائعة",
-      "privacy": "خصوصية",
-      "contact": "الاتصال"
+      "faq": "الأسئلة الشائعة"
     },
     "buttons": {
       "upload": "رفع الملفات",
@@ -83,10 +68,14 @@
       "loading": "جارٍ التحميل..."
     },
     "footer": {
-      "footer": "© 2025 PDFCraft. جميع الحقوق محفوظة.",
-      "copyright": "© {year} PDFCraft. جميع الحقوق محفوظة.",
       "privacyBadge": "خصوصية 100% - الملفات لا تغادر جهازك",
-      "madeWith": "تم الإنشاء باستخدام <Heart /> و <Nextjs />"
+      "security": "الأمان",
+      "compliance": "الامتثال",
+      "clientSideProcessing": "المعالجة من جانب المتصفح",
+      "filesNeverLeave": "الملفات لا تغادر جهازك مطلقاً",
+      "noFileUploads": "بدون رفع ملفات",
+      "privateSecure": "خصوصية وأمان بنسبة 100%",
+      "gdprCompliant": "متوافق مع GDPR"
     },
     "recentFiles": {
       "title": "الملفات الأخيرة",
@@ -129,7 +118,7 @@
       "finish": "إنهاء",
       "skip": "تخطي",
       "stepOf": "من",
-      "welcomeTitle": "مرحبًا بك في PDFCraft!",
+      "welcomeTitle": "مرحبًا بك في AtlasPDF!",
       "welcomeMessage": "هل ترغب في جولة سريعة للتعرّف على كيفية استخدام أدوات PDF؟ لن تستغرق سوى دقيقة واحدة.",
       "helpButton": "جولة المساعدة"
     },
@@ -253,7 +242,9 @@
       "gsm80": "ورق مكتب قياسي 80 جرام (0.05 مم/جانب)",
       "gsm100": "ورق مصقول ناعم 100 جرام (0.06 مم/جانب)",
       "gsm120": "ورق فني مطفأ 120 جرام (0.07 مم/جانب)",
-      "gsm150": "ورق مقوى مطفأ ثقيل 150 جرام (0.09 مم/جانب)"
+      "gsm150": "ورق مقوى مطفأ ثقيل 150 جرام (0.09 مم/جانب)",
+      "coverWidthLabel": "عرض الغلاف (نقطة)",
+      "coverHeightLabel": "ارتفاع الغلاف (نقطة)"
     },
     "pdfSignatureAnchorHelper": {
       "uploadLabel": "تحميل عقد أو اتفاقية PDF",
@@ -265,7 +256,9 @@
       "magnifierTitle": "لوحة تثبيت رادار الاتفاقية (انقر فوق المعاينة لوضع التوقيعات)",
       "clearButton": "مسح",
       "anchorLabelLabel": "نص تراكب الدليل",
-      "targetPageLabel": "صفحة الهدف النشطة"
+      "targetPageLabel": "صفحة الهدف النشطة",
+      "anchorXLabel": "موضع التثبيت X (0-1)",
+      "anchorYLabel": "موضع التثبيت Y (0-1)"
     },
     "pdfLosslessSlicer": {
       "uploadLabel": "تحميل مخططات CAD PDF فائقة الضخامة",
@@ -277,7 +270,11 @@
       "clearButton": "مسح",
       "targetPageLabel": "صفحة الاقتصاص المستهدفة",
       "sliceWidth": "عرض الاقتصاص: {percent}%",
-      "sliceHeight": "ارتفاع الاقتصاص: {percent}%"
+      "sliceHeight": "ارتفاع الاقتصاص: {percent}%",
+      "sliceXLabel": "إزاحة X للاقتصاص (0-1)",
+      "sliceYLabel": "إزاحة Y للاقتصاص (0-1)",
+      "sliceWidthFieldLabel": "عرض الاقتصاص (0-1)",
+      "sliceHeightFieldLabel": "ارتفاع الاقتصاص (0-1)"
     },
     "pdfScratchpadCanvas": {
       "uploadLabel": "تحميل شرائح المحاضرة / أوراق PDF",
@@ -348,6 +345,7 @@
       "layoutSpecA4": "اتجاه رأسي A4 قياسي (كلا الوجهين في المنتصف)",
       "layoutSpecA4Double": "اتجاه أفقي A4 قياسي (كلا الوجهين جنباً إلى جنب)",
       "idCardHeightLabel": "ارتفاع وضع بطاقة الهوية (نقاط)",
+      "idCardWidthLabel": "عرض وضع بطاقة الهوية (نقاط)",
       "layersCountLabel": "تم إضافة {count}/2 طبقات تخطيط هوية"
     },
     "annotationExporter": {
@@ -365,6 +363,7 @@
       "incHighlightsLabel": "استخراج العلامات المبرزة",
       "incNotesLabel": "استخراج الملاحظات اللاصقة للتعليقات",
       "incUnderlinesLabel": "استخراج السطور السفلية والمناطق المحددة",
+      "incInkLabel": "استخراج تعليقات الرسم بالحبر",
       "emptyStateTitle": "انتظر اكتمال التحليل، سيتم تجميع الملاحظات في تخطيط قياسي.",
       "emptyStateIconText": "✍️"
     },
@@ -379,7 +378,8 @@
       "emptyStateDescription": "يحدد الكلمات المفتاحية لتدفق محتويات Tj/TJ وينظف تخطيطات الخلفية المتكررة تلقائياً، مع الحفاظ على دقة المتجهات الأصلية.",
       "watermarkKeywordsLabel": "نمط نص العلامة المائية المستهدف",
       "watermarkKeywordsPlaceholder": "مثال: COPY, CONFIDENTIAL (مفصولة بفاصلة)",
-      "toleranceLabel": "نسبة التسامح لمطابقة الحروف الرسومية"
+      "toleranceLabel": "نسبة التسامح لمطابقة الحروف الرسومية",
+      "removeImagesLabel": "إزالة العلامات المائية المصورة أيضاً"
     },
     "smartDataRedactor": {
       "uploadLabel": "تحميل مستندات PDF لإجراء التعتيم/إخفاء البيانات",
@@ -394,7 +394,8 @@
       "phoneRedactLabel": "تصفية أرقام الهواتف",
       "idRedactLabel": "تصفية جوازات السفر وبطاقات الهوية",
       "customKeywordsLabel": "عبارات التعتيم المخصصة",
-      "customKeywordsPlaceholder": "عبارات مفصولة بفاصلة"
+      "customKeywordsPlaceholder": "عبارات مفصولة بفاصلة",
+      "redactColorLabel": "لون كتلة التعتيم"
     },
     "bookmarksAutoGenerator": {
       "uploadLabel": "تحميل ملف PDF يفتقر إلى مخطط الإشارات المرجعية",
@@ -425,7 +426,13 @@
       "barcodeTypeBar": "باركود Code128",
       "barcodeValueLabel": "قيمة بيانات الرمز المضمن",
       "xPosLabel": "إزاحة X للمحاذاة الأفقية (نقطة)",
-      "yPosLabel": "إزاحة Y للمحاذاة الرأسية (نقطة)"
+      "yPosLabel": "إزاحة Y للمحاذاة الرأسية (نقطة)",
+      "widthLabel": "عرض الباركود (نقطة)",
+      "heightLabel": "ارتفاع الباركود (نقطة)",
+      "pagesLabel": "الصفحات المستهدفة",
+      "pagesAllLabel": "كل الصفحات",
+      "pagesFirstLabel": "الصفحة الأولى فقط",
+      "pagesLastLabel": "الصفحة الأخيرة فقط"
     },
     "signatureInkOptimizer": {
       "uploadLabel": "تحميل صورة عقد تحتوي على توقيع / ختم",
@@ -479,12 +486,13 @@
       "themeSepia": "حماية دافئة للعين",
       "themeLight": "أبيض ساطع ونظيف",
       "themeGreen": "أخضر ناعم منعش",
-      "themeDark": "مظهر داكن ليلى",
+      "themeDark": "مظهر داكن ليلي",
       "fontSizeLabel": "حجم خط الطباعة",
       "pullToExport": "اسحب الحبل للتصدير",
       "pullToExportHint": "اسحب الحلقة لأسفل للحفظ (Markdown)"
     },
     "bookletFoldingSimulator": {
+      "fourPageAccordionLabel": "طي أكورديون 4 صفحات (Z)",
       "fourPagesFold": "طي 4 صفحات",
       "oneSheetDoubleSide": "ورقة واحدة بوجهين",
       "eightPagesSaddle": "تدبيس كراسة 8 صفحات",
@@ -504,9 +512,12 @@
       "bronzeWax": "برونزي قرمزي عتيق",
       "enableDoubleKey": "تمكين تشفير الشهادة بمفتاحين (قفل قوي 256 بت)",
       "decryptPasswordHelp": "تعيين كلمة مرور مفتاح فك تشفير PFX",
-      "passwordPlaceholder": "كلمة المرور الافتراضية: pdfcraft",
+      "passwordPlaceholder": "كلمة المرور الافتراضية: atlaspdf",
       "sealCoordinates": "إحداثيات الختم: X: {x}px, Y: {y}px",
-      "clickToReposition": "انقر في أي مكان لإعادة تحديد موضع ختم الشمع"
+      "clickToReposition": "انقر في أي مكان لإعادة تحديد موضع ختم الشمع",
+      "sealPageLabel": "رقم صفحة الختم",
+      "sealXLabel": "موضع الختم X (نقطة)",
+      "sealYLabel": "موضع الختم Y (نقطة)"
     },
     "citationLinker": {
       "uploadLabel": "تحميل ملف PDF الأكاديمي مع المراجع",
@@ -659,7 +670,7 @@
       "logicIntroTitle": "دليل منطق ربط النماذج",
       "logicIntro1": "حدد موقع العقد التحكمية (مثل مربع الاختيار) على اللوحة شبه الشفافة.",
       "logicIntro2": "اسحب خط الاتصال من النقطة إلى الحقل التابع المستهدف.",
-      "logicIntro3": "بالنسبة لمربعات الاختيار，يؤدي هذا إلى إنشاء نص برمجيات تحقق AcrobatJS نشط.",
+      "logicIntro3": "بالنسبة لمربعات الاختيار، يؤدي هذا إلى إنشاء نص برمجيات تحقق AcrobatJS نشط.",
       "logicIntro4": "تنبض أضواء بنفسجية على خط الاتصال بمجرد نجاح الربط."
     },
     "nUpPdf": {
@@ -749,6 +760,7 @@
       "loadFullPreview": "تحميل المعاينة الكاملة لـ {count} صفحة"
     },
     "pdfToCbz": {
+      "workflowOptionsTitle": "إعدادات بيانات CBZ التعريفية والتصدير",
       "errorMetadata": "فشل تحليل البيانات التعريفية لقصة PDF المصورة. قد يكون الملف تالفاً.",
       "errorUpload": "يرجى تحميل ملف PDF للقصة المصورة أولاً.",
       "progressExtracting": "جاري استخراج صفحات القصة المصورة...",
@@ -861,7 +873,7 @@
       "clearAll": "مسح",
       "quickRotate": "زوايا تدوير سريعة",
       "fineRotate": "قرص المحاذاة الدقيقة",
-      "rotateLeft90": "تدوير لليصار 90 درجة",
+      "rotateLeft90": "تدوير لليسار 90 درجة",
       "rotateRight90": "تدوير لليمين 90 درجة",
       "rotate180": "قلب 180 درجة",
       "resetRotate": "إعادة تعيين الزاوية",
@@ -917,7 +929,10 @@
       "rgbColor": "ملء مسبق للون RGB",
       "codeCopied": "تم نسخ كود SVG إلى الحافظة",
       "copyCode": "نسخ كود SVG",
-      "downloadSvg": "تنزيل أصل SVG"
+      "downloadSvg": "تنزيل أصل SVG",
+      "optionsTitle": "إعدادات استخراج المتجهات",
+      "pageNumLabel": "رقم الصفحة المراد استخراجها",
+      "cleanGridLabel": "تنظيف SVG للتضمين المتجاوب"
     },
     "updater": {
       "title": "تحديث البرنامج",
@@ -926,7 +941,7 @@
       "errorTitle": "تعذر التحقق من وجود تحديثات",
       "retry": "إعادة المحاولة",
       "latest": "أنت تستخدم أحدث إصدار!",
-      "latestDesc": "PDFCraft يعمل حاليًا بأحدث إصدار ({version}).",
+      "latestDesc": "AtlasPDF يعمل حاليًا بأحدث إصدار ({version}).",
       "available": "يتوفر إصدار جديد",
       "currentVersion": "الإصدار الحالي",
       "released": "تاريخ الإصدار",
@@ -984,16 +999,16 @@
     "sections": {
       "general": {
         "whatIs": {
-          "question": "ما هو PDFCraft؟",
-          "answer": "PDFCraft عبارة عن مجموعة أدوات PDF مجانية تهتم بالخصوصية وتعمل بالكامل في متصفحك. يوفر أكثر من {count} أداة احترافية لتحرير وتحويل ودمج وتقسيم وتشفير ملفات PDF دون تحميلها على أي خادم."
+          "question": "ما هو AtlasPDF؟",
+          "answer": "AtlasPDF عبارة عن مجموعة أدوات PDF مجانية تهتم بالخصوصية وتعمل بالكامل في متصفحك. يوفر أكثر من 80 أداة احترافية لتحرير وتحويل ودمج وتقسيم وتشفير ملفات PDF دون تحميلها على أي خادم."
         },
         "isFree": {
-          "question": "هل PDFCraft مجاني حقًا؟",
-          "answer": "نعم، استخدام PDFCraft مجاني تمامًا. لا توجد تكاليف خفية، ولا باقات مدفوعة، ولا يتطلب التسجيل. جميع الميزات متاحة للجميع."
+          "question": "هل AtlasPDF مجاني حقًا؟",
+          "answer": "نعم، استخدام AtlasPDF مجاني تمامًا. لا توجد تكاليف خفية، ولا باقات مدفوعة، ولا يتطلب التسجيل. جميع الميزات متاحة للجميع."
         },
         "account": {
           "question": "هل أحتاج إلى إنشاء حساب؟",
-          "answer": "لا، لا تحتاج إلى إنشاء حساب أو التسجيل لاستخدام PDFCraft. ما عليك سوى زيارة الموقع الإلكتروني والبدء في استخدام أي أداة على الفور."
+          "answer": "لا، لا تحتاج إلى إنشاء حساب أو التسجيل لاستخدام AtlasPDF. ما عليك سوى زيارة الموقع الإلكتروني والبدء في استخدام أي أداة على الفور."
         }
       },
       "privacy": {
@@ -1002,8 +1017,8 @@
           "answer": "لا، لا يتم تحميل ملفاتك أبدًا إلى أي خادم. تحدث جميع عمليات معالجة ملفات PDF محليًا في متصفحك باستخدام JavaScript و WebAssembly. ملفاتك لا تغادر جهازك أبدًا."
         },
         "safe": {
-          "question": "هل من الآمن استخدام PDFCraft مع المستندات الحساسة؟",
-          "answer": "نعم، تم تصميم PDFCraft مع مراعاة الخصوصية. نظرًا لأن جميع عمليات المعالجة تحدث محليًا في متصفحك، فإن مستنداتك الحساسة تظل على جهازك ولا يتم نقلها أبدًا عبر الإنترنت."
+          "question": "هل من الآمن استخدام AtlasPDF مع المستندات الحساسة؟",
+          "answer": "نعم، تم تصميم AtlasPDF مع مراعاة الخصوصية. نظرًا لأن جميع عمليات المعالجة تحدث محليًا في متصفحك، فإن مستنداتك الحساسة تظل على جهازك ولا يتم نقلها أبدًا عبر الإنترنت."
         },
         "storage": {
           "question": "ماذا يحدث لملفاتي بعد المعالجة؟",
@@ -1013,7 +1028,7 @@
       "features": {
         "operations": {
           "question": "ما هي عمليات PDF التي يمكنني القيام بها؟",
-          "answer": "تقدم PDFCraft أكثر من 67 أداة تشمل: الدمج، التقسيم، الضغط، التحويل (إلى/من صور، نصوص، JSON)، التحرير، التعليق، التوقيع، إضافة علامات مائية، التشفير/فك التشفير، OCR، وغيرها الكثير."
+          "answer": "تقدم AtlasPDF أكثر من 67 أداة تشمل: الدمج، التقسيم، الضغط، التحويل (إلى/من صور، نصوص، JSON)، التحرير، التعليق، التوقيع، إضافة علامات مائية، التشفير/فك التشفير، OCR، وغيرها الكثير."
         },
         "merge": {
           "question": "هل يمكنني دمج ملفات PDF متعددة؟",
@@ -1021,17 +1036,17 @@
         },
         "images": {
           "question": "هل يمكنني تحويل الصور إلى PDF؟",
-          "answer": "نعم، يدعم PDFCraft تحويل تنسيقات الصور المختلفة (JPG، PNG، WebP، BMP، TIFF، SVG، HEIC) إلى PDF. يمكنك تحويل صورة واحدة أو عدة صور في وقت واحد."
+          "answer": "نعم، يدعم AtlasPDF تحويل تنسيقات الصور المختلفة (JPG، PNG، WebP، BMP، TIFF، SVG، HEIC) إلى PDF. يمكنك تحويل صورة واحدة أو عدة صور في وقت واحد."
         },
         "edit": {
           "question": "هل يمكنني تعديل النص في ملف PDF؟",
-          "answer": "يوفر PDFCraft أدوات التعليق والتعديل بما في ذلك تمييز النص، وإضافة نصوص، وأشكال، وصور، وتوقيعات. لتعديل النص بالكامل، توفر أداة محرر PDF إمكانات تعليق توضيحي شاملة."
+          "answer": "يوفر AtlasPDF أدوات التعليق والتعديل بما في ذلك تمييز النص، وإضافة نصوص، وأشكال، وصور، وتوقيعات. لتعديل النص بالكامل، توفر أداة محرر PDF إمكانات تعليق توضيحي شاملة."
         }
       },
       "technical": {
         "browsers": {
           "question": "ما هي المتصفحات المدعومة؟",
-          "answer": "يعمل PDFCraft على جميع المتصفحات الحديثة بما في ذلك Chrome و Firefox و Safari و Edge. نوصي باستخدام أحدث إصدار من متصفحك للحصول على أفضل تجربة."
+          "answer": "يعمل AtlasPDF على جميع المتصفحات الحديثة بما في ذلك Chrome و Firefox و Safari و Edge. نوصي باستخدام أحدث إصدار من متصفحك للحصول على أفضل تجربة."
         },
         "sizeLimit": {
           "question": "هل هناك حد أقصى لحجم الملف؟",
@@ -1042,146 +1057,20 @@
           "answer": "نظرًا لأن جميع عمليات المعالجة تحدث في متصفحك، فإن الأداء يعتمد على قدرات جهازك. تتطلب الملفات الكبيرة مزيدًا من الذاكرة وقوة المعالجة. للحصول على أفضل النتائج، أغلق علامات تبويب المتصفح والتطبيقات الأخرى."
         },
         "offline": {
-          "question": "هل يعمل PDFCraft دون اتصال بالإنترنت؟",
-          "answer": "حاليا، يتطلب PDFCraft اتصالا بالإنترنت لتحميل التطبيق. ومع ذلك، بمجرد تحميله، فإن معالجة ملفات PDF نفسها تحدث محليًا ولا تتطلب اتصالاً."
+          "question": "هل يعمل AtlasPDF دون اتصال بالإنترنت؟",
+          "answer": "حاليا، يتطلب AtlasPDF اتصالا بالإنترنت لتحميل التطبيق. ومع ذلك، بمجرد تحميله، فإن معالجة ملفات PDF نفسها تحدث محليًا ولا تتطلب اتصالاً."
         }
       },
       "languages": {
         "supported": {
           "question": "ما هي اللغات المدعومة؟",
-          "answer": "PDFCraft متاح بـ 9 لغات: الإنجليزية، اليابانية، الكورية، الإسبانية، الفرنسية، الألمانية، الصينية، البرتغالية، والعربية (مع دعم اتجاه الكتابة من اليمين إلى اليسار)."
+          "answer": "AtlasPDF متاح باللغتين الإنجليزية والعربية (مع دعم اتجاه الكتابة من اليمين إلى اليسار)."
         },
         "change": {
           "question": "كيف يمكنني تغيير اللغة؟",
           "answer": "يمكنك تغيير اللغة باستخدام محدد اللغة في رأس الصفحة. سيتم حفظ خيارك المفضل للزيارات المستقبلية."
         }
       }
-    },
-    "cta": {
-      "title": "هل ما زال لديك أسئلة؟",
-      "description": "ألا يمكنك العثور على الإجابة التي تبحث عنها؟ لا تتردد في الاتصال بنا.",
-      "button": "اتصل بنا"
-    }
-  },
-  "aboutPage": {
-    "title": "حول {brand}",
-    "description": "{brand} هي مجموعة أدوات PDF مجانية تركز على الخصوصية وتعمل بالكامل في متصفحك. باستخدام أكثر من {count} أداة احترافية، يمكنك تعديل ملفات PDF ودمجها وتقسيمها وتأمينها دون تحميلها على أي خادم.",
-    "mission": {
-      "title": "مهمتنا",
-      "p1": "نحن نؤمن بأنه يجب أن يحصل الجميع على أدوات PDF قوية دون المساس بخصوصيتهم أو دفع رسوم اشتراك باهظة. لهذا السبب أنشأنا {brand} – مجموعة أدوات PDF الشاملة التي تضع خصوصيتك في المقام الأول.",
-      "p2": "خلافًا لخدمات PDF التقليدية التي تتطلب منك تحميل ملفاتك إلى خوادم بعيدة، فإن {brand} يعالج كل شيء محليًا في متصفحك. مستنداتك الحساسة لا تغادر جهازك أبدًا، مما يمنحك التحكم الكامل في بياناتك.",
-      "p3": "سواء كنت طالبًا، أو محترفًا، أو مستخدمًا عاديًا، فإن {brand} يوفر جميع الأدوات التي تحتاجها للعمل مع ملفات PDF بكفاءة وأمان."
-    },
-    "values": {
-      "title": "قيمنا",
-      "privacy": {
-        "title": "الخصوصية أولاً",
-        "description": "ملفاتك لا تغادر جهازك أبدًا. جميع عمليات المعالجة تحدث محليًا في متصفحك، مما يضمن الخصوصية والأمان الكاملين."
-      },
-      "fast": {
-        "title": "سريع وفعال",
-        "description": "بدعم من تقنيات الويب الحديثة، يقدم PDFCraft معالجة فائقة السرعة لملفات PDF دون الحاجه إلى عمليات تحميل أو تنزيل."
-      },
-      "accessible": {
-        "title": "سهل الوصول في كل مكان",
-        "description": "متوفر بـ 9 لغات ويعمل على أي جهاز يحتوي على متصفح حديث. لا يتطلب التثبيت."
-      },
-      "free": {
-        "title": "مجاني للأبد",
-        "description": "استخدام PDFCraft مجاني تمامًا دون أي تكاليف خفية، ولا يتطلب التسجيل، ولا توجد قيود على الاستخدام."
-      },
-      "openSource": {
-        "title": "مفتوح المصدر",
-        "description": "تم بناؤه مع مراعاة الشفافية. الكود الخاص بنا مفتوح المصدر، مما يتيح لأي شخص التحقق من ادعاءات الخصوصية الخاصة بنا."
-      },
-      "community": {
-        "title": "مدفوع بالمنفعة المجتمعية",
-        "description": "تم تطويره بناءً على تعليقات المستخدمين من جميع أنحاء العالم. نحن نعمل باستمرار على التحسين بناءً على احتياجاتكم."
-      }
-    },
-    "technology": {
-      "title": "مبني باستخدام تكنولوجيا حديثة",
-      "description": "تم بناء {brand} باستخدام تقنيات ويب متطورة لضمان أفضل تجربة ممكنة:",
-      "list": {
-        "nextjs": "<strong1>Next.js</strong1> - لتقديم صفحات سريعة وصديقة لمحركات البحث (SEO)",
-        "wasm": "<strong1>WebAssembly</strong1> - لأداء معالجة ملفات PDF قريب من الأصلي",
-        "workers": "<strong1>Web Workers</strong1> - لمعالجة خلفية غير حاصرة للأداء",
-        "pdflib": "<strong1>pdf-lib & PDF.js</strong1> - مكتبات معالجة ملفات PDF القياسية في الصناعة",
-        "indexeddb": "<strong1>IndexedDB</strong1> - لتخزين محلي آمن لأعمالك"
-      },
-      "summary": "يتيح لنا هذا المزيج من التقنيات توفير أدوات PDF احترافية تعمل بالكامل في متصفحك، دون أي معالجة من جانب الخادم."
-    },
-    "cta": {
-      "title": "هل أنت مستعد للبدء؟",
-      "description": "استكشف أكثر من {count} أداة من أدوات PDF لدينا وتعرف على ما يمكن أن تقدمه {brand} لك.",
-      "button": "تصفح جميع الأدوات"
-    }
-  },
-  "contactPage": {
-    "hero": {
-      "title": "اتصل بنا",
-      "description": "لديك سؤال أو اقتراح أو وجدت خطأ؟ نود أن نسمع منك."
-    },
-    "methods": {
-      "email": {
-        "title": "البريد الإلكتروني",
-        "description": "أرسل لنا رسالة وسنرد عليك خلال 24-48 ساعة.",
-        "action": "contact@pdfcraft.app"
-      },
-      "github": {
-        "title": "GitHub",
-        "description": "أبلغ عن الأخطاء، أو اطلب ميزات، أو ساهم في المشروع.",
-        "action": "عرض على GitHub"
-      },
-      "twitter": {
-        "title": "Twitter",
-        "description": "تابعنا للحصول على التحديثات والإعلانات.",
-        "action": "@pdfcraft"
-      }
-    },
-    "form": {
-      "title": "أرسل لنا رسالة",
-      "description": "املأ النموذج أدناه وسنعاود الاتصال بك في أقرب وقت ممكن.",
-      "success": {
-        "title": "تم إرسال الرسالة!",
-        "description": "شكراً لتواصلك معنا. سنرد عليك خلال 24-48 ساعة.",
-        "button": "إرسال رسالة أخرى"
-      },
-      "fields": {
-        "name": {
-          "label": "الاسم",
-          "placeholder": "اسمك"
-        },
-        "email": {
-          "label": "البريد الإلكتروني",
-          "placeholder": "your@email.com"
-        },
-        "subject": {
-          "label": "الموضوع",
-          "placeholder": "حدد موضوعاً",
-          "options": {
-            "general": "استفسار عام",
-            "bug": "تقرير عن خطأ",
-            "feature": "طلب ميزة",
-            "feedback": "ملاحظات",
-            "other": "آخر"
-          }
-        },
-        "message": {
-          "label": "الرسالة",
-          "placeholder": "أخبرنا المزيد عن استفسارك..."
-        }
-      },
-      "error": "حدث خطأ ما. يرجى المحاولة مرة أخرى أو الاتصال بنا مباشرة عبر البريد الإلكتروني.",
-      "submit": {
-        "loading": "جاري الإرسال...",
-        "default": "إرسال الرسالة"
-      }
-    },
-    "faq": {
-      "title": "تبحث عن إجابات سريعة؟",
-      "description": "راجع صفحة الأسئلة الشائعة للحصول على إجابات للأسئلة الشائعة حول {brand}.",
-      "button": "عرض الأسئلة الشائعة"
     }
   },
   "errors": {
@@ -1252,8 +1141,7 @@
     "stats": {
       "pdfTools": "أدوات PDF",
       "freeToUse": "مجاني للاستخدام",
-      "languages": "اللغات",
-      "filesUploaded": "الملفات المرفوعة"
+      "languages": "اللغات"
     },
     "categories": {
       "popular": "الأدوات الشائعة",
@@ -1268,7 +1156,7 @@
   "workflow": {
     "title": "منشئ سير عمل PDF",
     "subtitle": "أنشئ مسارات معالجة PDF مخصصة عبر ربط الأدوات معًا",
-    "metaTitle": "منشئ سير عمل PDF - PDFCraft",
+    "metaTitle": "منشئ سير عمل PDF - AtlasPDF",
     "metaDescription": "أنشئ مسارات معالجة PDF مخصصة عبر ربط الأدوات بصريًا. أنشئ واحفظ وأعد استخدام سير العمل.",
     "toolbox": "صندوق الأدوات",
     "dragToAdd": "اسحب الأدوات لإضافتها إلى سير العمل",
@@ -1318,6 +1206,7 @@
     "reset": "إعادة تعيين",
     "cancel": "إلغاء",
     "apply": "تطبيق",
+    "done": "تم",
     "preview": "معاينة",
     "showPreview": "عرض المعاينة",
     "noFilesForPreview": "حدّد ملفات لعرض المعاينة",
@@ -1413,7 +1302,7 @@
         "description": "ضغط، وتسطيح، وخطي للحصول على الأداء الأمثل"
       },
       "pdfToPresentation": {
-        "name": "قوات الدفاع الشعبي إلى PowerPoint",
+        "name": "PDF إلى PowerPoint",
         "description": "تحويل ملف PDF إلى عرض تقديمي PowerPoint قابل للتحرير"
       },
       "unlockAndEdit": {
@@ -1457,9 +1346,466 @@
     "conditionGateway": "بوابة الشروط",
     "downloadPdf": "تنزيل PDF",
     "outputCategory": "الإخراج والتصدير",
-    "filenameLabel": "اسم ملف الإخراج"
+    "filenameLabel": "اسم ملف الإخراج",
+    "conditionalNode": {
+      "deleteNode": "حذف العقدة",
+      "inputConnection": "اتصال الإدخال",
+      "trueBranchTaken": "تم اتخاذ المسار الصحيح",
+      "falseBranchTaken": "تم اتخاذ المسار الخاطئ",
+      "upstreamSkipped": "الفرع الأعلى غير نشط (تم تخطيه)",
+      "trueBranchCondition": "إذا صحيح:",
+      "falseBranchDefault": "إذا خاطئ/افتراضي:",
+      "trueHandleTitle": "المسار الصحيح (الشرط متحقق)",
+      "falseHandleTitle": "المسار الخاطئ (الشرط غير متحقق)",
+      "conditionTypeFileCount": "عدد الملفات",
+      "conditionTypeFileSize": "حجم الملف",
+      "conditionTypeFileFormat": "الصيغة",
+      "conditionTypeGeneric": "الشرط",
+      "opContains": "يحتوي على",
+      "opNotContains": "لا يحتوي على",
+      "opMatches": "يطابق"
+    },
+    "toolNode": {
+      "inputType": "نوع الإدخال",
+      "outputType": "نوع الإخراج",
+      "parameterLabel": "المعلمة",
+      "generatedFiles": "ملف(ات) تم إنشاؤها",
+      "rotateLabel": "تدوير",
+      "rotateDefault": "تدوير: 90° باتجاه عقارب الساعة",
+      "compressDefault": "جودة متوسطة (خوارزمية قياسية)",
+      "splitDefault": "تقسيم لصفحة واحدة",
+      "downloadPdfDefault": "حفظ: output.pdf",
+      "downloadZipDefault": "أرشيف: output.zip",
+      "watermarkImage": "علامة مائية بصورة",
+      "watermarkImageTiled": "علامة مائية بصورة (مكررة)",
+      "watermarkTiledLabel": "علامة مائية مكررة",
+      "watermarkLabel": "علامة مائية",
+      "qualityLow": "حجم منخفض",
+      "qualityMedium": "جودة متوسطة",
+      "qualityHigh": "جودة عالية",
+      "qualityMaximum": "أفضل جودة",
+      "splitEveryNLabel": "تقسيم كل",
+      "splitEveryNSuffix": "صفحات",
+      "rangeLabel": "النطاق",
+      "posTopLeft": "أعلى اليسار",
+      "posTopCenter": "أعلى الوسط",
+      "posTopRight": "أعلى اليمين",
+      "posBottomLeft": "أسفل اليسار",
+      "posBottomCenter": "أسفل الوسط",
+      "posBottomRight": "أسفل اليمين",
+      "pageNumbersLabel": "ترقيم الصفحات",
+      "startingAtPage": "بدءًا من الصفحة",
+      "saveLabel": "حفظ",
+      "zipLabel": "ملف مضغوط",
+      "dpiLabel": "الدقة (DPI)",
+      "opContains": "يحتوي على",
+      "opEndsWith": "ينتهي بـ",
+      "typeFileCount": "عدد الملفات",
+      "typeFileSize": "الحجم",
+      "typeFileFormat": "الصيغة",
+      "perSheet": "لكل ورقة",
+      "pagesLabel": "الصفحات",
+      "passwordProtected": "محمي بكلمة مرور",
+      "encryptedSecure": "مشفّر",
+      "flattenSummary": "تسطيح النماذج والتعليقات",
+      "tocLabel": "الفهرس",
+      "headerLabel": "الترويسة",
+      "footerLabel": "التذييل",
+      "headerFooterDefault": "الترويسة والتذييل",
+      "backgroundColorLabel": "الخلفية",
+      "textColorLabel": "لون النص",
+      "qualityLabel": "الجودة",
+      "colorLabel": "اللون"
+    },
+    "errorMessages": {
+      "detailsLabel": "التفاصيل",
+      "suggestedActionLabel": "الإجراء المقترح",
+      "workflowFailedAt": "فشل سير العمل عند \"{node}\": {message}",
+      "workflowCancelledMsg": "تم إلغاء تنفيذ سير العمل",
+      "unknownNode": "عقدة غير معروفة",
+      "processingCancelled": "تم إلغاء المعالجة.",
+      "processingCancelledShort": "تم الإلغاء",
+      "pdfEncrypted": "ملف PDF مشفّر.",
+      "exactly1PdfRequired": "يلزم ملف PDF واحد بالضبط.",
+      "provideExactlyOnePdf": "يرجى تقديم ملف PDF واحد فقط.",
+      "invalidPasswordCode": "كلمة المرور غير صحيحة.",
+      "invalidTypeUploadPdf": "نوع الملف غير صالح. يرجى رفع ملف PDF.",
+      "exactlyOnePdfRequired": "يلزم ملف PDF واحد بالضبط.",
+      "failedInitConversionWorker": "فشل تهيئة أداة التحويل.",
+      "uploadExactlyOnePdf": "يرجى رفع ملف PDF واحد فقط.",
+      "pdfNoPages": "ملف PDF لا يحتوي على صفحات.",
+      "noValidPagesConvert": "لا توجد صفحات صالحة للتحويل.",
+      "noValidPagesProcess": "لا توجد صفحات صالحة للمعالجة.",
+      "noValidPagesSpecified": "لم يتم تحديد صفحات صالحة.",
+      "noValidPagesOcr": "لا توجد صفحات صالحة للتعرف الضوئي.",
+      "provideAtLeastOnePdf": "يرجى تقديم ملف PDF واحد على الأقل.",
+      "provideAPdf": "يرجى تقديم ملف PDF.",
+      "invalidFileType": "نوع الملف غير صالح.",
+      "failedRenderAnyPages": "فشل عرض أي صفحة.",
+      "atLeast1BlankPage": "يجب إضافة صفحة فارغة واحدة على الأقل.",
+      "failedAddBlankPages": "فشل إضافة صفحات فارغة إلى PDF.",
+      "exactlyOnePdfReflow": "يلزم ملف PDF واحد بالضبط لإعادة التنسيق.",
+      "reflowCancelled": "تم إلغاء إعادة التنسيق.",
+      "failedReflowContent": "فشلت إعادة تنسيق محتوى PDF.",
+      "atLeast2PdfAlternateMerge": "يلزم ملفا PDF اثنان على الأقل للدمج المتناوب.",
+      "failedAlternateMerge": "فشل الدمج المتناوب لملفات PDF.",
+      "failedExportAnnotations": "فشل تصدير تعليقات PDF التوضيحية.",
+      "provideAPdfAndAttachment": "يرجى تقديم ملف PDF وملف مرفق واحد على الأقل.",
+      "firstFileMustBePdf": "يجب أن يكون الملف الأول من نوع PDF.",
+      "failedAddAttachments": "فشلت إضافة المرفقات إلى PDF.",
+      "noValidPdfFilesProvided": "لم يتم تقديم ملفات PDF صالحة.",
+      "failedExtractAttachments": "فشل استخراج المرفقات.",
+      "failedEditAttachments": "فشل تعديل المرفقات.",
+      "failedAddBackgroundColor": "فشلت إضافة لون الخلفية.",
+      "failedInjectBarcodes": "فشل حقن الباركود.",
+      "failedPurgeWatermarks": "فشلت إزالة العلامات المائية.",
+      "failedBookletImposition": "فشل تنضيد صفحات الكتيّب.",
+      "failedCreateBooklet": "فشل إنشاء الكتيّب.",
+      "failedProcessBookmarks": "فشلت معالجة الإشارات المرجعية.",
+      "failedAutoGenBookmarks": "فشل التوليد التلقائي للإشارات المرجعية.",
+      "provideExactlyOneCbz": "يرجى تقديم ملف CBZ واحد فقط.",
+      "noImagesInArchive": "لا توجد صور داخل الأرشيف.",
+      "noImagesCouldBeProcessed": "تعذّرت معالجة أي صورة.",
+      "failedConvertCbzToPdf": "فشل تحويل CBZ إلى PDF.",
+      "atLeastOnePdfRequired": "يلزم ملف PDF واحد على الأقل.",
+      "failedCertCryptor": "فشل تطبيق التوقيع بالشهادة والختم الشمعي.",
+      "passwordRequiredCode": "كلمة المرور مطلوبة.",
+      "failedChangePermissions": "فشل تغيير أذونات PDF.",
+      "citationLinkingCancelled": "تم إلغاء ربط الاستشهادات.",
+      "failedLinkReferences": "فشل ربط المراجع داخل PDF.",
+      "pdfHasNoPages": "ملف PDF لا يحتوي على أي صفحة.",
+      "failedCombinePages": "فشل دمج صفحات PDF.",
+      "provideOnePdfCompress": "يرجى تقديم ملف PDF واحد لضغطه.",
+      "failedCompressPdf": "فشل ضغط ملف PDF.",
+      "cropDataRequired": "بيانات القص مطلوبة.",
+      "failedCropPdf": "فشل قص ملف PDF.",
+      "failedDebugUpdateLinks": "فشل فحص أو تحديث روابط PDF.",
+      "provideOnePdfDecrypt": "يرجى تقديم ملف PDF واحد لفك تشفيره.",
+      "providePdfPassword": "يرجى إدخال كلمة مرور PDF.",
+      "failedDecryptPdf": "فشل فك تشفير ملف PDF.",
+      "sanitizationCancelled": "تم إلغاء عملية التنظيف.",
+      "failedDeepSanitize": "فشل التنظيف العميق للبيانات الوصفية.",
+      "exactly1PdfDeletion": "يلزم ملف PDF واحد بالضبط للحذف.",
+      "atLeastOnePageDeletion": "يلزم صفحة واحدة على الأقل للحذف.",
+      "cannotDeleteAllPages": "لا يمكن حذف جميع صفحات PDF.",
+      "failedDeletePages": "فشل حذف الصفحات من ملف PDF.",
+      "provideOnePdfDeskew": "يرجى تقديم ملف PDF واحد لتصحيح ميلانه.",
+      "failedDeskewPdf": "فشل تصحيح ميلان ملف PDF.",
+      "failedDividePages": "فشل تقسيم صفحات PDF.",
+      "provideOneDjvu": "يرجى تقديم ملف DJVU واحد.",
+      "invalidTypeUploadDjvu": "نوع الملف غير صالح. يرجى رفع ملف DJVU (.djvu أو .djv).",
+      "djvuNoPages": "ملف DJVU لا يحتوي على صفحات.",
+      "failedRenderDjvuPages": "فشل عرض أي صفحة من ملف DJVU.",
+      "failedConvertDjvuToPdf": "فشل تحويل DJVU إلى PDF.",
+      "metadataObjectRequired": "كائن البيانات الوصفية مطلوب.",
+      "exactly1PdfEditMetadata": "يلزم ملف PDF واحد بالضبط لتعديل البيانات الوصفية.",
+      "thisPdfEncrypted": "ملف PDF هذا مشفّر.",
+      "failedEditMetadata": "فشل تعديل البيانات الوصفية لملف PDF.",
+      "failedEinkOptimization": "فشل تحسين الملف لقارئ الحبر الإلكتروني.",
+      "provideOneEmailFile": "يرجى تقديم ملف بريد إلكتروني واحد.",
+      "failedConvertEmailToPdf": "فشل تحويل البريد الإلكتروني إلى PDF.",
+      "provideOnePdfEncrypt": "يرجى تقديم ملف PDF واحد لتشفيره.",
+      "provideAtLeastOnePassword": "يرجى تقديم كلمة مرور واحدة على الأقل.",
+      "failedEncryptPdf": "فشل تشفير ملف PDF.",
+      "provideOneEpub": "يرجى تقديم ملف EPUB واحد.",
+      "invalidTypeUploadEpub": "نوع الملف غير صالح. يرجى رفع ملف EPUB.",
+      "failedConvertEpubToPdf": "فشل تحويل EPUB إلى PDF.",
+      "provideOneExcel": "يرجى تقديم ملف Excel واحد.",
+      "invalidTypeUploadExcel": "نوع الملف غير صالح. يرجى رفع ملف .xlsx أو .xls أو .ods أو .csv.",
+      "failedInitExtractionWorker": "فشل تهيئة أداة الاستخراج.",
+      "noImagesInSelectedPdfs": "لا توجد صور في ملف/ملفات PDF المحددة.",
+      "failedExtractImages": "فشل استخراج الصور من PDF.",
+      "noTablesFound": "لا توجد جداول في ملف PDF.",
+      "failedExtractTables": "فشل استخراج الجداول من PDF.",
+      "exactly1PdfExtraction": "يلزم ملف PDF واحد بالضبط للاستخراج.",
+      "atLeastOnePageExtraction": "يلزم صفحة واحدة على الأقل للاستخراج.",
+      "failedExtractPages": "فشل استخراج الصفحات من ملف PDF.",
+      "provideAtLeastOneFb2": "يرجى تقديم ملف FB2 واحد على الأقل.",
+      "invalidTypeUploadFb2": "نوع الملف غير صالح. يرجى رفع ملفات FB2 (.fb2, .fb2.zip).",
+      "failedConvertFb2ToPdf": "فشل تحويل FB2 إلى PDF.",
+      "failedFixPageSizes": "فشل تصحيح أحجام الصفحات.",
+      "provideOnePdfFlatten": "يرجى تقديم ملف PDF واحد لتسطيحه.",
+      "failedFlattenPdf": "فشل تسطيح ملف PDF.",
+      "failedFontsToOutlines": "فشل تحويل الخطوط إلى مسارات خارجية.",
+      "atLeastOneFormField": "يلزم حقل نموذج واحد على الأقل.",
+      "failedCreateForm": "فشل إنشاء النموذج.",
+      "pdfNoFormFields": "ملف PDF هذا لا يحتوي على أي حقول نموذج.",
+      "failedFillForm": "فشل تعبئة النموذج.",
+      "pdfNoAcroFormFields": "ملف PDF هذا لا يحتوي على حقول نموذج تفاعلية (AcroForm). يرجى إنشاء الحقول أولاً.",
+      "failedFormLogic": "فشل تصميم وحقن منطق النموذج.",
+      "uploadOnePdfInvoice": "يرجى رفع فاتورة PDF واحدة.",
+      "failedTranslateInvoice": "فشلت ترجمة الفاتورة.",
+      "atLeast2PdfGridCombine": "يلزم ملفا PDF اثنان على الأقل للدمج الشبكي.",
+      "noPagesRenderedFromSources": "تعذّر عرض أي صفحة من ملفات PDF المصدر.",
+      "provideOneDocOrPhotoInk": "يرجى تقديم مستند أو صورة واحدة لتعزيز تباين الحبر.",
+      "failedBoostHandwritingInk": "فشل تعزيز حبر الكتابة اليدوية.",
+      "failedAddHeaderFooter": "فشلت إضافة الترويسة/التذييل.",
+      "atLeast1ImageFile": "يلزم ملف صورة واحد على الأقل.",
+      "failedConvertImagesToPdf": "فشل تحويل الصور إلى PDF.",
+      "failedGenerateToc": "فشل توليد جدول المحتويات التفاعلي.",
+      "failedInvertColors": "فشل عكس الألوان.",
+      "atLeast1JsonFile": "يلزم ملف JSON واحد على الأقل.",
+      "failedConvertJsonToPdf": "فشل تحويل JSON إلى PDF.",
+      "provideAtLeastOnePdfLinearize": "يرجى تقديم ملف PDF واحد على الأقل لتحسينه خطيًا.",
+      "failedLinearizePdf": "فشل التحسين الخطي لملف PDF.",
+      "noPdfFilesCouldBeProcessed": "تعذّرت معالجة أي ملف PDF.",
+      "provideOneMarkdown": "يرجى تقديم ملف Markdown واحد.",
+      "failedConvertMarkdownToPdf": "فشل تحويل Markdown إلى PDF.",
+      "atLeast2PdfMerging": "يلزم ملفا PDF اثنان على الأقل للدمج.",
+      "failedMergePdf": "فشل دمج ملفات PDF.",
+      "provideOneMobi": "يرجى تقديم ملف MOBI واحد.",
+      "invalidTypeUploadMobi": "نوع الملف غير صالح. يرجى رفع ملف MOBI (.mobi, .azw, .azw3).",
+      "failedConvertMobiToPdf": "فشل تحويل MOBI إلى PDF.",
+      "failedCreateNUp": "فشل إنشاء تخطيط N-Up.",
+      "failedProcessLayers": "فشلت معالجة طبقات PDF.",
+      "layerIdRequiredToggle": "معرّف الطبقة مطلوب لعملية التبديل.",
+      "layerNameRequiredAdd": "اسم الطبقة مطلوب لعملية الإضافة.",
+      "layerIdRequiredDelete": "معرّف الطبقة مطلوب لعملية الحذف.",
+      "layerIdNameRequiredRename": "معرّف الطبقة والاسم الجديد مطلوبان لعملية إعادة التسمية.",
+      "noPdfOrImageForOcr": "لم يُعثر على ملف PDF أو صورة. يرجى تقديم ملف لإجراء التعرف الضوئي عليه.",
+      "provideOnePdfOrImage": "يرجى تقديم ملف PDF أو صورة واحد.",
+      "invalidTypeUploadPdfOrImage": "نوع الملف غير صالح. يرجى رفع ملف PDF أو صورة (PNG أو JPG أو WebP).",
+      "failedOcrFile": "فشل إجراء التعرف الضوئي على الملف.",
+      "exactly1PdfOrganizing": "يلزم ملف PDF واحد بالضبط للتنظيم.",
+      "pageOrderRequiredOrganizing": "ترتيب الصفحات مطلوب للتنظيم.",
+      "failedOrganizePdf": "فشل تنظيم ملف PDF.",
+      "exactly2PdfOverlay": "يلزم ملفا PDF بالضبط (الملف الأساسي وملف الطبقة) للتراكب/التسفيل.",
+      "baseFileProtected": "ملف PDF الأساسي محمي.",
+      "layerFileProtected": "ملف طبقة PDF محمي.",
+      "failedApplyOverlay": "فشل تطبيق التراكب/التسفيل.",
+      "provideOnePdfAnalyze": "يرجى تقديم ملف PDF واحد لتحليله.",
+      "unableToLoadPdf": "تعذّر تحميل ملف PDF.",
+      "failedAnalyzeDimensions": "فشل تحليل أبعاد صفحات PDF.",
+      "exactly1PdfPageLabeling": "يلزم ملف PDF واحد بالضبط لترقيم الصفحات.",
+      "atLeastOneLabelRule": "يجب تحديد قاعدة ترقيم واحدة على الأقل.",
+      "pdfFileProtected": "ملف PDF محمي.",
+      "failedInjectPageLabels": "فشل حقن تسميات الصفحات.",
+      "failedAddPageNumbers": "فشلت إضافة أرقام الصفحات.",
+      "atLeast1FrontBack": "يلزم ملف واحد على الأقل (الوجه الأمامي أو الأمامي والخلفي).",
+      "failedComposePassportId": "فشل تركيب ملف PDF لبطاقة الهوية/الجواز.",
+      "provideOnePdfForDeskewing": "يرجى تقديم ملف PDF واحد لتصحيح ميلانه.",
+      "failedAlignDeskewScanned": "فشلت محاذاة وتصحيح ميلان المستند الممسوح.",
+      "uploadOnePdfForSlicing": "يرجى رفع ملف PDF واحد لتقطيعه.",
+      "failedSliceBlueprint": "فشل تقطيع المخطط الهندسي دون فقدان الجودة.",
+      "uploadAtLeastOnePdfResize": "يرجى رفع ملف PDF واحد على الأقل لتغيير حجمه.",
+      "failedUnifyDimensions": "فشل توحيد أبعاد الصفحات.",
+      "uploadOnePdfScratchpad": "يرجى رفع مستند PDF واحد لإلحاق لوحات المسودة به.",
+      "failedStitchScratchpad": "فشل إلحاق لوحات المسودة.",
+      "provideOnePdfSignatureGuides": "يرجى تقديم مستند PDF واحد لحقن أدلة التوقيع.",
+      "failedInjectSignatureGuides": "فشل حقن أدلة التوقيع.",
+      "failedDesignSpine": "فشل تصميم كعب غلاف الكتاب.",
+      "uploadOnePdfForCbz": "يرجى رفع ملف PDF واحد لتحويله إلى CBZ.",
+      "documentHasZeroPages": "المستند لا يحتوي على أي صفحة.",
+      "failedCompileCbz": "فشل تجميع حزمة CBZ.",
+      "failedConvertPdfToDocx": "فشل تحويل PDF إلى DOCX.",
+      "failedConvertPdfToExcel": "فشل تحويل PDF إلى Excel.",
+      "failedConvertPdfGreyscale": "فشل تحويل PDF إلى تدرج رمادي.",
+      "failedConvertPdfToImages": "فشل تحويل PDF إلى صور.",
+      "failedConvertPdfToJson": "فشل تحويل PDF إلى JSON.",
+      "failedConvertPdfToMarkdown": "فشل تحويل PDF إلى Markdown.",
+      "failedConvertToPdfA": "فشل التحويل إلى PDF/A.",
+      "failedConvertPdfToPpt": "فشل تحويل PDF إلى PowerPoint.",
+      "failedReconstructSlides": "فشلت إعادة بناء شرائح العرض.",
+      "failedConvertPdfToSvg": "فشل تحويل PDF إلى SVG.",
+      "exactly1PdfTiff": "يلزم ملف PDF واحد بالضبط لتجميع TIFF.",
+      "pdfHas0Pages": "ملف PDF لا يحتوي على صفحات.",
+      "failedCompileTiff": "فشل تجميع صفحات PDF إلى TIFF احترافي.",
+      "provideOnePdfReflow": "يرجى تقديم مستند PDF واحد لإعادة تنسيقه.",
+      "failedReflowTwoColumn": "فشلت إعادة تنسيق العمودين الأكاديميين.",
+      "uploadAtLeastOnePhotoTiling": "يرجى رفع صورة واحدة (PNG/JPEG) على الأقل للتبليط.",
+      "failedPhotoTiling": "فشلت معالجة تخطيط تبليط الصور للطباعة.",
+      "invalidGridDimensions": "أبعاد الشبكة غير صالحة.",
+      "failedPosterizePdf": "فشل تحويل PDF إلى ملصق.",
+      "provideOnePpt": "يرجى تقديم عرض PowerPoint واحد.",
+      "invalidTypeUploadPpt": "نوع الملف غير صالح. يرجى رفع ملف .pptx أو .ppt أو .odp.",
+      "failedConvertPptToPdf": "فشل تحويل PowerPoint إلى PDF.",
+      "failedRasterizePdf": "فشلت رسترة PDF.",
+      "failedRemoveAnnotations": "فشلت إزالة التعليقات التوضيحية.",
+      "allPagesBlankCannotRemove": "جميع الصفحات تبدو فارغة. لا يمكن حذف كل الصفحات.",
+      "failedRemoveBlankPages": "فشلت إزالة الصفحات الفارغة.",
+      "failedRemoveMetadata": "فشلت إزالة البيانات الوصفية.",
+      "failedRemoveRestrictions": "فشلت إزالة قيود PDF.",
+      "provideOnePdfRepair": "يرجى تقديم ملف PDF واحد لإصلاحه.",
+      "unableToRepairPdf": "تعذّر إصلاح ملف PDF.",
+      "failedRepairPdf": "فشل إصلاح ملف PDF.",
+      "pdfAtLeast2PagesReverse": "يجب أن يحتوي PDF على صفحتين على الأقل لعكس ترتيبها.",
+      "failedReversePages": "فشل عكس ترتيب صفحات PDF.",
+      "exactly1PdfRotation": "يلزم ملف PDF واحد بالضبط للتدوير.",
+      "failedRotatePages": "فشل تدوير صفحات PDF.",
+      "provideOneRtf": "يرجى تقديم ملف RTF واحد.",
+      "invalidTypeUploadRtf": "نوع الملف غير صالح. يرجى رفع ملف .rtf.",
+      "failedConvertRtfToPdf": "فشل تحويل RTF إلى PDF.",
+      "provideOnePdfSanitize": "يرجى تقديم ملف PDF واحد لتنظيفه.",
+      "failedSanitizePdf": "فشل تنظيف ملف PDF.",
+      "atLeastOneSignature": "يلزم توقيع واحد على الأقل.",
+      "failedSignPdf": "فشل توقيع PDF.",
+      "uploadExactlyOneImage": "يرجى رفع ملف صورة واحد.",
+      "failedPurifySignatureInk": "فشل تنقية حبر التوقيع.",
+      "failedRedactPrivacyData": "فشل تعتيم بيانات الخصوصية في PDF.",
+      "exactly1PdfSplitting": "يلزم ملف PDF واحد بالضبط للتقسيم.",
+      "atLeastOnePageRangeSplit": "يلزم نطاق صفحات واحد على الأقل للتقسيم.",
+      "failedSplitPdf": "فشل تقسيم ملف PDF.",
+      "atLeastOneStamp": "يلزم ختم واحد على الأقل.",
+      "failedAddStamps": "فشلت إضافة الأختام.",
+      "internalErrorEmptyPdf": "خطأ داخلي: بيانات PDF الناتجة كانت فارغة.",
+      "failedGenerateTocTable": "فشل توليد جدول المحتويات.",
+      "failedChangeTextColor": "فشل تغيير لون النص.",
+      "atLeast1TextFileOrInput": "يلزم ملف نصي واحد على الأقل أو إدخال نص مباشر.",
+      "failedConvertTextToPdf": "فشل تحويل النص إلى PDF.",
+      "exactly1PdfTimestamp": "يلزم ملف PDF واحد بالضبط للختم الزمني الموثوق.",
+      "pdfEncryptedUnlockFirst": "ملف PDF مشفّر. يرجى إلغاء قفله أولاً.",
+      "failedApplyTimestamp": "فشل تطبيق الختم الزمني الموثوق.",
+      "failedCompileSvgPaths": "فشل تجميع مسارات عرض PDF إلى SVG.",
+      "failedAddWatermark": "فشلت إضافة العلامة المائية.",
+      "provideOneWord": "يرجى تقديم مستند Word واحد.",
+      "invalidTypeUploadWord": "نوع الملف غير صالح. يرجى رفع ملف .docx أو .doc أو .odt أو .rtf.",
+      "provideOneXps": "يرجى تقديم ملف XPS واحد.",
+      "invalidTypeUploadXps": "نوع الملف غير صالح. يرجى رفع ملف XPS.",
+      "failedConvertXpsToPdf": "فشل تحويل XPS إلى PDF.",
+      "noInputFile": "لا يوجد ملف إدخال",
+      "noInputFileOcr": "لم يتم تقديم ملف إدخال للتعرف الضوئي",
+      "atLeast2FilesRequired": "يلزم ملفان على الأقل",
+      "watermarkImageRequired": "صورة العلامة المائية مطلوبة. يرجى ضبط إعدادات العقدة.",
+      "certificateFileRequired": "ملف الشهادة مطلوب. يرجى ضبط إعدادات العقدة.",
+      "searchTermRequired": "مصطلح بحث مطلوب للعثور على النص وتعتيمه.",
+      "toolMayRequireInteraction": "قد تتطلب هذه الأداة تفاعلاً يدويًا أو أنها لم تُنفَّذ بعد للعمل ضمن سير العمل.",
+      "unknownErrorDuringExecution": "حدث خطأ غير معروف أثناء تنفيذ سير العمل",
+      "clickNodeUploadWatermarkImage": "انقر على العقدة لرفع صورة للعلامة المائية.",
+      "clickNodeUploadCertificate": "انقر على العقدة لرفع ملف شهادة PFX/P12/PEM.",
+      "checkCertificateAndPassword": "تحقق من ملف الشهادة وكلمة المرور.",
+      "clickNodeEnterRedactText": "انقر على العقدة لإدخال النص أو النمط المراد تعتيمه.",
+      "useToolDirectly": "استخدم هذه الأداة مباشرة بدلاً من داخل سير العمل.",
+      "checkInputFilesAndRetry": "تحقق من ملفات الإدخال والإعدادات ثم أعد المحاولة.",
+      "workflowEmpty": "سير العمل فارغ. أضف عقدة أداة واحدة على الأقل.",
+      "workflowHasCycle": "يحتوي سير العمل على حلقة دائرية. أزل الاتصالات الدائرية.",
+      "invalidConnectionGeneric": "اتصال غير صالح",
+      "workflowNoInputNodes": "سير العمل لا يحتوي على عقد إدخال. جميع العقد إما متصلة ضمن حلقة دائرية أو معزولة.",
+      "multipleInputNodes": "يحتوي سير العمل على {count} عقدة إدخال ({names}). يتم توجيه الملفات المرفوعة إلى كل عقدة إدخال حسب نوع الملف (مثال: .png إلى أداة PNG to PDF، و.jpg إلى أداة JPG to PDF).",
+      "nodeNotConnected": "العقدة \"{label}\" غير متصلة بسير العمل الرئيسي.",
+      "connectionIncompatible": "صيغة الإخراج \"{format}\" غير متوافقة مع الصيغ المقبولة: {accepted}",
+      "toolNotSupportedYet": "الأداة \"{toolId}\" غير مدعومة بعد في سير العمل.",
+      "extRequiresLibreOffice": "ملفات .{ext} تتطلب LibreOffice، والذي يحتاج إلى تفعيل Cross-Origin Isolation على الخادم.",
+      "failedProcessFileNamed": "فشلت معالجة الملف \"{name}\".",
+      "failedLoadFileNamed": "فشل تحميل الملف \"{name}\".",
+      "failedCopyPageFrom": "فشل نسخ الصفحة {pageNum} من \"{name}\".",
+      "failedConvertExcelToPdfDetails": "فشل تحويل Excel إلى PDF: {details}",
+      "failedReadFileNamed": "فشلت قراءة \"{name}\".",
+      "failedLoadFileNamed2": "فشل تحميل \"{name}\".",
+      "failedGridCombineDetails": "فشل إنشاء ملف PDF الشبكي المدمج: {details}",
+      "invalidFileTypeNamed": "نوع الملف غير صالح: {name}",
+      "failedProcessImageNamed": "فشلت معالجة الصورة \"{name}\".",
+      "invalidJsonInFile": "بيانات JSON غير صالحة في الملف \"{name}\".",
+      "invalidPageNumberBlueprint": "رقم الصفحة {pageNum} غير صالح. يحتوي المخطط على {pageCount} صفحة.",
+      "invalidPageNumberAnchor": "رقم الصفحة {pageNum} غير صالح. يحتوي الملف على {pageCount} صفحة فقط.",
+      "failedConvertPageGreyscale": "فشل تحويل الصفحة {pageNum} إلى تدرج رمادي.",
+      "failedConvertPageRange": "فشل تحويل الصفحات {range}.",
+      "failedConvertPageNum": "فشل تحويل الصفحة {pageNum}.",
+      "pageOutOfRange": "الصفحة {pageNum} خارج النطاق.",
+      "failedEmbedImageDetails": "فشل تضمين الصورة: {details}",
+      "failedConvertWordDetails": "فشل تحويل مستند Word إلى PDF: {details}",
+      "fileTooLargeSizeMax": "الملف كبير جدًا ({size} ميجابايت). الحد الأقصى المسموح به هو {max} ميجابايت.",
+      "fileNamedEncrypted": "الملف \"{name}\" مشفّر.",
+      "positionBetween0AndTotal": "يجب أن يكون الموضع بين 0 و {totalPages}.",
+      "failedProcessFileTemplate": "فشلت معالجة {name}",
+      "failedCropFileTemplate": "فشل قص {name}",
+      "failedRedactFileTemplate": "فشل تعتيم {name}",
+      "actionTryCompressOrSplit": "جرّب ضغط الملف أو تقسيمه أولاً.",
+      "actionUploadValidPdf": "يرجى رفع ملف PDF صالح.",
+      "actionFileMayBeDamaged": "قد يكون الملف تالفًا. جرّب ملفًا آخر.",
+      "actionDecryptFirstTool": "يرجى فك تشفير PDF أولاً باستخدام أداة فك التشفير.",
+      "actionTryRepairTool": "جرّب استخدام أداة إصلاح PDF أولاً.",
+      "actionTrySmallerFile": "جرّب ملفًا أصغر أو عددًا أقل من الصفحات.",
+      "actionCloseTabsRetry": "أغلق تبويبات المتصفح الأخرى وأعد المحاولة.",
+      "actionRefreshRetry": "أعد تحميل الصفحة وحاول مرة أخرى.",
+      "actionPleaseTryAgain": "يرجى المحاولة مرة أخرى.",
+      "detailsDecryptFirst": "يرجى فك تشفير الملف أولاً.",
+      "detailsPasswordIncorrect": "كلمة المرور التي أدخلتها غير صحيحة. يرجى التحقق والمحاولة مرة أخرى.",
+      "detailsNoFilesProvided": "لم يتم تقديم أي ملفات.",
+      "detailsDecryptBeforeMerging": "يرجى فك تشفير الملف قبل الدمج.",
+      "detailsCurrentPasswordIncorrect": "كلمة المرور الحالية التي أدخلتها غير صحيحة. يرجى التحقق والمحاولة مرة أخرى.",
+      "detailsUnknownRenderingError": "خطأ عرض غير معروف",
+      "detailsPleaseSelectPdfFiles": "يرجى تحديد ملفات PDF.",
+      "detailsDecryptBeforeBooklet": "يرجى فك تشفير الملف قبل إنشاء الكتيّب.",
+      "detailsProvideCbzOrZip": "يرجى تقديم ملف CBZ أو ZIP يحتوي على صور.",
+      "detailsCbzNoSupportedImages": "ملف CBZ لا يحتوي على أي ملفات صور مدعومة.",
+      "detailsFailedConvertArchiveImages": "فشل تحويل أي صورة من الأرشيف.",
+      "detailsPdfPasswordProtectedEnter": "ملف PDF هذا محمي بكلمة مرور. يرجى إدخال كلمة المرور الحالية للمتابعة.",
+      "detailsProvidePdfAtLeastOnePage": "يرجى تقديم ملف PDF يحتوي على صفحة واحدة على الأقل.",
+      "detailsDecryptBeforeCompressing": "يرجى فك تشفير الملف قبل ضغطه.",
+      "detailsPasswordRequiredDecrypt": "كلمة مرور مطلوبة لفك تشفير PDF.",
+      "detailsSpecifyPagesDelete": "يرجى تحديد الصفحات المراد حذفها.",
+      "detailsDecryptBeforeDeletingPages": "يرجى فك تشفير الملف قبل حذف الصفحات.",
+      "detailsAtLeastOnePageMustRemain": "يجب أن تبقى صفحة واحدة على الأقل في المستند.",
+      "detailsDecryptBeforeDeskewing": "يرجى فك تشفير الملف قبل تصحيح ميلانه.",
+      "detailsProvideMetadataFields": "يرجى تقديم حقول بيانات وصفية لتحديثها.",
+      "detailsDecryptBeforeEditingMetadata": "يرجى فك تشفير الملف قبل تعديل بياناته الوصفية.",
+      "detailsProvideEmlOrMsg": "يرجى تقديم ملف .eml أو .msg.",
+      "detailsEitherPasswordRequired": "مطلوب إما كلمة مرور المستخدم أو كلمة مرور المالك.",
+      "detailsNoEmbeddedImagesMatch": "قد لا يحتوي PDF على أي صور مضمّنة تطابق معايير التصفية.",
+      "detailsAdjustColumnsRows": "جرّب تعديل إعدادات الحد الأدنى للأعمدة/الصفوف أو تحقق من نطاق صفحات مختلف.",
+      "detailsSpecifyPagesExtract": "يرجى تحديد الصفحات المراد استخراجها.",
+      "detailsDecryptBeforeExtractingPages": "يرجى فك تشفير الملف قبل استخراج الصفحات.",
+      "detailsNoFilesReceived": "لم يتم استلام أي ملفات.",
+      "detailsProvideValidPdfAtLeastOnePage": "يرجى تقديم ملف PDF صالح يحتوي على صفحة واحدة على الأقل.",
+      "detailsDecryptBeforeFlattening": "يرجى فك تشفير الملف قبل تسطيحه.",
+      "detailsCannotFlattenEmpty": "لا يمكن تسطيح ملف PDF فارغ.",
+      "detailsSupportedImageFormats": "الصيغ المدعومة: JPG, PNG, WebP, BMP, TIFF, SVG, HEIC",
+      "detailsNoFilesWereProvided": "لم يتم تقديم أي ملفات.",
+      "detailsAllFilesCorruptOrInvalid": "قد تكون جميع الملفات تالفة أو غير صالحة.",
+      "detailsReceived0Files": "تم استلام 0 ملف.",
+      "detailsSpecifyNewPageOrder": "يرجى تحديد ترتيب الصفحات الجديد.",
+      "detailsDecryptBeforeOrganizing": "يرجى فك تشفير الملف قبل تنظيمه.",
+      "detailsCannotAnalyzeEmptyPdf": "لا يمكن تحليل أبعاد ملف PDF فارغ.",
+      "detailsVerifyPdfValid": "يرجى التحقق من أن ملف PDF صالح.",
+      "detailsDecryptBeforePdfA": "يرجى فك تشفير الملف قبل التحويل إلى PDF/A.",
+      "detailsVerifyDocumentIntegrity": "يرجى التحقق من سلامة المستند.",
+      "detailsRowsColumnsAtLeast1": "يجب أن يكون عدد الصفوف والأعمدة 1 على الأقل.",
+      "detailsCheckPageRange": "يرجى التحقق من نطاق الصفحات.",
+      "detailsEnterValidPageRange": "يرجى إدخال نطاق صفحات صالح.",
+      "detailsDecryptBeforeRemovingMetadata": "يرجى فك تشفير الملف قبل إزالة بياناته الوصفية.",
+      "detailsCannotProcessEmptyPdf": "لا يمكن معالجة ملف PDF فارغ.",
+      "detailsFileTooCorruptedRecover": "قد يكون الملف تالفًا جدًا بحيث يتعذر استرداده.",
+      "detailsDecryptBeforeRotating": "يرجى فك تشفير الملف قبل تدوير صفحاته.",
+      "receivedTypeAndFilename": "المستلم: {value}، اسم الملف: {name}",
+      "receivedNFiles": "تم استلام {count} ملف(ات).",
+      "receivedValue": "المستلم: {value}",
+      "receivedCount": "العدد المستلم: {count}",
+      "receivedPosition": "الموضع المستلم: {position}",
+      "fileSizeLimitBytes": "حجم الملف: {size} بايت، الحد الأقصى: {limit} بايت",
+      "pdfHasOnlyNPages": "يحتوي PDF على {count} صفحة/صفحات فقط.",
+      "pdfHasNPages": "يحتوي PDF على {count} صفحة."
+    }
   },
   "tools": {
+    "timestampPdf": {
+      "selectTsaTitle": "1. Choose a Local Timestamp Profile",
+      "privacyGuaranteed": "100% local — your file never leaves your device and no data is sent anywhere.",
+      "disclosure": "This tool generates a self-signed cryptographic proof-of-existence stamp entirely on your device. It does not contact DigiCert, Sectigo, SSL.com, FreeTSA, or any other real Time Stamping Authority. The profile names below are display labels only — not a certified RFC 3161 timestamp and not a real third-party connection.",
+      "processButton": "Apply Local Timestamp",
+      "waitingTitle": "Waiting to Generate Seal",
+      "waitingDescription": "Choose a profile above and click \"Apply Local Timestamp\" to generate a local proof-of-existence stamp for this PDF.",
+      "certificateTitle": "Local Timestamp Certificate",
+      "localSealBadge": "Local Seal (Self-Signed)",
+      "authority": "Profile Label",
+      "fileHash": "SHA-256 File Hash (computed locally)",
+      "serialNumber": "Local Certificate Serial",
+      "tsaTime": "Local Device Time (UTC)",
+      "tsa": {
+        "desc": {
+          "MeSign": "Local simulated profile (display name only — not a connection to the real MeSign).",
+          "DigiCert": "Local simulated profile (display name only — not a connection to the real DigiCert).",
+          "Sectigo": "Local simulated profile (display name only — not a connection to the real Sectigo).",
+          "SSLcom": "Local simulated profile (display name only — not a connection to the real SSL.com).",
+          "FreeTSA": "Local simulated profile (display name only — not a connection to the real FreeTSA.org)."
+        },
+        "speed": {
+          "fast": "Local (instant)",
+          "blazing": "Local (instant)",
+          "stable": "Local (instant)",
+          "medium": "Local (instant)"
+        }
+      }
+    },
     "search": {
       "placeholder": "أدوات البحث...",
       "noResults": "لم يتم العثور على أدوات لـ \"{query}\""
@@ -1935,7 +2281,7 @@
       "orderChanged": "تم تغيير ترتيب الصفحة. انقر فوق \"تطبيق التغييرات\" للحفظ.",
       "applyButton": "تطبيق التغييرات",
       "successMessage": "تمت إعادة تنظيم صفحات PDF بنجاح! انقر فوق زر التنزيل لحفظ الملف الخاص بك.",
-      "duplicatePage": "ينسخ",
+      "duplicatePage": "نسخ",
       "deletePage": "حذف",
       "cannotDeleteLast": "لا يمكن حذف الصفحة الأخيرة"
     },
@@ -2167,7 +2513,7 @@
       "compressionFast": "سريع (ضغط منخفض)",
       "compressionNormal": "عادي (متوازن)",
       "compressionMax": "أقصى ضغط (أصغر حجم ملف)",
-      "noCompression": "بدون ض ضغط (الأسرع)",
+      "noCompression": "بدون ضغط (الأسرع)",
       "lowCompression": "ضغط منخفض (سريع)",
       "mediumCompression": "ضغط متوسط (متوازن)",
       "highCompression": "ضغط عالٍ (ملف أصغر)",
@@ -2400,7 +2746,7 @@
     "flattenPdf": {
       "uploadLabel": "تحميل ملف PDF",
       "uploadDescription": "قم بسحب وإسقاط ملف PDF لتسويته.",
-      "optionsTitle": "تتسطح الخيارات",
+      "optionsTitle": "خيارات التسوية",
       "flattenForms": "تسوية حقول النموذج",
       "flattenAnnotations": "تسوية التعليقات التوضيحية",
       "flattenButton": "تسوية PDF",
@@ -2493,7 +2839,7 @@
     "bookmark": {
       "uploadLabel": "تحميل ملف PDF",
       "uploadDescription": "قم بسحب وإسقاط ملف PDF لتحرير الإشارات المرجعية.",
-      "pdfPreview": "معاينة قوات الدفاع الشعبي",
+      "pdfPreview": "معاينة PDF",
       "bookmarksTitle": "الإشارات المرجعية",
       "addBookmark": "إضافة إشارة مرجعية",
       "noBookmarks": "لا توجد إشارات مرجعية حتى الآن. انقر فوق \"إضافة إشارة مرجعية\" لإنشاء واحدة.",
@@ -2505,7 +2851,7 @@
       "extractExisting": "استخراج الإشارات المرجعية الموجودة",
       "dragHint": "قم بالسحب والإسقاط لإعادة ترتيب الإشارات المرجعية",
       "extracting": "جارٍ استخراج الإشارات المرجعية الموجودة...",
-      "replaceConfirm": "سيحل هذا محل الإشارات المرجعية الحالية. يكمل؟",
+      "replaceConfirm": "سيحل هذا محل الإشارات المرجعية الحالية. هل تريد المتابعة؟",
       "noBookmarksFound": "لم يتم العثور على إشارات مرجعية في ملف PDF هذا.",
       "failedExtract": "فشل في استخراج الإشارات المرجعية.",
       "title": "العنوان",
@@ -2539,9 +2885,9 @@
       "color": "اللون",
       "skipFirstPage": "تخطي الصفحة الأولى (صفحة الغلاف)",
       "preview": "معاينة",
-      "pageOf": "الصفحة {الحالية} من {total}",
+      "pageOf": "الصفحة {current} من {total}",
       "firstPageSkipped": "سيتم تخطي الصفحة الأولى",
-      "previewText": "معاينة: \"{نص}\"",
+      "previewText": "معاينة: \"{text}\"",
       "addButton": "إضافة أرقام الصفحات",
       "successMessage": "تمت إضافة أرقام الصفحات بنجاح!",
       "zoomIn": "تكبير",
@@ -2696,7 +3042,7 @@
       "uploadLabel": "تحميل ملف PDF",
       "uploadDescription": "إنشاء حقول نماذج تفعالية في ملف PDF.",
       "toolbarTitle": "شريط الأدوات",
-      "selectTool": "يختار",
+      "selectTool": "تحديد",
       "textFieldTool": "حقل النص",
       "checkboxTool": "خانة الاختيار",
       "dropdownTool": "قائمة منسدلة",
@@ -2722,12 +3068,12 @@
       "createButton": "إنشاء النموذج",
       "successMessage": "تم إنشاء النموذج بنجاح!",
       "formOptions": "خيارات النموذج",
-      "flattenForm": "تتسطح النموذج",
+      "flattenForm": "تسوية النموذج",
       "flattenFormHint": "جعل حقول النموذج غير قابلة للتحرير (يتم تحويلها إلى محتوى ثابت)",
       "projectManagement": "إدارة المشاريع",
       "saveProject": "حفظ المشروع",
       "savedProjects": "المشاريع المحفوظة",
-      "loadProject": "حمولة",
+      "loadProject": "تحميل المشروع",
       "deleteProject": "حذف",
       "saveProjectTitle": "حفظ المشروع",
       "projectName": "اسم المشروع",
@@ -2767,7 +3113,7 @@
       "properties": "ملكيات",
       "fieldsTab": "الحقول",
       "optionsTab": "خيارات",
-      "addField": "يضيف",
+      "addField": "إضافة",
       "clickToAdd": "انقر على PDF لإضافة حقل",
       "pages": "صفحات",
       "processingButton": "جاري المعالجة...",
@@ -2785,7 +3131,7 @@
       "addPageEnd": "في النهاية",
       "templateHint": "أو اختر قالبًا للبدء سريعًا",
       "templates": "نموذج",
-      "selectTemplate": "يختار...",
+      "selectTemplate": "اختيار...",
       "template": {
         "contact": "نموذج الاتصال",
         "registration": "تسجيل",
@@ -2833,11 +3179,11 @@
       "success": "تم توليد جدول المحتويات بنجاح!"
     },
     "markdownToPdf": {
-      "uploadLabel": "تحميل ملف تخفيض السعر",
+      "uploadLabel": "تحميل ملف Markdown",
       "uploadDescription": "قم بسحب وإسقاط ملف .md أو .markdown للتحويل إلى PDF.",
-      "manualInput": "اكتب تخفيض السعر",
+      "manualInput": "اكتب Markdown",
       "uploadFile": "تحميل الملف",
-      "editorLabel": "محرر تخفيض السعر",
+      "editorLabel": "محرر Markdown",
       "previewLabel": "معاينة",
       "showPreview": "عرض المعاينة",
       "hidePreview": "إخفاء المعاينة",
@@ -2868,9 +3214,9 @@
       "pageRangeHint": "اتركه فارغاً لجميع الصفحات",
       "includePageNumbers": "قم بتضمين أرقام الصفحات كرؤوس",
       "preserveLineBreaks": "الحفاظ على فواصل الأسطر",
-      "convertButton": "تحويل إلى تخفيض السعر",
+      "convertButton": "تحويل إلى Markdown",
       "previewTab": "معاينة",
-      "sourceTab": "مصدر تخفيض السعر",
+      "sourceTab": "مصدر Markdown",
       "successMessage": "لقد تم تحويل ملف PDF الخاص بك بنجاح إلى Markdown! انقر فوق زر التنزيل لحفظ الملف الخاص بك.",
       "failed": "فشل في تحويل PDF إلى Markdown."
     },
@@ -3028,7 +3374,7 @@
       "qualityLabel": "جودة الصورة",
       "preserveAspectLabel": "الحفاظ على نسبة العرض إلى الارتفاع",
       "convertButton": "تحويل إلى PDF",
-      "successMessage": "تم تحويل الكوميديا ​​بنجاح!"
+      "successMessage": "تم تحويل الكتاب المصور بنجاح!"
     },
     "pdfToPdfa": {
       "uploadLabel": "تحميل ملفات PDF",
@@ -3060,8 +3406,8 @@
       "optionsTitle": "خيارات الاستخراج",
       "formatLabel": "تنسيق المخرجات",
       "pageRangeLabel": "نطاق الصفحات (اختياري)",
-      "minColumnsLabel": "أعمدة دقيقة",
-      "minRowsLabel": "صفوف مين",
+      "minColumnsLabel": "الحد الأدنى للأعمدة",
+      "minRowsLabel": "الحد الأدنى للصفوف",
       "includePageNumbersLabel": "تضمين أرقام الصفحات في الإخراج",
       "extractButton": "استخراج الجداول",
       "successMessage": "تم استخراج الجداول بنجاح! انقر فوق تنزيل للحفظ."
@@ -3069,7 +3415,7 @@
     "ocgManager": {
       "uploadLabel": "تحميل ملف PDF",
       "uploadDescription": "قم بسحب وإسقاط ملف PDF لإدارة طبقاته (OCG).",
-      "layersTitle": "طبقات قوات الدفاع الشعبي",
+      "layersTitle": "طبقات PDF",
       "noLayers": "لا يحتوي ملف PDF هذا على طبقات (OCG).",
       "addLayerLabel": "أضف طبقة جديدة",
       "successMessage": "تم حفظ تغييرات الطبقة بنجاح!"
@@ -3090,7 +3436,7 @@
       "termsCount": "{count} عبارة (مصطلحات) البحث",
       "searchButton": "بحث",
       "searching": "جارٍ البحث...",
-      "caseSensitive": "حساسية الموضوع",
+      "caseSensitive": "حساسية حالة الأحرف",
       "wholeWord": "الكلمات الكاملة فقط",
       "useRegex": "استخدم التعبير العادي",
       "enterSearchTerm": "الرجاء إدخال مصطلح بحث واحد على الأقل.",
