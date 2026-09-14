@@ -99,6 +99,10 @@ export async function signPdf(
 
   const signatureInfo = options.signatureInfo ?? {};
 
+  // Network isolation guardrail: never set `signdate` or `ltv` on signOptions below.
+  // zgapdfsigner hard-codes real third-party TSA/CRL/AIA endpoints (DigiCert, Sectigo,
+  // Entrust, Apple, SSL.com, FreeTSA) that activate the moment either option is set.
+  // See docs/PROJECT_STUDY.md §5.7/§9 before ever adding trusted-timestamp/LTV support here.
   const signOptions: Record<string, unknown> = {
     p12cert: certificateData.p12Buffer,
     pwd: certificateData.password,

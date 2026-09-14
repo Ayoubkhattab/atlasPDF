@@ -61,6 +61,14 @@ async fn save_file(app: tauri::AppHandle, suggested_name: String, filters: Vec<F
     }
 }
 
+// SECURITY NOTE (see docs/PROJECT_STUDY.md §5.3/§9): these two commands bypass Tauri's
+// capability/ACL system (which only governs plugin-provided commands, not arbitrary
+// #[tauri::command] functions) and currently accept any path the WebView hands them,
+// with no scoping. Hardening candidate: restrict `path` to directories the app actually
+// needs (e.g. a user-chosen file from open_files/save_file, or the app's own temp dir)
+// before relying on this in an untrusted/multi-user deployment. Left as-is for now since
+// changing this needs a real Tauri build to verify — not done as part of the network-
+// isolation pass, which only touches JS/TS and static config.
 #[tauri::command]
 fn read_file(path: String) -> Result<Vec<u8>, String> {
     fs::read(&path).map_err(|e| e.to_string())
@@ -76,6 +84,11 @@ fn get_temp_dir() -> String {
     env::temp_dir().display().to_string()
 }
 
+// NOTE: as of the network-isolation pass (docs/PROJECT_STUDY.md §9), the only JS caller of
+// this command was the update checker's "download" button, which is no longer mounted in
+// the UI. This command is effectively unreachable now but left in place rather than
+// removed, since deleting it also requires touching tauri-bridge.ts/UpdateModal.tsx and a
+// real Tauri build to verify — safe to remove later if the update system stays disabled.
 #[tauri::command]
 fn open_url(url: String) -> Result<(), String> {
     if !url.starts_with("http://") && !url.starts_with("https://") {
