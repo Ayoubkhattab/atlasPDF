@@ -150,7 +150,7 @@ export class CertCryptorProcessor extends BasePDFProcessor {
         color: baseColor,
       });
 
-      // Draw Central Stamp Symbol (e.g. Shield + Key / PDFCraft Logo)
+      // Draw Central Stamp Symbol (e.g. Shield + Key / AtlasPDF Logo)
       // We will draw a crest with lines
       // Draw a crown/crest in the center
       const iconSize = radius * 0.35;
@@ -202,7 +202,7 @@ export class CertCryptorProcessor extends BasePDFProcessor {
         Filter: pdfLib.PDFName.of('Adobe.PPKLite'),
         SubFilter: pdfLib.PDFName.of('adbe.pkcs7.detached'),
         Contents: pdfLib.PDFString.of(String.fromCharCode(...placeholderBytes)), // Preallocate
-        Reason: pdfLib.PDFString.of('Signed officially using PDFCraft Wax-Seal cryptor.'),
+        Reason: pdfLib.PDFString.of('Signed officially using AtlasPDF Wax-Seal cryptor.'),
         M: pdfLib.PDFString.of(`D:${new Date().toISOString().replace(/[-T:]/g, '').split('.')[0]}Z`),
       });
 
@@ -222,9 +222,18 @@ export class CertCryptorProcessor extends BasePDFProcessor {
       });
 
       const sigFieldRef = context.register(sigFieldDict);
+      // page.node.get() returns a pdf-lib PDFArray instance (not a plain/iterable
+      // JS array) whenever the page already has an Annots entry - which is common
+      // for real-world PDFs, even with an "empty" one. PDFArray must be unwrapped
+      // via .asArray() before spreading; spreading it directly throws "is not
+      // iterable" since it doesn't implement Symbol.iterator.
+      const existingAnnots = page.node.get(pdfLib.PDFName.of('Annots'));
+      const existingAnnotsArray = existingAnnots && typeof (existingAnnots as any).asArray === 'function'
+        ? (existingAnnots as any).asArray()
+        : [];
       page.node.set(
         pdfLib.PDFName.of('Annots'),
-        context.obj([...(page.node.get(pdfLib.PDFName.of('Annots')) as any || []), sigFieldRef])
+        context.obj([...existingAnnotsArray, sigFieldRef])
       );
 
       // Link to AcroForm
@@ -247,7 +256,7 @@ export class CertCryptorProcessor extends BasePDFProcessor {
         // Enforce user password to simulate certificate lockdown
         // This provides standard enterprise encryption
         const ownerPassword = Math.random().toString(36).substring(2, 12);
-        const userPassword = cryptorOptions.pfxPassword || 'pdfcraft';
+        const userPassword = cryptorOptions.pfxPassword || 'atlaspdf';
         
         (pdfDoc as any).encrypt({
           userPassword,
