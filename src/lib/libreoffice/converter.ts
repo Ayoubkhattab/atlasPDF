@@ -265,7 +265,7 @@ export class LibreOfficeConverter {
         if (!isIsolated || !hasSAB) {
             if (!isTauri() && typeof window !== 'undefined' && 'serviceWorker' in navigator) {
                 try {
-                    const basePath = window.location.pathname.startsWith('/pdfcraft') ? '/pdfcraft/' : '/';
+                    const basePath = window.location.pathname.startsWith('/atlaspdf') ? '/atlaspdf/' : '/';
                     navigator.serviceWorker.register(`${basePath}coi-serviceworker.js`).then((reg) => {
                         if (reg.active && !navigator.serviceWorker.controller) {
                             window.location.reload();

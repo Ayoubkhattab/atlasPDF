@@ -186,7 +186,7 @@ export class SanitizePDFProcessor extends BasePDFProcessor {
           pdfDoc.setSubject('');
           pdfDoc.setKeywords([]);
           pdfDoc.setCreator('');
-          pdfDoc.setProducer('PDFCraft');
+          pdfDoc.setProducer('AtlasPDF');
 
           // Remove XMP metadata
           try {

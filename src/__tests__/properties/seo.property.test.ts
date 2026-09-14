@@ -10,9 +10,7 @@ import {
   generateToolMetadata,
   generateHomeMetadata,
   generateToolsListMetadata,
-  generateAboutMetadata,
   generateFaqMetadata,
-  generatePrivacyMetadata,
   validateMetadata,
   getCanonicalUrl,
   getAlternateUrls,
@@ -33,7 +31,7 @@ import type { Tool, ToolContent, FAQ } from '@/types/tool';
  */
 function createMockToolContent(tool: Tool): ToolContent {
   return {
-    title: `${tool.id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} - PDFCraft`,
+    title: `${tool.id.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} - AtlasPDF`,
     metaDescription: `Use ${tool.id.replace(/-/g, ' ')} tool to process your PDF files. Free, private, and secure.`,
     keywords: [tool.id, 'PDF', 'tool', ...tool.features.slice(0, 3)],
     description: `A powerful tool for ${tool.id.replace(/-/g, ' ')} operations.`,
@@ -82,20 +80,10 @@ describe('SEO Property Tests', () => {
             const toolsValidation = validateMetadata(toolsMetadata);
             expect(toolsValidation.valid).toBe(true);
             
-            // Test about page metadata
-            const aboutMetadata = generateAboutMetadata(locale);
-            const aboutValidation = validateMetadata(aboutMetadata);
-            expect(aboutValidation.valid).toBe(true);
-            
             // Test FAQ page metadata
             const faqMetadata = generateFaqMetadata(locale);
             const faqValidation = validateMetadata(faqMetadata);
             expect(faqValidation.valid).toBe(true);
-            
-            // Test privacy page metadata
-            const privacyMetadata = generatePrivacyMetadata(locale);
-            const privacyValidation = validateMetadata(privacyMetadata);
-            expect(privacyValidation.valid).toBe(true);
             
             return true;
           }
@@ -139,7 +127,7 @@ describe('SEO Property Tests', () => {
       fc.assert(
         fc.property(
           fc.constantFrom(...locales),
-          fc.constantFrom('/tools/merge-pdf', '/about', '/faq', ''),
+          fc.constantFrom('/tools/merge-pdf', '/faq', ''),
           (locale, path) => {
             const metadata = generateBaseMetadata({
               locale,
@@ -343,7 +331,7 @@ describe('SEO Property Tests', () => {
       fc.assert(
         fc.property(
           fc.constantFrom(...locales),
-          fc.constantFrom('/tools/merge-pdf', '/about', '/faq', ''),
+          fc.constantFrom('/tools/merge-pdf', '/faq', ''),
           (locale, path) => {
             const url = getCanonicalUrl(locale, path);
             
