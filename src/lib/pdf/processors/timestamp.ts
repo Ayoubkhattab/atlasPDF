@@ -1,9 +1,14 @@
 /**
- * PDF Trusted Timestamp Processor (RFC 3161)
- * 
- * Implements adding RFC 3161 trusted timestamps to PDF documents.
- * Utilizes node-forge for PKCS#7 / CMS cryptographic signature generation
- * to prove document existence at a precise instant without user certificates.
+ * PDF Local Timestamp Processor
+ *
+ * Adds a locally-generated, self-signed cryptographic timestamp seal to PDF documents
+ * as a lightweight proof-of-existence mechanism. Uses node-forge for PKCS#7 / CMS
+ * signature generation, entirely offline.
+ *
+ * IMPORTANT: this does NOT implement the real RFC 3161 Time-Stamp Protocol and does NOT
+ * contact any third-party Time Stamping Authority (no DigiCert/Sectigo/SSL.com/FreeTSA/etc.
+ * server is ever reached). The certificate is self-signed on-device. Do not present this to
+ * users as a certified/legally-binding third-party timestamp.
  */
 
 import type {
@@ -113,11 +118,15 @@ export class TimestampPDFProcessor extends BasePDFProcessor {
 
       this.updateProgress(30, 'Preparing trusted signature fields...');
       
-      const tsaName = timestampOptions.tsaServer || 'MeSign';
+      const tsaProfile = timestampOptions.tsaServer || 'MeSign';
       const timestampDate = new Date();
-      
-      // 1. Generate keys & certificate for our virtual TSA on the fly using node-forge
-      // This guarantees legal math proof and runs 100% locally avoiding CORS TSA cross-origin blocks
+
+      // 1. Generate a self-signed key pair/certificate locally using node-forge.
+      // IMPORTANT: this does NOT contact any real TSA (DigiCert/Sectigo/SSL.com/FreeTSA/etc.).
+      // It is a locally-generated cryptographic proof of existence only, not a certified
+      // RFC 3161 timestamp token issued by a trusted third-party authority. The "profile"
+      // name selected by the user is a display label only and must never be presented to
+      // end users as an actual third-party TSA connection.
       const keys = forge.pki.rsa.generateKeyPair(2048);
       const cert = forge.pki.createCertificate();
       cert.publicKey = keys.publicKey;
@@ -125,13 +134,13 @@ export class TimestampPDFProcessor extends BasePDFProcessor {
       cert.validity.notBefore = new Date();
       cert.validity.notAfter = new Date();
       cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + 10);
-      
+
       const attrs = [{
         name: 'commonName',
-        value: `PDFCraft Trusted TSA Authority (${tsaName})`
+        value: `AtlasPDF Local Timestamp (Self-Signed, profile: ${tsaProfile})`
       }, {
         name: 'organizationName',
-        value: 'PDFCraft Secure Group'
+        value: 'AtlasPDF (local, unaffiliated with any real TSA)'
       }];
       cert.setSubject(attrs);
       cert.setIssuer(attrs);
@@ -159,9 +168,9 @@ export class TimestampPDFProcessor extends BasePDFProcessor {
         SubFilter: 'adbe.pkcs7.detached',
         Contents: (pdfLib as any).PDFHexString.of('0'.repeat(8192)), // Pre-allocate 8192 characters (4096 bytes)
         ByteRange: [0, 0, 0, 0], // Placeholders to fill in later
-        Name: pdfLib.PDFString.of(`Trusted TSA Server: ${tsaName}`),
+        Name: pdfLib.PDFString.of(`AtlasPDF Local Timestamp (profile: ${tsaProfile})`),
         M: pdfLib.PDFString.fromDate(timestampDate),
-        Reason: pdfLib.PDFString.of('RFC 3161 Trusted Timestamp Proof of Existence'),
+        Reason: pdfLib.PDFString.of('Local cryptographic proof of existence, generated entirely offline. Not a certified RFC 3161 timestamp from a trusted third-party TSA.'),
       });
 
       const sigRef = pdfDoc.context.register(signatureDict);
@@ -291,7 +300,7 @@ export class TimestampPDFProcessor extends BasePDFProcessor {
 
       // Return metadata audit logs
       return this.createSuccessOutput(blob, outputFilename, {
-        tsaAuthority: tsaName,
+        tsaAuthority: tsaProfile,
         hash: forge.util.bytesToHex(fileDigest),
         timestamp: timestampDate.toISOString(),
         serial: cert.serialNumber,
