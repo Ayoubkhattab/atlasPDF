@@ -93,6 +93,7 @@ export class TextColorProcessor extends BasePDFProcessor {
 
         await page.render({
           canvasContext: ctx,
+          canvas,
           viewport: renderViewport,
         }).promise;
 

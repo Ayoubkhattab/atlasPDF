@@ -558,6 +558,7 @@ export async function redactPDF(
     // Render original page
     await pageProxy.render({
       canvasContext: ctx,
+      canvas: offscreenCanvas,
       viewport,
       intent: 'display',
     }).promise;
@@ -617,7 +618,7 @@ export async function redactPDF(
       newPdfDoc.setSubject('');
       newPdfDoc.setKeywords([]);
       newPdfDoc.setCreator('');
-      newPdfDoc.setProducer('PDFCraft');
+      newPdfDoc.setProducer('AtlasPDF');
 
       // Purge XMP Metadata stream from catalog
       try {

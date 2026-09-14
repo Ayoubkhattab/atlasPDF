@@ -117,6 +117,7 @@ export class PDFToTIFFProcessor extends BasePDFProcessor {
 
         await page.render({
           canvasContext: ctx,
+          canvas,
           viewport: viewport,
         }).promise;
 

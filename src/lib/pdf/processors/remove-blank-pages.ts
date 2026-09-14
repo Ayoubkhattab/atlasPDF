@@ -71,6 +71,7 @@ export class RemoveBlankPagesProcessor extends BasePDFProcessor {
 
             await page.render({
               canvasContext: context,
+              canvas,
               viewport: viewport,
             }).promise;
 

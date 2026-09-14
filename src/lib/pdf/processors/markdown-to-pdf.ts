@@ -454,6 +454,8 @@ export class MarkdownToPDFProcessor extends BasePDFProcessor {
                 const contentDiv = iframeDoc.body.querySelector('div') || iframeDoc.body;
 
                 // Use html2canvas to render the content
+                // Network isolation guardrail: never pass a `proxy` option here — html2canvas
+                // will XHR-fetch cross-origin images through it. See docs/PROJECT_STUDY.md §9.
                 const canvas = await html2canvas(contentDiv as HTMLElement, {
                     scale: 2,
                     useCORS: true,
@@ -494,6 +496,9 @@ export class MarkdownToPDFProcessor extends BasePDFProcessor {
                 }
 
                 // Get PDF as blob
+                // Network isolation guardrail: keep this as 'blob' — jsPDF's
+                // 'pdfobjectnewwindow' mode injects a <script> from cdnjs.cloudflare.com.
+                // See docs/PROJECT_STUDY.md §9.
                 const pdfBlob = pdf.output('blob');
 
                 // Cleanup

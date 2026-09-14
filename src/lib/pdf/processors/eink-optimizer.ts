@@ -103,6 +103,7 @@ export class EinkOptimizerProcessor extends BasePDFProcessor {
         // Render page PDF into canvas
         await page.render({
           canvasContext: ctx,
+          canvas,
           viewport: viewport,
         }).promise;
 

@@ -9,6 +9,7 @@ import type { ProcessInput, ProcessOutput, ProgressCallback } from '@/types/pdf'
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
 import { loadPdfLib } from '../loader';
+import { withBasePath } from '@/lib/utils/path';
 import type { PDFPage, PDFFont, PDFImage } from 'pdf-lib';
 
 
@@ -41,12 +42,13 @@ export interface WatermarkOptions {
   repeatSpacingY?: number;
 }
 
-// Noto fonts for CJK support
-const CJK_FONT_URL = 'https://raw.githack.com/googlefonts/noto-cjk/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf';
+// Noto Sans SC font for CJK support — vendored locally (public/fonts/) for network isolation,
+// reusing the same file already bundled for excel-to-pdf/OCR. See docs/PROJECT_STUDY.md §9.
+const CJK_FONT_URL = '/fonts/itfQomraArabic-Regular.ttf';
 
 // Font cache
 const fontCache: Map<string, ArrayBuffer> = new Map();
-const DB_NAME = 'pdfcraft-fonts';
+const DB_NAME = 'atlaspdf-fonts';
 const DB_VERSION = 1;
 const STORE_NAME = 'fonts';
 
@@ -110,7 +112,7 @@ async function loadCJKFont(): Promise<ArrayBuffer> {
   }
 
   // Fetch from URL
-  const response = await fetch(CJK_FONT_URL);
+  const response = await fetch(withBasePath(CJK_FONT_URL));
   if (!response.ok) {
     throw new Error(`Failed to load CJK font`);
   }
@@ -344,7 +346,7 @@ export class WatermarkProcessor extends BasePDFProcessor {
               break;
             }
 
-            await page.render({ canvasContext: ctx, viewport }).promise;
+            await page.render({ canvasContext: ctx, canvas, viewport }).promise;
             const jpegBytes = await new Promise<ArrayBuffer | null>((resolve) => {
               canvas.toBlob(
                 (blob) => {
