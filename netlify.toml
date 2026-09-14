@@ -1,4 +1,4 @@
-# Netlify Configuration for PDFCraft
+# Netlify Configuration for AtlasPDF
 
 [build]
   command = "npm run build"
@@ -29,6 +29,7 @@
     Cross-Origin-Opener-Policy = "same-origin"
     Cross-Origin-Embedder-Policy = "require-corp"
     Cross-Origin-Resource-Policy = "cross-origin"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
 
 # ==========================================
 # Cache: Long-term immutable assets
