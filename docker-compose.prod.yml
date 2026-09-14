@@ -1,0 +1,10 @@
+# Production deployment using the pre-built AtlasPDF image (see DEPLOYMENT.md → "Self-hosted via pre-built image").
+# Load the image first with: docker load -i atlaspdf-image.tar.gz
+# Then start it with:        docker compose -f docker-compose.prod.yml up -d
+services:
+  atlaspdf:
+    image: atlaspdf:latest
+    container_name: atlaspdf
+    restart: unless-stopped
+    ports:
+      - "8080:80"

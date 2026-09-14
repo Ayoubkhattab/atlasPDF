@@ -18,6 +18,9 @@ build
 !public/pdfjs-annotation-viewer/build
 dist
 
+# Local deployment packages (Docker image exports, etc.)
+deploy-artifacts/
+
 # Testing
 coverage
 
@@ -25,6 +28,11 @@ coverage
 .DS_Store
 *.pem
 Thumbs.db
+
+# Agent/scratch notes (not part of the published project)
+AGENTS.md
+CLAUDE.md
+scratch/
 
 # Debug logs
 npm-debug.log*
