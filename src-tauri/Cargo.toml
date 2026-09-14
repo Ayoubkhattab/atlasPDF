@@ -1,8 +1,8 @@
 [package]
-name = "pdfcraft"
+name = "atlaspdf"
 version = "0.1.0"
-description = "PDFCraft Desktop Application"
-authors = ["PDFCraft"]
+description = "AtlasPDF Desktop Application"
+authors = ["AtlasPDF"]
 edition = "2021"
 
 [build-dependencies]

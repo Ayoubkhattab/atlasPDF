@@ -1,17 +1,17 @@
 { config, lib, pkgs, ... }:
 
 let
-  cfg = config.services.pdfcraft;
+  cfg = config.services.atlaspdf;
 in
 {
-  options.services.pdfcraft = {
-    enable = lib.mkEnableOption "PDFCraft - Professional PDF Tools";
+  options.services.atlaspdf = {
+    enable = lib.mkEnableOption "AtlasPDF - Professional PDF Tools";
 
     package = lib.mkOption {
       type = lib.types.package;
-      default = pkgs.pdfcraft;
-      defaultText = lib.literalExpression "pkgs.pdfcraft";
-      description = "The PDFCraft package to use.";
+      default = pkgs.atlaspdf;
+      defaultText = lib.literalExpression "pkgs.atlaspdf";
+      description = "The AtlasPDF package to use.";
     };
 
     port = lib.mkOption {
@@ -24,21 +24,21 @@ in
   config = lib.mkIf cfg.enable {
     nixpkgs.overlays = [
       (final: prev: {
-        pdfcraft = final.callPackage ./package.nix { };
+        atlaspdf = final.callPackage ./package.nix { };
       })
     ];
 
-    systemd.user.services.pdfcraft = {
+    systemd.user.services.atlaspdf = {
       Unit = {
-        Description = "PDFCraft PDF Tools";
+        Description = "AtlasPDF PDF Tools";
         After = [ "network.target" ];
       };
 
       Service = {
-        ExecStart = "${cfg.package}/bin/pdfcraft";
+        ExecStart = "${cfg.package}/bin/atlaspdf";
         Restart = "on-failure";
         Environment = [
-          "PDFCRAFT_PORT=${toString cfg.port}"
+          "ATLASPDF_PORT=${toString cfg.port}"
         ];
       };
 

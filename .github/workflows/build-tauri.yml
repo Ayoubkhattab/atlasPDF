@@ -88,22 +88,22 @@ jobs:
         run: |
           echo "Packaging Windows portable version..."
           mkdir -p src-tauri/target/release/bundle/portable
-          if [ -f "src-tauri/target/release/pdfcraft.exe" ]; then
-            cp "src-tauri/target/release/pdfcraft.exe" "src-tauri/target/release/bundle/portable/PDFCraft-Portable.exe"
-          elif [ -f "src-tauri/target/release/PDFCraft.exe" ]; then
-            cp "src-tauri/target/release/PDFCraft.exe" "src-tauri/target/release/bundle/portable/PDFCraft-Portable.exe"
+          if [ -f "src-tauri/target/release/atlaspdf.exe" ]; then
+            cp "src-tauri/target/release/atlaspdf.exe" "src-tauri/target/release/bundle/portable/AtlasPDF-Portable.exe"
+          elif [ -f "src-tauri/target/release/AtlasPDF.exe" ]; then
+            cp "src-tauri/target/release/AtlasPDF.exe" "src-tauri/target/release/bundle/portable/AtlasPDF-Portable.exe"
           fi
-          echo "PDFCraft Portable Mode" > "src-tauri/target/release/bundle/portable/portable.txt"
+          echo "AtlasPDF Portable Mode" > "src-tauri/target/release/bundle/portable/portable.txt"
           echo "All application data and cache will be stored in the 'data' folder alongside this file." >> "src-tauri/target/release/bundle/portable/portable.txt"
           cd src-tauri/target/release/bundle/portable
           if command -v 7z >/dev/null 2>&1; then
-            7z a ../PDFCraft-Windows-x64-Portable.zip PDFCraft-Portable.exe portable.txt
+            7z a ../AtlasPDF-Windows-x64-Portable.zip AtlasPDF-Portable.exe portable.txt
           elif command -v zip >/dev/null 2>&1; then
-            zip -r ../PDFCraft-Windows-x64-Portable.zip PDFCraft-Portable.exe portable.txt
+            zip -r ../AtlasPDF-Windows-x64-Portable.zip AtlasPDF-Portable.exe portable.txt
           else
-            tar -a -c -f ../PDFCraft-Windows-x64-Portable.zip PDFCraft-Portable.exe portable.txt
+            tar -a -c -f ../AtlasPDF-Windows-x64-Portable.zip AtlasPDF-Portable.exe portable.txt
           fi
-          echo "Portable zip created at src-tauri/target/release/bundle/PDFCraft-Windows-x64-Portable.zip"
+          echo "Portable zip created at src-tauri/target/release/bundle/AtlasPDF-Windows-x64-Portable.zip"
 
       - name: Upload Tauri bundles
         uses: actions/upload-artifact@v4

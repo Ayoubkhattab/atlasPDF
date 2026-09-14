@@ -12,7 +12,7 @@ const nextConfig = {
   // Enable static export for deployment flexibility
   output: 'export',
   
-  // Support deployment under a subpath (e.g., /pdfcraft/)
+  // Support deployment under a subpath (e.g., /atlaspdf/)
   // Use BASE_PATH or NEXT_PUBLIC_BASE_PATH environment variable
   basePath: process.env.BASE_PATH || process.env.NEXT_PUBLIC_BASE_PATH || '',
   
@@ -263,6 +263,10 @@ const nextConfig = {
             key: 'Cross-Origin-Resource-Policy',
             value: 'cross-origin',
           },
+          // Network isolation: every tool runs client-side against same-origin assets only
+          // (see docs/PROJECT_STUDY.md §9). This CSP makes that a browser-enforced guarantee
+          // instead of relying solely on the absence of fetch()/<script src> calls in the code.
+          
         ],
       },
     ];

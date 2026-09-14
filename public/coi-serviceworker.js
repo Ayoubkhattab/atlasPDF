@@ -1,4 +1,4 @@
-/*! coi-serviceworker v0.1.7 - modified for PDFCraft & LibreOffice WASM */
+/*! coi-serviceworker v0.1.7 - modified for AtlasPDF & LibreOffice WASM */
 let coepCredentialless = false;
 if (typeof window === 'undefined') {
   self.addEventListener('install', () => self.skipWaiting());

@@ -1,73 +1,73 @@
-// PDFCraft Chrome Extension - Background Service Worker
+// AtlasPDF Chrome Extension - Background Service Worker
 
-const PDFCRAFT_URL = 'https://pdfcraft.devtoolcafe.com/en';
+const ATLASPDF_URL = 'https://atlaspdf.mis-pts.org/en';
 
 // Create context menu when extension is installed
 chrome.runtime.onInstalled.addListener(() => {
     // Create main context menu item
     chrome.contextMenus.create({
-        id: 'pdfcraft-open',
-        title: 'Open with PDFCraft',
+        id: 'atlaspdf-open',
+        title: 'Open with AtlasPDF',
         contexts: ['link', 'page']
     });
 
     // Create submenu for specific tools
     chrome.contextMenus.create({
-        id: 'pdfcraft-merge',
-        parentId: 'pdfcraft-open',
+        id: 'atlaspdf-merge',
+        parentId: 'atlaspdf-open',
         title: 'Merge PDFs',
         contexts: ['link', 'page']
     });
 
     chrome.contextMenus.create({
-        id: 'pdfcraft-compress',
-        parentId: 'pdfcraft-open',
+        id: 'atlaspdf-compress',
+        parentId: 'atlaspdf-open',
         title: 'Compress PDF',
         contexts: ['link', 'page']
     });
 
     chrome.contextMenus.create({
-        id: 'pdfcraft-convert',
-        parentId: 'pdfcraft-open',
+        id: 'atlaspdf-convert',
+        parentId: 'atlaspdf-open',
         title: 'Convert to PDF',
         contexts: ['link', 'page']
     });
 
     chrome.contextMenus.create({
-        id: 'pdfcraft-all-tools',
-        parentId: 'pdfcraft-open',
+        id: 'atlaspdf-all-tools',
+        parentId: 'atlaspdf-open',
         title: 'All Tools →',
         contexts: ['link', 'page']
     });
 
-    console.log('PDFCraft context menus created');
+    console.log('AtlasPDF context menus created');
 });
 
 // Handle context menu clicks
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-    let url = PDFCRAFT_URL;
+    let url = ATLASPDF_URL;
 
     switch (info.menuItemId) {
-        case 'pdfcraft-merge':
-            url = `${PDFCRAFT_URL}/tools/merge-pdf`;
+        case 'atlaspdf-merge':
+            url = `${ATLASPDF_URL}/tools/merge-pdf`;
             break;
-        case 'pdfcraft-compress':
-            url = `${PDFCRAFT_URL}/tools/compress-pdf`;
+        case 'atlaspdf-compress':
+            url = `${ATLASPDF_URL}/tools/compress-pdf`;
             break;
-        case 'pdfcraft-convert':
-            url = `${PDFCRAFT_URL}/tools/jpg-to-pdf`;
+        case 'atlaspdf-convert':
+            url = `${ATLASPDF_URL}/tools/jpg-to-pdf`;
             break;
-        case 'pdfcraft-all-tools':
-        case 'pdfcraft-open':
-            url = PDFCRAFT_URL;
+        case 'atlaspdf-all-tools':
+        case 'atlaspdf-open':
+            url = ATLASPDF_URL;
             break;
         default:
-            url = PDFCRAFT_URL;
+            url = ATLASPDF_URL;
     }
 
-    // Open PDFCraft in a new tab
+    // Open AtlasPDF in a new tab
     chrome.tabs.create({ url: url });
 });
 
 // Log when service worker starts
-console.log('PDFCraft background service worker started');
+console.log('AtlasPDF background service worker started');

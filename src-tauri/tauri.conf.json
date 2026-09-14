@@ -1,7 +1,7 @@
 {
-  "productName": "PDFCraft",
+  "productName": "AtlasPDF",
   "version": "0.1.0",
-  "identifier": "com.pdfcraft.app",
+  "identifier": "com.atlaspdf.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "PDFCraft",
+        "title": "AtlasPDF",
         "width": 1200,
         "height": 800,
         "minWidth": 800,
@@ -23,7 +23,7 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; frame-src 'self' blob: data:; object-src 'none'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; worker-src blob: 'self'; wasm-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self' data: blob: https:;",
+      "csp": "default-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'; frame-src 'self' blob: data:; object-src 'none'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; worker-src blob: 'self'; wasm-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; media-src 'self' blob:; connect-src 'self' data: blob:;",
       "dangerousDisableAssetCspModification": ["style-src"],
       "headers": {
         "Cross-Origin-Opener-Policy": "same-origin",
