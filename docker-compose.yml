@@ -1,4 +1,10 @@
 services:
+  # Runs the app in a container for parity checks. Note that edits made on a
+  # Windows or macOS host do NOT trigger a rebuild: the bind mount delivers the
+  # new contents but not the filesystem events Turbopack watches for, so the
+  # server keeps serving the previous version until it is restarted. For an
+  # edit-reload loop, run `npm run dev` on the host, or keep the repository
+  # inside the WSL2 filesystem where inotify works natively.
   web-dev:
     image: node:22-alpine
     working_dir: /app
@@ -7,11 +13,19 @@ services:
       - "3000:3000"
     environment:
       NODE_ENV: development
+      # These are webpack/chokidar variables. `next dev` uses Turbopack, which
+      # has no polling watcher and ignores them; they only matter if the command
+      # above is switched to `--webpack`. Kept because they cost nothing there.
       WATCHPACK_POLLING: "true"
       CHOKIDAR_USEPOLLING: "true"
     volumes:
       - ./:/app
+      # Keep these off the bind mount. node_modules holds Linux binaries that
+      # must not mix with the host's, and Turbopack takes a lockfile inside
+      # .next which cannot be acquired over a Docker Desktop bind mount —
+      # "Permission denied (os error 13)" kills the dev server on startup.
       - node_modules:/app/node_modules
+      - next_cache:/app/.next
     profiles:
       - dev
 
@@ -48,4 +62,5 @@ services:
 
 volumes:
   node_modules:
+  next_cache:
   static_out:
