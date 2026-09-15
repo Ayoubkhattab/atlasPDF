@@ -42,22 +42,35 @@ function getRichTextTags(message: string): string[] {
 }
 
 describe('message catalog integrity', () => {
-  it('keeps Polish messages structurally and token-compatible with English', () => {
-    const english = JSON.parse(readFileSync(join(messagesDir, 'en.json'), 'utf8')) as MessageCatalog;
-    const polish = JSON.parse(readFileSync(join(messagesDir, 'pl.json'), 'utf8')) as MessageCatalog;
+  // Discovered from the directory rather than hard-coded, so that adding or
+  // dropping a locale cannot leave this suite pointing at a catalog that is no
+  // longer shipped.
+  const translatedCatalogs = readdirSync(messagesDir)
+    .filter((file) => file.endsWith('.json') && file !== 'en.json');
 
-    expect(getCatalogShape(polish).sort()).toEqual(getCatalogShape(english).sort());
-
-    for (const [path, englishMessage] of getStringLeaves(english)) {
-      const polishMessage = getNestedValue(polish, path);
-
-      expect(polishMessage, path).toEqual(expect.any(String));
-      expect(getInterpolationArguments(polishMessage as string), path)
-        .toEqual(getInterpolationArguments(englishMessage));
-      expect(getRichTextTags(polishMessage as string), path)
-        .toEqual(getRichTextTags(englishMessage));
-    }
+  it('ships at least one translated catalog to check', () => {
+    expect(translatedCatalogs.length).toBeGreaterThan(0);
   });
+
+  it.each(translatedCatalogs)(
+    'keeps %s structurally and token-compatible with English',
+    (file) => {
+      const english = JSON.parse(readFileSync(join(messagesDir, 'en.json'), 'utf8')) as MessageCatalog;
+      const translated = JSON.parse(readFileSync(join(messagesDir, file), 'utf8')) as MessageCatalog;
+
+      expect(getCatalogShape(translated).sort()).toEqual(getCatalogShape(english).sort());
+
+      for (const [path, englishMessage] of getStringLeaves(english)) {
+        const translatedMessage = getNestedValue(translated, path);
+
+        expect(translatedMessage, path).toEqual(expect.any(String));
+        expect(getInterpolationArguments(translatedMessage as string), path)
+          .toEqual(getInterpolationArguments(englishMessage));
+        expect(getRichTextTags(translatedMessage as string), path)
+          .toEqual(getRichTextTags(englishMessage));
+      }
+    }
+  );
 
   it('defines edit PDF iframe patch labels for every locale', () => {
     const requiredKeys = [

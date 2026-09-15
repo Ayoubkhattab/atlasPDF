@@ -1131,7 +1131,7 @@
       },
       "powerful": {
         "title": "Powerful Tools",
-        "description": "67+ professional PDF tools for all your needs."
+        "description": "{count}+ professional PDF tools for all your needs."
       }
     },
     "popularTools": {

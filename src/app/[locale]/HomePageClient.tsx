@@ -151,7 +151,7 @@ export default function HomePageClient({ locale, localizedToolContent }: HomePag
                       {t(feature.titleKey)}
                     </h3>
                     <p className="text-sm text-[var(--color-muted-foreground)] leading-relaxed">
-                     {t(feature.descriptionKey, { count: 90 })}
+                     {t(feature.descriptionKey, { count: allTools.length })}
                     </p>
                   </Card>
                 );
