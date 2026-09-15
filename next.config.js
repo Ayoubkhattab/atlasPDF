@@ -120,12 +120,12 @@ const nextConfig = {
   async headers() {
     return [
       {
-        // LibreOffice WASM .wasm.bin.gz — serve as application/wasm with gzip Content-Encoding
-        // Same approach as BentoPDF's nginx config so browser decompresses transparently
+        // LibreOffice engine .gz files are downloaded as plain bytes and decompressed in the
+        // browser (src/lib/libreoffice/gzip.ts). Do NOT add Content-Encoding here: the browser
+        // would decode them transparently, which rules out resumable Range downloads.
         source: '/libreoffice-wasm/soffice.wasm.bin.gz',
         headers: [
-          { key: 'Content-Type', value: 'application/wasm' },
-          { key: 'Content-Encoding', value: 'gzip' },
+          { key: 'Content-Type', value: 'application/octet-stream' },
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
           { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' },
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
@@ -133,11 +133,10 @@ const nextConfig = {
         ],
       },
       {
-        // LibreOffice WASM .data.bin.gz — serve as application/octet-stream with gzip Content-Encoding
+        // Same as above: plain bytes, decompressed client-side.
         source: '/libreoffice-wasm/soffice.data.bin.gz',
         headers: [
           { key: 'Content-Type', value: 'application/octet-stream' },
-          { key: 'Content-Encoding', value: 'gzip' },
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
           { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' },
           { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },

@@ -137,12 +137,14 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# The LibreOffice engine .gz files are downloaded as plain bytes and decompressed in the
+# browser (src/lib/libreoffice/gzip.ts). Do NOT add Content-Encoding: the browser would decode
+# them transparently, which rules out resumable Range downloads.
 [[headers]]
   for = "/libreoffice-wasm/soffice.wasm.bin.gz"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-    Content-Type = "application/wasm"
-    Content-Encoding = "gzip"
+    Content-Type = "application/octet-stream"
     Cross-Origin-Opener-Policy = "same-origin"
     Cross-Origin-Embedder-Policy = "require-corp"
     Cross-Origin-Resource-Policy = "cross-origin"
@@ -152,7 +154,6 @@
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
     Content-Type = "application/octet-stream"
-    Content-Encoding = "gzip"
     Cross-Origin-Opener-Policy = "same-origin"
     Cross-Origin-Embedder-Policy = "require-corp"
     Cross-Origin-Resource-Policy = "cross-origin"

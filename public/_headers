@@ -97,12 +97,10 @@
   Content-Type: application/wasm
 
 # LibreOffice WASM data files
-# The converter requests the uncompressed names below directly (see
-# src/lib/libreoffice/converter.ts) - these are the actual on-disk/requested
-# filenames (they used to be soffice.wasm.gz / soffice.data.gz, which don't
-# exist and never matched anything, leaving these two files to fall back to
-# Cloudflare/Netlify's default Content-Type for an unrecognized .bin
-# extension instead of the application/wasm streaming instantiation needs).
+# Browsers download soffice.wasm.bin.gz / soffice.data.bin.gz as plain bytes and
+# decompress them client-side (src/lib/libreoffice/gzip.ts) - never give those a
+# Content-Encoding header. The decompressed .bin names below are only a fallback
+# for deployments that ship them without the .gz files.
 /libreoffice-wasm/soffice.wasm.bin
   Cache-Control: public, max-age=31536000, immutable
   Content-Type: application/wasm
