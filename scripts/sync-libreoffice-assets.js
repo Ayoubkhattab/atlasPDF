@@ -15,20 +15,30 @@
  *
  * soffice.wasm (~147MB) and soffice.data (~100MB) exceed GitHub's 100MB file
  * size limit, so only their .gz forms are committed (public/libreoffice-wasm/
- * soffice.wasm.bin.gz, soffice.data.bin.gz) - see scripts/decompress-wasm-dev.mjs
- * for how the "predev"/"postinstall" step turns those back into the .bin files
- * the converter actually requests at runtime.
+ * soffice.wasm.bin.gz, soffice.data.bin.gz). The browser downloads those .gz
+ * files as plain bytes and decompresses them itself (see
+ * src/lib/libreoffice/gzip.ts), so no server-side gzip configuration is needed.
+ *
+ * Files that are already up to date are left untouched (a .gz counts as up to date
+ * when it decompresses to exactly the installed binary), so running this on every
+ * install never rewrites the committed ~76MB of .gz data just because a different
+ * zlib build would compress it to different bytes.
+ *
+ * Finally it regenerates src/lib/libreoffice/asset-version.ts, the content-derived
+ * `?v=` cache key - see scripts/libreoffice-asset-version.mjs.
  *
  * Run this after installing/updating @matbee/libreoffice-converter:
  * - npm run postinstall
  * - or manually: node scripts/sync-libreoffice-assets.js
  */
 
-import { copyFileSync, createReadStream, createWriteStream, existsSync, mkdirSync, statSync } from 'fs';
+import { copyFileSync, createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, statSync } from 'fs';
+import { createHash } from 'crypto';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { createGzip } from 'zlib';
+import { createGunzip, createGzip } from 'zlib';
 import { pipeline } from 'stream/promises';
+import { writeLibreOfficeAssetVersionModule, ASSET_VERSION_MODULE } from './libreoffice-asset-version.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -49,11 +59,32 @@ const gzipCopies = [
     { src: `${PKG_WASM}/soffice.data`, dest: `${DEST_DIR}/soffice.data.bin.gz`, name: 'soffice.data.bin.gz' },
 ];
 
+async function sha256OfStream(stream) {
+    const hash = createHash('sha256');
+    for await (const chunk of stream) hash.update(chunk);
+    return hash.digest('hex');
+}
+
+async function gzipIsUpToDate(srcPath, gzPath) {
+    if (!existsSync(gzPath)) return false;
+    try {
+        const [srcHash, gzHash] = await Promise.all([
+            sha256OfStream(createReadStream(srcPath)),
+            sha256OfStream(createReadStream(gzPath).pipe(createGunzip())),
+        ]);
+        return srcHash === gzHash;
+    } catch {
+        return false; // corrupt or truncated .gz - regenerate it
+    }
+}
+
+function sameText(a, b) {
+    // Compare modulo CRLF so a Windows checkout of an identical file isn't rewritten.
+    return a.toString('latin1').replace(/\r\n/g, '\n') === b.toString('latin1').replace(/\r\n/g, '\n');
+}
+
 async function gzipFile(srcPath, destPath) {
-    const source = createReadStream(srcPath);
-    const gzip = createGzip({ level: 6 });
-    const destination = createWriteStream(destPath);
-    await pipeline(source, gzip, destination);
+    await pipeline(createReadStream(srcPath), createGzip({ level: 6 }), createWriteStream(destPath));
 }
 
 async function main() {
@@ -68,17 +99,20 @@ async function main() {
         mkdirSync(destDir, { recursive: true });
     }
 
-    console.log('Syncing LibreOffice WASM converter assets...\n');
+    console.log('Syncing LibreOffice WASM converter assets...');
 
     for (const file of plainCopies) {
         const srcPath = join(rootDir, file.src);
         const destPath = join(rootDir, file.dest);
         if (!existsSync(srcPath)) {
-            console.warn(`⚠️  Source not found: ${file.src}`);
-            console.warn(`   Skipping ${file.name}\n`);
+            console.warn(`⚠️  Source not found: ${file.src} - skipping ${file.name}`);
             continue;
         }
         try {
+            if (existsSync(destPath) && sameText(readFileSync(srcPath), readFileSync(destPath))) {
+                console.log(`✓ ${file.name} already up to date`);
+                continue;
+            }
             copyFileSync(srcPath, destPath);
             console.log(`✓ Copied ${file.name}`);
         } catch (error) {
@@ -90,23 +124,25 @@ async function main() {
         const srcPath = join(rootDir, file.src);
         const destPath = join(rootDir, file.dest);
         if (!existsSync(srcPath)) {
-            console.warn(`⚠️  Source not found: ${file.src}`);
-            console.warn(`   Skipping ${file.name}\n`);
+            console.warn(`⚠️  Source not found: ${file.src} - skipping ${file.name}`);
             continue;
         }
         try {
-            const srcSize = statSync(srcPath).size;
-            console.log(`… Compressing ${file.name} (${(srcSize / 1024 / 1024).toFixed(1)}MB source)...`);
+            if (await gzipIsUpToDate(srcPath, destPath)) {
+                console.log(`✓ ${file.name} already up to date`);
+                continue;
+            }
+            console.log(`… Compressing ${file.name} (${(statSync(srcPath).size / 1024 / 1024).toFixed(1)}MB source)...`);
             await gzipFile(srcPath, destPath);
-            const destSize = statSync(destPath).size;
-            console.log(`✓ Wrote ${file.name} (${(destSize / 1024 / 1024).toFixed(1)}MB)`);
+            console.log(`✓ Wrote ${file.name} (${(statSync(destPath).size / 1024 / 1024).toFixed(1)}MB)`);
         } catch (error) {
             console.error(`✗ Failed to compress ${file.name}:`, error.message);
         }
     }
 
-    console.log('\nLibreOffice WASM asset sync complete!');
-    console.log('Run scripts/decompress-wasm-dev.mjs (or `npm run dev`, which does it via "predev") to refresh the local .bin copies.');
+    const { assetVersion, changed } = writeLibreOfficeAssetVersionModule(rootDir);
+    console.log(`${changed ? '✓ Wrote' : '✓'} ${ASSET_VERSION_MODULE}: ${assetVersion}`);
+    console.log('LibreOffice WASM asset sync complete.');
 }
 
 main().catch((err) => {
