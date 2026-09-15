@@ -90,6 +90,11 @@ function mimeTypeForUrl(url: string): string {
     return 'application/octet-stream';
 }
 
+function isRealContentEncoding(headers: Headers): boolean {
+    const encoding = headers.get('content-encoding');
+    return !!encoding && encoding.toLowerCase() !== 'identity';
+}
+
 // Large single fetches (the LibreOffice WASM/data files are 100-150MB) are
 // where "net::ERR_FAILED, 200 OK" has been reported from local dev - a single
 // multi-hundred-megabyte connection is simply a bigger target for anything
@@ -110,17 +115,26 @@ const RANGE_MIN_TOTAL_SIZE = RANGE_CHUNK_SIZE * 2; // not worth ranging smaller 
 async function fetchDirectAsset(url: string, onProgress?: ProgressCallback): Promise<Blob> {
     let totalBytes = 0;
     let acceptsRanges = false;
+    let isContentEncoded = false;
     try {
         const headRes = await fetch(url, { method: 'HEAD' });
         if (headRes.ok) {
             totalBytes = parseInt(headRes.headers.get('content-length') || '0', 10);
             acceptsRanges = headRes.headers.get('accept-ranges') === 'bytes';
+            isContentEncoded = isRealContentEncoding(headRes.headers);
         }
     } catch (err) {
         console.debug(`[asset-loader] HEAD check failed for ${url}, falling back to a single fetch:`, err);
     }
 
-    if (!acceptsRanges || totalBytes < RANGE_MIN_TOTAL_SIZE) {
+    // Range applies to the on-the-wire (encoded) representation, not the
+    // decoded one (RFC 9110 §14.4) - a transparently gzip-encoded resource
+    // (e.g. nginx's `gzip_static` serving a precompressed .gz sibling for the
+    // LibreOffice WASM/data files) can't be sliced this way: each requested
+    // byte range would land on an arbitrary, independently-undecodable
+    // fragment of the gzip stream rather than a piece of the real WASM bytes.
+    // Skip straight to one whole-file fetch, which the browser decodes correctly.
+    if (isContentEncoded || !acceptsRanges || totalBytes < RANGE_MIN_TOTAL_SIZE) {
         return fetchWholeAsset(url, onProgress);
     }
 
@@ -178,10 +192,16 @@ async function fetchWholeAsset(url: string, onProgress?: ProgressCallback): Prom
 
         const contentLength = res.headers.get('content-length');
         const totalBytes = contentLength ? parseInt(contentLength, 10) : 0;
+        // Content-Length reflects the on-the-wire (possibly gzip-encoded) size,
+        // but fetch() transparently decodes the body before handing it to us -
+        // a fully successful transfer of a compressed resource will legitimately
+        // deliver more bytes than that header says. Only trust it as a
+        // completeness check when the response isn't content-encoded.
+        const canVerifyLength = totalBytes > 0 && !isRealContentEncoding(res.headers);
 
         if (!res.body || totalBytes === 0 || !onProgress) {
             const blob = await res.blob();
-            if (totalBytes > 0 && blob.size !== totalBytes) {
+            if (canVerifyLength && blob.size !== totalBytes) {
                 throw new Error(`Incomplete download for ${url}: got ${blob.size} of ${totalBytes} bytes`);
             }
             onProgress?.({ loadedBytes: blob.size, totalBytes: blob.size });
@@ -206,7 +226,7 @@ async function fetchWholeAsset(url: string, onProgress?: ProgressCallback): Prom
         // reader loop exiting cleanly (no thrown error) with fewer bytes than
         // promised. Catch that here so it surfaces as a retryable failure
         // instead of silently handing back a truncated asset.
-        if (totalBytes > 0 && loadedBytes !== totalBytes) {
+        if (canVerifyLength && loadedBytes !== totalBytes) {
             throw new Error(`Incomplete download for ${url}: got ${loadedBytes} of ${totalBytes} bytes`);
         }
 
@@ -269,10 +289,14 @@ async function fetchWithProgressOnce(
 
     const contentLength = res.headers.get('content-length');
     const total = contentLength ? parseInt(contentLength, 10) : 0;
+    // See the matching note in fetchWholeAsset: Content-Length is the
+    // on-the-wire size, which won't match the decoded byte count fetch()
+    // delivers for a content-encoded response even on full success.
+    const canVerifyLength = total > 0 && !isRealContentEncoding(res.headers);
 
     if (!res.body || !onProgress) {
         const buf = await res.arrayBuffer();
-        if (total > 0 && buf.byteLength !== total) {
+        if (canVerifyLength && buf.byteLength !== total) {
             throw new Error(`Incomplete download for ${url}: got ${buf.byteLength} of ${total} bytes`);
         }
         return buf;
@@ -296,7 +320,7 @@ async function fetchWithProgressOnce(
     // end the stream early without the reader ever throwing - the response
     // still reads as 200 OK, just short. Catch that here so it surfaces as a
     // retryable error instead of silently handing back a truncated asset.
-    if (total > 0 && loaded !== total) {
+    if (canVerifyLength && loaded !== total) {
         throw new Error(`Incomplete download for ${url}: got ${loaded} of ${total} bytes`);
     }
 

@@ -7,14 +7,24 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
  * a test declare one size while delivering another to exercise the
  * truncated-download guard.
  */
-function fakeResponse(opts: { ok?: boolean; status?: number; contentLength?: number; blobSize: number }) {
-    const { ok = true, status = 200, contentLength, blobSize } = opts;
+function fakeResponse(opts: {
+    ok?: boolean;
+    status?: number;
+    contentLength?: number;
+    blobSize: number;
+    contentEncoding?: string;
+}) {
+    const { ok = true, status = 200, contentLength, blobSize, contentEncoding } = opts;
     return {
         ok,
         status,
         headers: {
-            get: (name: string) =>
-                name.toLowerCase() === 'content-length' && contentLength !== undefined ? String(contentLength) : null,
+            get: (name: string) => {
+                const n = name.toLowerCase();
+                if (n === 'content-length' && contentLength !== undefined) return String(contentLength);
+                if (n === 'content-encoding' && contentEncoding !== undefined) return contentEncoding;
+                return null;
+            },
         },
         body: null, // forces the simpler `!res.body -> res.blob()` code path (no onProgress needed)
         blob: async () => new Blob([new Uint8Array(blobSize)]),
@@ -206,5 +216,61 @@ describe('fetchAssembledBlob', () => {
         expect(blob.size).toBe(totalBytes);
         expect(attemptsPerRange.get(`bytes=0-${RANGE_CHUNK_SIZE - 1}`)).toBe(2);
         expect(attemptsPerRange.get(`bytes=${RANGE_CHUNK_SIZE * 2}-${RANGE_CHUNK_SIZE * 2}`)).toBe(1);
+    });
+
+    it('skips Range splitting for a large resource served with Content-Encoding (e.g. nginx gzip_static)', async () => {
+        // Range applies to the on-the-wire (encoded) bytes, not the decoded
+        // ones - ranging a gzip-encoded resource would fetch arbitrary,
+        // independently-undecodable fragments of the compressed stream. A
+        // large asset whose HEAD response carries Content-Encoding must fall
+        // straight through to a single whole-file fetch instead.
+        const totalBytes = 30 * 1024 * 1024; // large enough to range if it weren't encoded
+        let getRequests = 0;
+        let rangeHeaderSeen = false;
+
+        vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
+            if (url.includes('.manifest.json')) return fakeResponse({ ok: false, blobSize: 0 });
+
+            if (init?.method === 'HEAD') {
+                return fakeResponse({ contentLength: totalBytes, blobSize: 0, contentEncoding: 'gzip' });
+            }
+
+            getRequests++;
+            if ((init?.headers as Record<string, string> | undefined)?.Range) rangeHeaderSeen = true;
+            // The real decoded size exceeds the encoded Content-Length - exactly
+            // what a successful gzip transfer looks like once fetch() decodes it.
+            return fakeResponse({ contentLength: totalBytes, blobSize: totalBytes * 3, contentEncoding: 'gzip' });
+        }));
+
+        const { fetchAssembledBlob } = await import('@/lib/utils/asset-loader');
+        const promise = fetchAssembledBlob('/test/gzip-encoded-large.bin');
+        await vi.runAllTimersAsync();
+        const blob = await promise;
+
+        expect(rangeHeaderSeen).toBe(false);
+        expect(getRequests).toBe(1);
+        expect(blob.size).toBe(totalBytes * 3);
+    });
+
+    it('does not mistake a decoded gzip body for a truncated download', async () => {
+        // fetchWholeAsset's own integrity check must not compare the decoded
+        // byte count fetch() delivers against the encoded Content-Length -
+        // that legitimately differs on a fully successful transfer.
+        vi.stubGlobal('fetch', vi.fn(async (url: string, init?: RequestInit) => {
+            if (url.includes('.manifest.json')) return fakeResponse({ ok: false, blobSize: 0 });
+            if (init?.method === 'HEAD') {
+                // Small enough (and/or unranged) that fetchDirectAsset goes
+                // straight to fetchWholeAsset regardless.
+                return fakeResponse({ contentLength: 5, blobSize: 0 });
+            }
+            return fakeResponse({ contentLength: 5, blobSize: 20, contentEncoding: 'gzip' });
+        }));
+
+        const { fetchAssembledBlob } = await import('@/lib/utils/asset-loader');
+        const promise = fetchAssembledBlob('/test/gzip-encoded-small.bin');
+        await vi.runAllTimersAsync();
+        const blob = await promise;
+
+        expect(blob.size).toBe(20);
     });
 });
