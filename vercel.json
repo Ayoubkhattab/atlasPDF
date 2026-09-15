@@ -45,7 +45,7 @@
       ]
     },
     {
-      "source": "/libreoffice-wasm/soffice.wasm.gz",
+      "source": "/libreoffice-wasm/soffice.wasm.bin.gz",
       "headers": [
         { "key": "Content-Type", "value": "application/wasm" },
         { "key": "Content-Encoding", "value": "gzip" },
@@ -53,7 +53,7 @@
       ]
     },
     {
-      "source": "/libreoffice-wasm/soffice.data.gz",
+      "source": "/libreoffice-wasm/soffice.data.bin.gz",
       "headers": [
         { "key": "Content-Type", "value": "application/octet-stream" },
         { "key": "Content-Encoding", "value": "gzip" },

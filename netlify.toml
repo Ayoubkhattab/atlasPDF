@@ -127,7 +127,7 @@
     Cache-Control = "public, max-age=31536000, immutable"
 
 [[headers]]
-  for = "/libreoffice-wasm/soffice.wasm.gz"
+  for = "/libreoffice-wasm/soffice.wasm.bin.gz"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
     Content-Type = "application/wasm"
@@ -137,7 +137,7 @@
     Cross-Origin-Resource-Policy = "cross-origin"
 
 [[headers]]
-  for = "/libreoffice-wasm/soffice.data.gz"
+  for = "/libreoffice-wasm/soffice.data.bin.gz"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
     Content-Type = "application/octet-stream"
