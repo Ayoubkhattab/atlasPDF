@@ -146,7 +146,7 @@ export const RecentFilesDropdown: React.FC<RecentFilesDropdownProps> = ({
 
       {isOpen && (
         <div
-          className="absolute right-0 top-full mt-2 w-80 max-h-96 overflow-auto rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background)] shadow-lg z-50"
+          className="absolute end-0 top-full mt-2 w-80 max-h-96 overflow-auto rounded-[var(--radius-lg)] border border-[var(--color-border)] bg-[var(--color-background)] shadow-lg z-50"
           role="menu"
           aria-label={translations.title}
         >
@@ -161,10 +161,10 @@ export const RecentFilesDropdown: React.FC<RecentFilesDropdownProps> = ({
                   clearAll();
                   setIsOpen(false);
                 }}
-                className="text-xs text-[var(--color-muted-foreground)] hover:text-[var(--color-destructive)] transition-colors flex items-center gap-1"
+                className="text-xs font-medium text-[var(--color-foreground)] hover:text-[var(--color-destructive)] hover:underline underline-offset-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-ring)] rounded-sm transition-colors flex items-center gap-1.5 flex-shrink-0"
                 aria-label={translations.clearAll}
               >
-                <Trash2 className="h-3 w-3" aria-hidden="true" />
+                <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                 {translations.clearAll}
               </button>
             )}
