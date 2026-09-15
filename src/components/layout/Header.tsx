@@ -226,9 +226,9 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
             {showSearch && (
               <div className="relative" ref={searchContainerRef}>
                 {isSearchOpen ? (
-                  <div className="fixed md:absolute left-4 right-4 md:left-auto md:right-0 top-[22px] md:top-1/2 md:-translate-y-1/2 z-50 md:origin-right animate-in fade-in slide-in-from-right-4 duration-200">
+                  <div className="fixed md:absolute inset-x-4 md:inset-x-auto md:end-0 top-[22px] md:top-1/2 md:-translate-y-1/2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
                     <div className="relative w-full md:w-96">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-muted-foreground)]" />
+                      <Search className="absolute start-3 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-muted-foreground)]" />
                       <input
                         ref={searchInputRef}
                         type="search"
@@ -245,7 +245,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
                         size="sm"
                         onClick={handleSearchToggle}
                         aria-label="Close search"
-                        className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-transparent"
+                        className="absolute end-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 hover:bg-transparent"
                       >
                         <X className="h-4 w-4 text-[var(--color-muted-foreground)]" aria-hidden="true" />
                       </Button>
@@ -265,7 +265,7 @@ export const Header: React.FC<HeaderProps> = ({ locale, showSearch = true }) => 
                                     onClick={() => navigateToTool(result.tool.slug)}
                                     onMouseEnter={() => setSelectedIndex(index)}
                                     className={`
-                                      w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors
+                                      w-full px-4 py-2.5 text-start flex items-center gap-3 transition-colors
                                       ${index === selectedIndex
                                         ? 'bg-[color-mix(in_srgb,var(--color-primary)_10%,transparent)] text-[var(--color-primary)]'
                                         : 'hover:bg-[var(--color-muted)] text-[var(--color-foreground)]'
