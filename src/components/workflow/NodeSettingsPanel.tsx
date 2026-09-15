@@ -1048,11 +1048,11 @@ const getToolSettingsConfig = (): Record<string, ToolSettingsConfig> => ({
 
     // ==================== PowerPoint to PDF ====================
     'ppt-to-pdf': {
-        titleKey: 'pptToPdf.optionsTitle',
+        titleKey: 'pptxToPdf.optionsTitle',
         fields: [],
     },
     'pptx-to-pdf': {
-        titleKey: 'pptToPdf.optionsTitle',
+        titleKey: 'pptxToPdf.optionsTitle',
         fields: [],
     },
 

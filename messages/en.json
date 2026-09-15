@@ -1926,6 +1926,7 @@
       "successMessage": "N-Up PDF created successfully! Click the download button to save your file."
     },
     "splitPdf": {
+      "optionsTitle": "Split Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file here, or click to browse.",
       "splitModeTitle": "Split Method",
@@ -1962,6 +1963,7 @@
       "downloadZip": "Download All as ZIP"
     },
     "deletePages": {
+      "optionsTitle": "Delete Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file here, or click to browse.",
       "selectTitle": "Select Pages to Delete",
@@ -1974,6 +1976,7 @@
       "successMessage": "Pages deleted successfully! Click the download button to save your file."
     },
     "extractPages": {
+      "optionsTitle": "Extract Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file here, or click to browse.",
       "selectTitle": "Select Pages to Extract",
@@ -2077,6 +2080,7 @@
       "errorType": "Please select a .pem, .crt, .cer, or .der certificate file."
     },
     "pdfMultiTool": {
+      "optionsTitle": "Multi-Tool Options",
       "uploadLabel": "Upload PDF Files",
       "uploadDescription": "Drag and drop PDF files here, or click to browse. You can upload multiple files.",
       "addMoreFiles": "Add More PDF Files",
@@ -2106,6 +2110,7 @@
       "successMessage": "PDF processed successfully! Click the download button to save your file."
     },
     "viewMetadata": {
+      "optionsTitle": "View Metadata Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file here to view its metadata.",
       "documentProperties": "Document Properties",
@@ -2128,6 +2133,7 @@
       "successMessage": "Metadata extracted successfully! You can export it as JSON if needed."
     },
     "editMetadata": {
+      "optionsTitle": "Metadata Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file here to edit its metadata.",
       "editTitle": "Edit Document Properties",
@@ -2150,6 +2156,7 @@
       "successMessage": "Metadata updated successfully! Click the download button to save your file."
     },
     "editPdf": {
+      "optionsTitle": "Edit Options",
       "uploadLabel": "Upload PDF to Edit",
       "uploadDescription": "Drag and drop a PDF file here, or click to browse.",
       "instructions": "How to use",
@@ -2263,6 +2270,7 @@
       "saved": "Saved:"
     },
     "signPdf": {
+      "optionsTitle": "Signature Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file to sign.",
       "instructionsTitle": "How to Sign",
@@ -2295,6 +2303,7 @@
       "page": "Page"
     },
     "organizePdf": {
+      "optionsTitle": "Organize Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file to organize pages.",
       "reorderTitle": "Drag to Reorder Pages",
@@ -2309,6 +2318,7 @@
       "cannotDeleteLast": "Cannot delete the last page"
     },
     "repairPdf": {
+      "optionsTitle": "Repair Options",
       "uploadLabel": "Upload PDF Files",
       "uploadDescription": "Drag and drop PDF files to repair.",
       "filesTitle": "Files to Repair",
@@ -2329,6 +2339,7 @@
       "successMessage": "Pages divided successfully!"
     },
     "extractAttachments": {
+      "optionsTitle": "Attachment Extraction Options",
       "uploadLabel": "Upload PDF Files",
       "uploadDescription": "Select PDF files to extract attachments from.",
       "filesTitle": "Selected Files",
@@ -2380,6 +2391,7 @@
       "successHint": "Remember to save your passwords securely."
     },
     "decryptPdf": {
+      "optionsTitle": "Decryption Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop an encrypted PDF file.",
       "passwordTitle": "Enter Password",
@@ -2411,6 +2423,7 @@
       "evenPages": "Even Pages"
     },
     "rotateCustom": {
+      "optionsTitle": "Rotation Options",
       "title": "Custom Rotation",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file here, or click to browse.",
@@ -2437,6 +2450,7 @@
       "successMessage": "Blank pages added successfully! Click the download button to save your file."
     },
     "reversePages": {
+      "optionsTitle": "Reverse Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file to reverse page order.",
       "infoTitle": "Reverse Page Order",
@@ -2490,6 +2504,7 @@
       "successMessage": "Attachments added successfully! Click the download button to save your file."
     },
     "editAttachments": {
+      "optionsTitle": "Attachment Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Select a PDF file to view and manage its attachments.",
       "loadingAttachments": "Loading attachments...",
@@ -2505,6 +2520,7 @@
       "successMessage": "Attachments removed successfully! Click the download button to save your file."
     },
     "comparePdfs": {
+      "optionsTitle": "Comparison Options",
       "file1Label": "First PDF (Original)",
       "uploadFile1": "Upload First PDF",
       "file2Label": "Second PDF (Modified)",
@@ -2594,6 +2610,7 @@
       "languageHint": "Select languages used in your text for proper font support"
     },
     "jsonToPdf": {
+      "optionsTitle": "Conversion Options",
       "uploadLabel": "Upload JSON File",
       "uploadDescription": "Drag and drop a JSON file.",
       "convertButton": "Convert to PDF",
@@ -2711,6 +2728,7 @@
       "optimizedSize": "Optimized:"
     },
     "pageDimensions": {
+      "optionsTitle": "Page Dimensions Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file here, or click to browse.",
       "displayOptions": "Display Options",
@@ -2860,6 +2878,7 @@
       "successMessage": "Page sizes fixed successfully!"
     },
     "bookmark": {
+      "optionsTitle": "Bookmark Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file to edit bookmarks.",
       "pdfPreview": "PDF Preview",
@@ -3006,12 +3025,14 @@
       "successMessage": "Header & footer added successfully!"
     },
     "invertColors": {
+      "optionsTitle": "Invert Colors Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file.",
       "invertButton": "Invert Colors",
       "successMessage": "Colors inverted successfully!"
     },
     "backgroundColor": {
+      "optionsTitle": "Background Color Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file.",
       "colorLabel": "Background Color",
@@ -3019,6 +3040,7 @@
       "successMessage": "Background color applied successfully!"
     },
     "textColor": {
+      "optionsTitle": "Text Color Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file.",
       "colorLabel": "Text Color",
@@ -3044,6 +3066,18 @@
       "saveFailed": "Failed to save stamped PDF. Please try again.",
       "successMessage": "Stamps added successfully!"
     },
+    "addStamps": {
+      "optionsTitle": "Stamp Options",
+      "stampType": "Stamp Type",
+      "typeApproved": "Approved",
+      "typeConfidential": "Confidential",
+      "typeDraft": "Draft",
+      "typeFinal": "Final",
+      "typeCustom": "Custom",
+      "position": "Position",
+      "posCenter": "Center",
+      "scale": "Scale"
+    },
     "removeAnnotations": {
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file.",
@@ -3056,12 +3090,14 @@
       "removeLinks": "Remove Links"
     },
     "formFiller": {
+      "optionsTitle": "Form Filler Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF form.",
       "saveButton": "Save Form",
       "successMessage": "Form saved successfully!"
     },
     "formCreator": {
+      "optionsTitle": "Form Creator Options",
       "uploadLabel": "Upload PDF File",
       "uploadDescription": "Drag and drop a PDF file here.",
       "toolbarTitle": "Toolbar",
@@ -3268,6 +3304,7 @@
       "successMessage": "Your PDF has been converted to PowerPoint. Each page is now a slide with full-quality images."
     },
     "wordToPdf": {
+      "optionsTitle": "Conversion Options",
       "uploadLabel": "Upload Word Document",
       "uploadDescription": "Drag and drop a Word document (.docx) here, or click to browse.",
       "convertButton": "Convert to PDF",
@@ -3280,42 +3317,49 @@
       "successMessage": "PSD converted to PDF successfully! Click the download button to save your file."
     },
     "excelToPdf": {
+      "optionsTitle": "Conversion Options",
       "uploadLabel": "Upload Excel File",
       "uploadDescription": "Drag and drop an Excel file (.xlsx) here, or click to browse.",
       "convertButton": "Convert to PDF",
       "successMessage": "Your Excel file has been successfully converted to PDF!"
     },
     "pptxToPdf": {
+      "optionsTitle": "Conversion Options",
       "uploadLabel": "Upload PowerPoint File",
       "uploadDescription": "Drag and drop a PowerPoint file (.pptx) here, or click to browse.",
       "convertButton": "Convert to PDF",
       "successMessage": "Your PowerPoint file has been successfully converted to PDF!"
     },
     "xpsToPdf": {
+      "optionsTitle": "Conversion Options",
       "uploadLabel": "Upload XPS File",
       "uploadDescription": "Drag and drop an XPS file here, or click to browse.",
       "convertButton": "Convert to PDF",
       "successMessage": "Your XPS file has been successfully converted to PDF!"
     },
     "rtfToPdf": {
+      "optionsTitle": "Conversion Options",
       "uploadLabel": "Upload RTF File",
       "uploadDescription": "Drag and drop an RTF file here, or click to browse.",
       "convertButton": "Convert to PDF",
       "successMessage": "Your RTF file has been successfully converted to PDF!"
     },
     "epubToPdf": {
+      "optionsTitle": "Conversion Options",
       "uploadLabel": "Upload EPUB File",
       "uploadDescription": "Drag and drop an EPUB e-book file here, or click to browse.",
       "convertButton": "Convert to PDF",
       "successMessage": "Your EPUB file has been successfully converted to PDF!"
     },
     "mobiToPdf": {
+      "optionsTitle": "Conversion Options",
       "uploadLabel": "Upload MOBI File",
       "uploadDescription": "Drag and drop a MOBI/AZW e-book file here, or click to browse.",
       "convertButton": "Convert to PDF",
       "successMessage": "Your MOBI file has been successfully converted to PDF!"
     },
     "fb2ToPdf": {
+      "optionsTitle": "Conversion Options",
       "uploadLabel": "Upload FB2 Files",
       "uploadDescription": "Drag and drop FB2 e-book files here, or click to browse. Supports multiple files.",
       "convertButton": "Convert to PDF",
