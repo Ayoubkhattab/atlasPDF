@@ -16,6 +16,7 @@ import type {
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor, createPDFError } from '../processor';
 import { loadPdfLib } from '../loader';
+import { normalizeDigits } from '@/lib/utils/digits';
 
 /**
  * Default split options
@@ -299,7 +300,7 @@ function generateSplitFilename(
  */
 export function parsePageRanges(rangeString: string, totalPages: number): PageRange[] {
   const ranges: PageRange[] = [];
-  const parts = rangeString.split(',').map(s => s.trim()).filter(s => s.length > 0);
+  const parts = normalizeDigits(rangeString).split(',').map(s => s.trim()).filter(s => s.length > 0);
 
   for (const part of parts) {
     if (part.includes('-')) {

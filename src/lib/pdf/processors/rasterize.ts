@@ -13,6 +13,7 @@ import type {
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
 import { loadPdfjs } from '../loader';
+import { normalizeDigits } from '@/lib/utils/digits';
 
 /**
  * Output image format
@@ -66,7 +67,7 @@ function parsePageRange(rangeStr: string, totalPages: number): number[] {
     }
 
     const pages = new Set<number>();
-    const parts = rangeStr.split(',').map(p => p.trim());
+    const parts = normalizeDigits(rangeStr).split(',').map(p => p.trim());
 
     for (const part of parts) {
         if (part.includes('-')) {

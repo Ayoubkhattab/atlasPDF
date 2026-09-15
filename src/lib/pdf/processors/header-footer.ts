@@ -7,6 +7,7 @@ import type { ProcessInput, ProcessOutput, ProgressCallback } from '@/types/pdf'
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
 import { loadPdfLib } from '../loader';
+import { normalizeDigits } from '@/lib/utils/digits';
 
 export interface HeaderFooterOptions {
   header?: {
@@ -75,7 +76,7 @@ export class HeaderFooterProcessor extends BasePDFProcessor {
           return new Set(Array.from({ length: totalPages }, (_, i) => i));
         }
         const pages = new Set<number>();
-        const ranges = rangeStr.split(',').map(s => s.trim());
+        const ranges = normalizeDigits(rangeStr).split(',').map(s => s.trim());
         for (const range of ranges) {
           if (range.includes('-')) {
             const [start, end] = range.split('-').map(s => parseInt(s.trim()));

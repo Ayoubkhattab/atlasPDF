@@ -89,6 +89,7 @@ import { OverlayPDFProcessor } from '@/lib/pdf/processors/overlay';
 import { PageLabelsProcessor, type PageLabelRule } from '@/lib/pdf/processors/page-labels';
 import { PDFToMarkdownProcessor } from '@/lib/pdf/processors/pdf-to-markdown';
 import { loadPdfLib } from '@/lib/pdf/loader';
+import { normalizeDigits } from '@/lib/utils/digits';
 import { SmartDataRedactorProcessor } from '@/lib/pdf/processors/smart-data-redactor';
 import { PDFToCBZProcessor } from '@/lib/pdf/processors/pdf-to-cbz';
 import { PDFToSlideProcessor } from '@/lib/pdf/processors/pdf-to-slide';
@@ -416,16 +417,24 @@ export async function executeNode(
 
             case 'extract-pages': {
                 if (files.length === 0) throw new Error('No input file');
-                const pageRange = String(settings.pageRange || '1');
+                const pageRangeStr = String(settings.pageRange || '1');
+                const pdfLib = await loadPdfLib();
+                const totalPages = (await pdfLib.PDFDocument.load(await files[0].arrayBuffer())).getPageCount();
+                const { parsePageSelection } = await import('@/lib/pdf/processors/extract');
+                const pages = parsePageSelection(pageRangeStr, totalPages);
                 const processor = new ExtractPagesPDFProcessor();
-                return await processor.process(createProcessInput(files, { pageRange }), onProgress);
+                return await processor.process(createProcessInput(files, { pages }), onProgress);
             }
 
             case 'delete-pages': {
                 if (files.length === 0) throw new Error('No input file');
-                const pageRange = String(settings.pageRange || '1');
+                const pageRangeStr = String(settings.pageRange || '1');
+                const pdfLib = await loadPdfLib();
+                const totalPages = (await pdfLib.PDFDocument.load(await files[0].arrayBuffer())).getPageCount();
+                const { parsePageSelection } = await import('@/lib/pdf/processors/delete');
+                const pages = parsePageSelection(pageRangeStr, totalPages);
                 const processor = new DeletePagesPDFProcessor();
-                return await processor.process(createProcessInput(files, { pageRange }), onProgress);
+                return await processor.process(createProcessInput(files, { pages }), onProgress);
             }
 
             case 'rotate-pdf': {
@@ -824,7 +833,7 @@ export async function executeNode(
                 // Parse page range if provided (e.g., "1-5, 8, 10-12")
                 let pages: number[] = [];
                 if (settings.pageRange && typeof settings.pageRange === 'string') {
-                    const pageRangeStr = String(settings.pageRange).trim();
+                    const pageRangeStr = normalizeDigits(String(settings.pageRange).trim());
                     if (pageRangeStr) {
                         const parts = pageRangeStr.split(',').map(s => s.trim()).filter(s => s.length > 0);
                         for (const part of parts) {

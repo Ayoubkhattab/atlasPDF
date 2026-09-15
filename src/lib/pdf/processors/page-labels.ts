@@ -14,6 +14,7 @@ import type {
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
 import { loadPdfLib } from '../loader';
+import { normalizeDigits } from '@/lib/utils/digits';
 
 export interface PageLabelRule {
   /** 1-based page range string (e.g. "1-5", "odd", "even", "10-20,30-40" or empty for all) */
@@ -211,7 +212,7 @@ export class PageLabelsProcessor extends BasePDFProcessor {
  */
 function parsePageRange(rangeStr: string, totalPages: number): Set<number> {
   const indices = new Set<number>();
-  const normalized = rangeStr.trim().toLowerCase();
+  const normalized = normalizeDigits(rangeStr).trim().toLowerCase();
 
   // If page range is left empty, apply to all pages in the document
   if (!normalized) {

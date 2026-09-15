@@ -17,6 +17,7 @@ import type {
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
 import { loadPyMuPDF } from '../pymupdf-loader';
+import { normalizeDigits } from '@/lib/utils/digits';
 
 /**
  * Font to Outline options
@@ -94,7 +95,7 @@ export class FontToOutlineProcessor extends BasePDFProcessor {
             const result = await pymupdf.fontToOutline(file, {
                 dpi: outlineOptions.dpi,
                 preserveSelectableText: outlineOptions.preserveSelectableText,
-                pageRange: outlineOptions.pageRange,
+                pageRange: normalizeDigits(outlineOptions.pageRange),
             });
 
             if (this.checkCancelled()) {

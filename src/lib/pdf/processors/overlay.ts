@@ -13,6 +13,7 @@ import type {
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
 import { loadPdfLib } from '../loader';
+import { normalizeDigits } from '@/lib/utils/digits';
 
 export interface OverlayOptions {
   /** 'overlay' puts the layer PDF on top, 'underlay' puts it underneath */
@@ -213,7 +214,7 @@ export class OverlayPDFProcessor extends BasePDFProcessor {
  */
 function parsePageRange(rangeStr: string, totalPages: number): Set<number> {
   const result = new Set<number>();
-  const normalized = rangeStr.trim().toLowerCase();
+  const normalized = normalizeDigits(rangeStr).trim().toLowerCase();
 
   if (!normalized) {
     // Default: Apply to all pages

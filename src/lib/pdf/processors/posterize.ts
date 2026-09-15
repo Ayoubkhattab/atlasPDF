@@ -14,6 +14,7 @@ import type {
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
 import { loadPdfLib } from '../loader';
+import { normalizeDigits } from '@/lib/utils/digits';
 
 /**
  * Posterize options
@@ -69,7 +70,7 @@ function parsePageRanges(rangeStr: string, totalPages: number): number[] {
   }
 
   const pages = new Set<number>();
-  const parts = rangeStr.split(',');
+  const parts = normalizeDigits(rangeStr).split(',');
 
   for (const part of parts) {
     const trimmed = part.trim();

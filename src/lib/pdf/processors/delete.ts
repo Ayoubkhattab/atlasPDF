@@ -14,6 +14,7 @@ import type {
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
 import { loadPdfLib } from '../loader';
+import { normalizeDigits } from '@/lib/utils/digits';
 
 /**
  * Delete options for page deletion
@@ -244,7 +245,10 @@ function generateDeletedFilename(originalName: string, deletedCount: number): st
  */
 export function parsePageSelection(selectionString: string, totalPages: number): number[] {
   const pages: number[] = [];
-  const parts = selectionString.split(',').map(s => s.trim()).filter(s => s.length > 0);
+  // Normalize Arabic-Indic digits / Arabic comma before parsing, so text
+  // typed on an Arabic keyboard (e.g. "١، ٣، ٥") is recognized the same as
+  // "1,3,5" instead of silently parsing to an empty selection.
+  const parts = normalizeDigits(selectionString).split(',').map(s => s.trim()).filter(s => s.length > 0);
 
   for (const part of parts) {
     if (part.includes('-')) {

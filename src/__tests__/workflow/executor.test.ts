@@ -437,6 +437,84 @@ describe('Workflow Executor', () => {
         });
     });
 
+    describe('executeNode - extract-pages', () => {
+        it('extracts the pages named by the pageRange setting', async () => {
+            const { executeNode } = await import('@/lib/workflow/executor');
+            const pdfFile = await createRealPDFFile('doc.pdf', 5);
+            const node = buildNode('extract-pages', { pageRange: '2,4' });
+
+            const result = await executeNode(node, [pdfFile]);
+
+            expect(result.success).toBe(true);
+            expect(result.result).toBeInstanceOf(Blob);
+            expect(result.metadata?.extractedPageCount ?? result.metadata?.pageCount).toBe(2);
+        });
+
+        it('regression: fails with a page-count error instead of losing the selection', async () => {
+            // Guards against the executor passing `pageRange` (a string) through
+            // to a processor whose options only recognize `pages` (number[]) -
+            // that mismatch silently drops the selection and always fails with
+            // "At least one page is required", no matter what the user picked.
+            const { executeNode } = await import('@/lib/workflow/executor');
+            const pdfFile = await createRealPDFFile('doc.pdf', 5);
+            const node = buildNode('extract-pages', { pageRange: '2' });
+
+            const result = await executeNode(node, [pdfFile]);
+
+            expect(result.success).toBe(true);
+        });
+
+        it('regression: a page range typed with Arabic-Indic digits is not silently dropped', async () => {
+            // Arabic keyboard layouts emit Arabic-Indic digits (٠-٩) for the
+            // number row, which plain parseInt() reads as NaN - reproducing
+            // the exact same "At least one page is required" failure even
+            // though the user did type a page number.
+            const { executeNode } = await import('@/lib/workflow/executor');
+            const pdfFile = await createRealPDFFile('doc.pdf', 5);
+            const node = buildNode('extract-pages', { pageRange: '٢،٤' });
+
+            const result = await executeNode(node, [pdfFile]);
+
+            expect(result.success).toBe(true);
+            expect(result.metadata?.extractedPageCount).toBe(2);
+        });
+    });
+
+    describe('executeNode - delete-pages', () => {
+        it('deletes the pages named by the pageRange setting', async () => {
+            const { executeNode } = await import('@/lib/workflow/executor');
+            const pdfFile = await createRealPDFFile('doc.pdf', 5);
+            const node = buildNode('delete-pages', { pageRange: '2,4' });
+
+            const result = await executeNode(node, [pdfFile]);
+
+            expect(result.success).toBe(true);
+            expect(result.result).toBeInstanceOf(Blob);
+            expect(result.metadata?.remainingPageCount).toBe(3);
+        });
+
+        it('regression: selecting a page no longer fails with "at least one page is required"', async () => {
+            const { executeNode } = await import('@/lib/workflow/executor');
+            const pdfFile = await createRealPDFFile('doc.pdf', 5);
+            const node = buildNode('delete-pages', { pageRange: '3' });
+
+            const result = await executeNode(node, [pdfFile]);
+
+            expect(result.success).toBe(true);
+        });
+
+        it('regression: a page range typed with Arabic-Indic digits is not silently dropped', async () => {
+            const { executeNode } = await import('@/lib/workflow/executor');
+            const pdfFile = await createRealPDFFile('doc.pdf', 5);
+            const node = buildNode('delete-pages', { pageRange: '٣' });
+
+            const result = await executeNode(node, [pdfFile]);
+
+            expect(result.success).toBe(true);
+            expect(result.metadata?.remainingPageCount).toBe(4);
+        });
+    });
+
     describe('executeNode - timestamp-pdf', () => {
         it('applies a local timestamp with the default profile', async () => {
             const { executeNode } = await import('@/lib/workflow/executor');

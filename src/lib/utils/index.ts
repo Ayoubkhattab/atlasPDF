@@ -14,3 +14,6 @@ export * from './search';
 
 // Export performance utilities
 export * from './performance';
+
+// Export digit/punctuation normalization utilities
+export * from './digits';
