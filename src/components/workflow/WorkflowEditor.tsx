@@ -122,6 +122,9 @@ function WorkflowEditorContent() {
     // AbortController for cancelling workflow execution
     const executionAbortController = useRef<AbortController | null>(null);
     const lastToolDropRef = useRef<{ toolId: string; clientX: number; clientY: number; time: number } | null>(null);
+    // The same native drop event can reach more than one React handler while it
+    // bubbles; remember the last one handled so a node is only created once.
+    const handledDropEventRef = useRef<DragEvent | null>(null);
     // Cache completed node outputs across steps to support resume/retry
     const completedNodeOutputsRef = useRef<Map<string, (Blob | WorkflowOutputFile)[]>>(new Map());
 
@@ -408,6 +411,11 @@ function WorkflowEditorContent() {
             event.preventDefault();
 
             if (!reactFlowWrapper.current || !reactFlowInstance) return;
+
+            // Ignore the repeat invocation when one drop bubbles through
+            // several handlers, otherwise the tool is added twice.
+            if (handledDropEventRef.current === event.nativeEvent) return;
+            handledDropEventRef.current = event.nativeEvent;
 
             // Try to resolve nodeData from global variable first, fallback to dataTransfer for WebView2 compatibility
             let nodeData: ToolNodeData | null = globalDragData;
@@ -1270,8 +1278,6 @@ function WorkflowEditorContent() {
                         onEdgesChange={onEdgesChange}
                         onConnect={onConnect}
                         onInit={setReactFlowInstance}
-                        onDrop={onDrop}
-                        onDragOver={onDragOver}
                         onNodeClick={onNodeClick}
                         onNodesDelete={handleNodesDeleted}
                         nodeTypes={nodeTypes}
