@@ -24,6 +24,196 @@ export type ProgressCallback = (progress: FetchProgress) => void;
 
 const CACHE_NAME = 'atlaspdf-wasm-cache-v1';
 
+// Large same-origin transfers (the LibreOffice WASM/data files are 100-150MB)
+// have been observed failing mid-stream with a bare "net::ERR_FAILED" even
+// though the server sent a normal 200 response and (verified separately with
+// curl) the full file - this matches known behavior of local antivirus/VPN
+// web-protection proxies that intercept localhost traffic and occasionally
+// drop large streamed bodies. A short retry gives those an easy way to
+// succeed on a second attempt instead of failing the whole tool outright.
+const MAX_FETCH_ATTEMPTS = 3;
+const RETRY_BASE_DELAY_MS = 1500;
+
+function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function withRetry<T>(
+    label: string,
+    fn: () => Promise<T>,
+    maxAttempts: number = MAX_FETCH_ATTEMPTS
+): Promise<T> {
+    let lastError: unknown;
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            return await fn();
+        } catch (err) {
+            lastError = err;
+            if (attempt < maxAttempts) {
+                const delay = RETRY_BASE_DELAY_MS * attempt;
+                console.warn(
+                    `[asset-loader] ${label}: attempt ${attempt}/${maxAttempts} failed, retrying in ${delay}ms:`,
+                    err
+                );
+                await sleep(delay);
+            }
+        }
+    }
+    throw lastError;
+}
+
+/**
+ * Run `tasks` with at most `limit` running concurrently, preserving order in
+ * the returned array (task i's result lands at index i regardless of finish
+ * order).
+ */
+async function mapWithConcurrency<T>(count: number, limit: number, task: (index: number) => Promise<T>): Promise<T[]> {
+    const results: T[] = new Array(count);
+    let next = 0;
+    const workers = Array.from({ length: Math.min(limit, count) }, async () => {
+        while (next < count) {
+            const i = next++;
+            results[i] = await task(i);
+        }
+    });
+    await Promise.all(workers);
+    return results;
+}
+
+function mimeTypeForUrl(url: string): string {
+    const lowerUrl = url.toLowerCase();
+    if (lowerUrl.includes('.wasm')) return 'application/wasm';
+    if (lowerUrl.includes('.js')) return 'application/javascript';
+    if (lowerUrl.includes('.ttf')) return 'font/ttf';
+    if (lowerUrl.includes('.otf')) return 'font/otf';
+    if (lowerUrl.includes('.woff2')) return 'font/woff2';
+    return 'application/octet-stream';
+}
+
+// Large single fetches (the LibreOffice WASM/data files are 100-150MB) are
+// where "net::ERR_FAILED, 200 OK" has been reported from local dev - a single
+// multi-hundred-megabyte connection is simply a bigger target for anything
+// that can interrupt a long-lived transfer. Splitting into modest, independently
+// retryable range requests (the server already advertises "Accept-Ranges: bytes")
+// means a hiccup costs one small re-fetch instead of restarting the whole file,
+// and no single request stays open anywhere near as long.
+const RANGE_CHUNK_SIZE = 10 * 1024 * 1024; // 10MB
+const RANGE_CONCURRENCY = 4;
+const RANGE_MIN_TOTAL_SIZE = RANGE_CHUNK_SIZE * 2; // not worth ranging smaller files
+
+/**
+ * Fetch a same-origin URL in small Range-request pieces when the server
+ * supports it and the file is large enough to benefit, falling back to a
+ * single retried fetch otherwise (small file, or a server/proxy that doesn't
+ * pass Range/Accept-Ranges through).
+ */
+async function fetchDirectAsset(url: string, onProgress?: ProgressCallback): Promise<Blob> {
+    let totalBytes = 0;
+    let acceptsRanges = false;
+    try {
+        const headRes = await fetch(url, { method: 'HEAD' });
+        if (headRes.ok) {
+            totalBytes = parseInt(headRes.headers.get('content-length') || '0', 10);
+            acceptsRanges = headRes.headers.get('accept-ranges') === 'bytes';
+        }
+    } catch (err) {
+        console.debug(`[asset-loader] HEAD check failed for ${url}, falling back to a single fetch:`, err);
+    }
+
+    if (!acceptsRanges || totalBytes < RANGE_MIN_TOTAL_SIZE) {
+        return fetchWholeAsset(url, onProgress);
+    }
+
+    const numChunks = Math.ceil(totalBytes / RANGE_CHUNK_SIZE);
+    const chunkLoaded = new Array(numChunks).fill(0);
+    const reportProgress = () => {
+        onProgress?.({ loadedBytes: chunkLoaded.reduce((a, b) => a + b, 0), totalBytes });
+    };
+    onProgress?.({ loadedBytes: 0, totalBytes });
+
+    try {
+        const parts = await mapWithConcurrency(numChunks, RANGE_CONCURRENCY, (i) => {
+            const start = i * RANGE_CHUNK_SIZE;
+            const end = Math.min(start + RANGE_CHUNK_SIZE, totalBytes) - 1;
+            const expectedLength = end - start + 1;
+
+            return withRetry(`${url} [range ${i + 1}/${numChunks}]`, async () => {
+                chunkLoaded[i] = 0;
+                const res = await fetch(url, { headers: { Range: `bytes=${start}-${end}` } });
+                if (res.status !== 206 && res.status !== 200) {
+                    throw new Error(`Range request failed for ${url}: HTTP ${res.status}`);
+                }
+                const buf = await res.arrayBuffer();
+                if (buf.byteLength !== expectedLength) {
+                    throw new Error(
+                        `Incomplete range for ${url} [${start}-${end}]: got ${buf.byteLength} of ${expectedLength} bytes`
+                    );
+                }
+                chunkLoaded[i] = buf.byteLength;
+                reportProgress();
+                return new Uint8Array(buf);
+            });
+        });
+
+        return new Blob(parts as unknown as BlobPart[], { type: mimeTypeForUrl(url) });
+    } catch (err) {
+        console.warn(`[asset-loader] Ranged fetch failed for ${url}, falling back to a single whole-file fetch:`, err);
+        return fetchWholeAsset(url, onProgress);
+    }
+}
+
+/**
+ * Fetch a URL as one request (no Range splitting), retrying on transient
+ * failures and rejecting a response that's shorter than its declared
+ * Content-Length (see MAX_FETCH_ATTEMPTS / the truncation note below).
+ */
+async function fetchWholeAsset(url: string, onProgress?: ProgressCallback): Promise<Blob> {
+    return withRetry(url, async () => {
+        onProgress?.({ loadedBytes: 0, totalBytes: 0 });
+
+        const res = await fetch(url);
+        if (!res.ok) {
+            throw new Error(`Failed to fetch asset: ${url} (HTTP ${res.status})`);
+        }
+
+        const contentLength = res.headers.get('content-length');
+        const totalBytes = contentLength ? parseInt(contentLength, 10) : 0;
+
+        if (!res.body || totalBytes === 0 || !onProgress) {
+            const blob = await res.blob();
+            if (totalBytes > 0 && blob.size !== totalBytes) {
+                throw new Error(`Incomplete download for ${url}: got ${blob.size} of ${totalBytes} bytes`);
+            }
+            onProgress?.({ loadedBytes: blob.size, totalBytes: blob.size });
+            return blob;
+        }
+
+        const reader = res.body.getReader();
+        let loadedBytes = 0;
+        const chunks: Uint8Array[] = [];
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            if (value) {
+                chunks.push(value);
+                loadedBytes += value.length;
+                onProgress({ loadedBytes, totalBytes });
+            }
+        }
+
+        // A local proxy/interceptor ending a large transfer early can leave the
+        // reader loop exiting cleanly (no thrown error) with fewer bytes than
+        // promised. Catch that here so it surfaces as a retryable failure
+        // instead of silently handing back a truncated asset.
+        if (totalBytes > 0 && loadedBytes !== totalBytes) {
+            throw new Error(`Incomplete download for ${url}: got ${loadedBytes} of ${totalBytes} bytes`);
+        }
+
+        return new Blob(chunks as unknown as BlobPart[], { type: mimeTypeForUrl(url) });
+    });
+}
+
 /**
  * Check if the asset is in browser Cache Storage.
  */
@@ -66,9 +256,9 @@ async function putCachedBlob(url: string, blob: Blob): Promise<void> {
 }
 
 /**
- * Helper to fetch a file/chunk and stream its contents to track progress.
+ * Fetch a file/chunk and stream its contents to track progress, once.
  */
-async function fetchWithProgress(
+async function fetchWithProgressOnce(
     url: string,
     onProgress?: (loaded: number) => void
 ): Promise<ArrayBuffer> {
@@ -81,7 +271,11 @@ async function fetchWithProgress(
     const total = contentLength ? parseInt(contentLength, 10) : 0;
 
     if (!res.body || !onProgress) {
-        return res.arrayBuffer();
+        const buf = await res.arrayBuffer();
+        if (total > 0 && buf.byteLength !== total) {
+            throw new Error(`Incomplete download for ${url}: got ${buf.byteLength} of ${total} bytes`);
+        }
+        return buf;
     }
 
     const reader = res.body.getReader();
@@ -98,6 +292,14 @@ async function fetchWithProgress(
         }
     }
 
+    // A local antivirus/VPN proxy intercepting a large localhost transfer can
+    // end the stream early without the reader ever throwing - the response
+    // still reads as 200 OK, just short. Catch that here so it surfaces as a
+    // retryable error instead of silently handing back a truncated asset.
+    if (total > 0 && loaded !== total) {
+        throw new Error(`Incomplete download for ${url}: got ${loaded} of ${total} bytes`);
+    }
+
     const assembled = new Uint8Array(loaded);
     let offset = 0;
     for (const chunk of chunks) {
@@ -106,6 +308,22 @@ async function fetchWithProgress(
     }
 
     return assembled.buffer;
+}
+
+/**
+ * Helper to fetch a file/chunk and stream its contents to track progress,
+ * retrying a couple of times on transient failures (see MAX_FETCH_ATTEMPTS).
+ */
+async function fetchWithProgress(
+    url: string,
+    onProgress?: (loaded: number) => void
+): Promise<ArrayBuffer> {
+    return withRetry(url, () => {
+        // Reset progress to 0 at the start of each attempt so the UI reflects
+        // what's actually been received on the current (possibly restarted) try.
+        onProgress?.(0);
+        return fetchWithProgressOnce(url, onProgress);
+    });
 }
 
 /**
@@ -177,56 +395,13 @@ export async function fetchAssembledBlob(
         }
 
         const chunks = await Promise.all(chunkPromises);
-
-        // Determine MIME type based on extension
-        let mimeType = 'application/octet-stream';
-        const lowerUrl = url.toLowerCase();
-        if (lowerUrl.includes('.wasm')) mimeType = 'application/wasm';
-        else if (lowerUrl.includes('.js')) mimeType = 'application/javascript';
-        else if (lowerUrl.includes('.ttf')) mimeType = 'font/ttf';
-        else if (lowerUrl.includes('.otf')) mimeType = 'font/otf';
-        else if (lowerUrl.includes('.woff2')) mimeType = 'font/woff2';
-
-        resultBlob = new Blob(chunks as unknown as BlobPart[], { type: mimeType });
+        resultBlob = new Blob(chunks as unknown as BlobPart[], { type: mimeTypeForUrl(url) });
     } else {
-        // Fallback: Fetch the file directly with progress
-        const res = await fetch(url);
-        if (!res.ok) {
-            throw new Error(`Failed to fetch asset: ${url} (HTTP ${res.status})`);
-        }
-
-        const contentLength = res.headers.get('content-length');
-        const totalBytes = contentLength ? parseInt(contentLength, 10) : 0;
-        
-        if (!res.body || totalBytes === 0 || !onProgress) {
-            const blob = await res.blob();
-            onProgress?.({ loadedBytes: blob.size, totalBytes: blob.size });
-            resultBlob = blob;
-        } else {
-            const reader = res.body.getReader();
-            let loadedBytes = 0;
-            const chunks: Uint8Array[] = [];
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                if (value) {
-                    chunks.push(value);
-                    loadedBytes += value.length;
-                    onProgress({ loadedBytes, totalBytes });
-                }
-            }
-
-            let mimeType = 'application/octet-stream';
-            const lowerUrl = url.toLowerCase();
-            if (lowerUrl.includes('.wasm')) mimeType = 'application/wasm';
-            else if (lowerUrl.includes('.js')) mimeType = 'application/javascript';
-            else if (lowerUrl.includes('.ttf')) mimeType = 'font/ttf';
-            else if (lowerUrl.includes('.otf')) mimeType = 'font/otf';
-            else if (lowerUrl.includes('.woff2')) mimeType = 'font/woff2';
-
-            resultBlob = new Blob(chunks as unknown as BlobPart[], { type: mimeType });
-        }
+        // Fallback: no pre-built chunk manifest (the normal case in local dev,
+        // and any deployment without the Cloudflare-oriented chunking step) -
+        // fetch the file ourselves, splitting large ones into retryable Range
+        // requests. See fetchDirectAsset / RANGE_CHUNK_SIZE above.
+        resultBlob = await fetchDirectAsset(url, onProgress);
     }
 
     // 3. Cache the final Blob persistently
