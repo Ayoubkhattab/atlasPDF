@@ -5,7 +5,6 @@
  * Extracts text content and attempts to preserve formatting like headings, lists, etc.
  */
 
-import * as PDFJS from 'pdfjs-dist';
 import type {
     ProcessInput,
     ProcessOutput,
@@ -13,12 +12,7 @@ import type {
 } from '@/types/pdf';
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
-import { withBasePath } from '@/lib/utils/path';
-
-// Initialize PDF.js worker
-if (typeof window !== 'undefined') {
-    PDFJS.GlobalWorkerOptions.workerSrc = withBasePath('/workers/pdf.worker.min.js');
-}
+import { loadPdfjs } from '../loader';
 
 /**
  * PDF to Markdown options
@@ -514,7 +508,10 @@ export class PDFToMarkdownProcessor extends BasePDFProcessor {
         try {
             this.updateProgress(5, 'Loading PDF...');
 
-            // Load PDF
+            // Load PDF. pdf.js is imported here rather than at module scope so
+            // that prerendering never evaluates it in Node, where it warns that
+            // the legacy build should be used instead.
+            const PDFJS = await loadPdfjs();
             const arrayBuffer = await file.arrayBuffer();
             const pdf = await PDFJS.getDocument({ data: arrayBuffer }).promise;
             const totalPages = pdf.numPages;

@@ -86,6 +86,9 @@ const nextConfig = {
   },
 
   turbopack: {
+    // Without this Turbopack walks up and picks E:/Projects/package-lock.json,
+    // outside the repository, as the workspace root.
+    root: __dirname,
     resolveAlias: {
       canvas: './src/lib/mocks/canvas.js',
     },
@@ -101,12 +104,6 @@ const nextConfig = {
   typescript: {
     // Allow production builds even with type errors during development
     ignoreBuildErrors: false,
-  },
-
-  // ESLint configuration
-  eslint: {
-    // Run ESLint during builds
-    ignoreDuringBuilds: false,
   },
 
   // Compiler options for performance
