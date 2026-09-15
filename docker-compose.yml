@@ -21,6 +21,11 @@ services:
     command: sh -c "npm ci && npm run build && rm -rf /out/* && cp -r out/* /out/"
     environment:
       - BASE_PATH=${BASE_PATH:-}
+      # Match the Dockerfile: keep the LibreOffice payloads gzipped and
+      # unchunked so nginx serves them through gzip_static, as nginx.conf
+      # expects. Without this the build decompresses ~250MB into the volume
+      # and then splits every large file into .part_N.
+      - DOCKER_BUILD=true
     volumes:
       - ./:/app
       - static_out:/out

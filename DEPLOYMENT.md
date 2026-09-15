@@ -540,7 +540,7 @@ The raw WASM binary (`soffice.wasm`, ~147MB) exceeds GitHub's 100MB file size li
 |---|---|---|
 | Development (`npm run dev`) | `predev` → `scripts/decompress-wasm-dev.mjs` | `public/libreoffice-wasm/` |
 | Production Build (`npm run build`) | `postbuild` → `scripts/decompress-wasm.mjs` | `out/libreoffice-wasm/` |
-| Docker Build | Dockerfile `RUN gunzip -k` | `/website/atlaspdf/libreoffice-wasm/` |
+| Docker Build | none — `DOCKER_BUILD=true` skips decompression, nginx serves the `.bin.gz` via `gzip_static` | `/website/atlaspdf/libreoffice-wasm/` |
 
 ### How Each Platform Serves These Files
 
@@ -549,7 +549,7 @@ The converter requests **uncompressed paths** (`soffice.wasm`, `soffice.data`). 
 | Platform | Mechanism |
 |---|---|
 | **Next.js Dev** | Serves `soffice.wasm` from `public/` with `Content-Type: application/wasm` |
-| **Nginx (Docker)** | `gzip_static on` auto-detects `soffice.wasm.gz` alongside `soffice.wasm`, serves compressed version with `Content-Encoding: gzip` and correct `Content-Type: application/wasm` |
+| **Nginx (Docker)** | `gzip_static always` serves `soffice.wasm.bin.gz` for a request to `soffice.wasm.bin` with `Content-Encoding: gzip` and `Content-Type: application/wasm`; the decompressed file is never shipped |
 | **Vercel / Netlify** | Serves the decompressed `soffice.wasm` from `out/`, applies CDN-level compression |
 | **Cloudflare Pages** | Same as Vercel/Netlify, with `_headers` file for COOP/COEP |
 | **Apache** | `mod_deflate` compresses on-the-fly, `AddType application/wasm .wasm` sets MIME type |

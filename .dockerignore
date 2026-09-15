@@ -7,6 +7,12 @@ node_modules
 out
 dist
 build
+# Exported image tarballs and the release bundle that ships them. 466MB of
+# output that would otherwise be sent back into the build context.
+deploy-artifacts
+*.tar.gz
+src-tauri/target
+pdfcraft-extension.zip
 
 # Docker
 Dockerfile*
@@ -49,3 +55,17 @@ yarn-error.log*
 .eslintcache
 .turbo
 *.tgz
+
+# Generated assets (gitignored). They are absent from a clean checkout but
+# present after `npm install` locally, which would otherwise push ~250MB of
+# build context into the image and make its size depend on the machine that
+# built it. The image recreates what it needs during postbuild, and nginx
+# serves the LibreOffice payloads straight from .bin.gz via gzip_static.
+public/libreoffice-wasm/soffice.wasm.bin
+public/libreoffice-wasm/soffice.data.bin
+public/pdfjs-viewer/pdf.js
+public/pdfjs-viewer/pdf.sandbox.js
+public/pdfjs-viewer/pdf.worker.js
+public/pdfjs-viewer/pdf_viewer.js
+public/pdfjs-viewer/viewer.js
+public/workers/pdf.worker.min.js
