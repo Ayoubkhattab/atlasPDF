@@ -23,8 +23,12 @@
   # as an unexplained net::ERR_FAILED on the wasm/data download). script-src keeps
   # 'unsafe-inline' because the static export ships its React Flight payload as
   # inline <script> blocks and cannot hydrate without them — see security-headers.conf
-  # for the full reasoning.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' blob:; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';
+  # for the full reasoning. It also needs 'unsafe-eval': the LibreOffice WASM glue
+  # (soffice.js, an Emscripten/Embind build we don't control) builds C++ method
+  # invoker functions at runtime via `new Function(...)` - 'wasm-unsafe-eval' alone
+  # only covers compiling WebAssembly itself, not that. Without it every soffice.js
+  # load throws "EvalError: ... violates ... script-src" and LibreOffice never starts.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' blob:; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';
 
 # HTML pages - no cache, always revalidate
 /*.html

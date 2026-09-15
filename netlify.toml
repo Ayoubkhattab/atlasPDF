@@ -31,12 +31,16 @@
     Cross-Origin-Resource-Policy = "cross-origin"
     # script-src keeps 'unsafe-inline': the static export ships its React Flight
     # payload as inline <script> blocks and the page cannot hydrate without them.
+    # It also needs 'unsafe-eval': the LibreOffice WASM glue (soffice.js, an
+    # Emscripten/Embind build we don't control) builds C++ method invoker
+    # functions at runtime via `new Function(...)` - 'wasm-unsafe-eval' alone
+    # only covers compiling WebAssembly itself, not that.
     # connect-src includes blob: because the LibreOffice WASM converter fetches
     # its own blob: object URLs (created from the downloaded soffice.wasm/data)
     # from inside its worker - without it those fetches are silently blocked,
     # surfacing as an unexplained net::ERR_FAILED on the wasm/data download.
     # See security-headers.conf for the full reasoning.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' blob:; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' blob:; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
 
 # ==========================================
 # Cache: Long-term immutable assets
