@@ -1,11 +1,17 @@
 /**
  * src/lib/utils/asset-loader.ts
- * 
- * General-purpose utility to fetch and reassemble chunked assets.
- * Used to bypass 25MB file size limits on platforms like Cloudflare Pages.
- * 
- * Enhanced with Cache Storage API caching for WebAssembly assets to prevent 
- * timeouts on slow networks, and support for real-time progress callbacks.
+ *
+ * Fetches large static assets (the LibreOffice WASM engine, its font) reliably and caches them.
+ *
+ * - Large files are downloaded as independently retried Range requests when the server allows
+ *   it, so a dropped connection costs one 10MB part instead of the whole file.
+ * - Downloads are persisted in Cache Storage as 10MB parts plus a small metadata entry. Chrome
+ *   refuses single Cache Storage entries in the ~100MB range (it reports the misleading
+ *   "Entry already exists"), which silently disabled caching of the old whole-file entries and
+ *   made every visit re-download the engine. Parts also let an interrupted download resume on
+ *   the next visit.
+ * - Understands the chunked layout (<file>.manifest.json + <file>.part_N) produced by
+ *   scripts/chunk-assets.mjs for hosts with a 25MB per-file limit (Cloudflare Pages).
  */
 
 interface ChunkManifest {
@@ -22,51 +28,62 @@ export interface FetchProgress {
 
 export type ProgressCallback = (progress: FetchProgress) => void;
 
-const CACHE_NAME = 'atlaspdf-wasm-cache-v1';
+/** A definitive HTTP error response, as opposed to a network failure. */
+export class AssetHttpError extends Error {
+    constructor(readonly status: number, readonly url: string) {
+        super(`Failed to fetch ${url} (HTTP ${status})`);
+        this.name = 'AssetHttpError';
+    }
+}
 
-// Large same-origin transfers (the LibreOffice WASM/data files are 100-150MB)
-// have been observed failing mid-stream with a bare "net::ERR_FAILED" even
-// though the server sent a normal 200 response and (verified separately with
-// curl) the full file - this matches known behavior of local antivirus/VPN
-// web-protection proxies that intercept localhost traffic and occasionally
-// drop large streamed bodies. A short retry gives those an easy way to
-// succeed on a second attempt instead of failing the whole tool outright.
+/** A Range request was answered with the whole file - the server does not honour ranges. */
+class RangeNotSupportedError extends Error {
+    constructor(url: string) {
+        super(`${url} ignored the Range header`);
+        this.name = 'RangeNotSupportedError';
+    }
+}
+
+const CACHE_NAME = 'atlaspdf-asset-cache-v2';
+/** Earlier layouts that stored whole files; deleted on first use. */
+const LEGACY_CACHE_NAMES = ['atlaspdf-wasm-cache-v1'];
+
 const MAX_FETCH_ATTEMPTS = 3;
 const RETRY_BASE_DELAY_MS = 1500;
+
+const PART_SIZE = 10 * 1024 * 1024;
+const RANGE_CONCURRENCY = 4;
+
+const PART_PARAM = '__part';
+const META_PARAM = '__meta';
 
 function sleep(ms: number): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function withRetry<T>(
-    label: string,
-    fn: () => Promise<T>,
-    maxAttempts: number = MAX_FETCH_ATTEMPTS
-): Promise<T> {
+function isRetryable(err: unknown): boolean {
+    if (err instanceof RangeNotSupportedError) return false;
+    if (err instanceof AssetHttpError) return err.status === 408 || err.status === 429 || err.status >= 500;
+    return true; // network errors, truncated bodies
+}
+
+async function withRetry<T>(label: string, fn: () => Promise<T>, maxAttempts = MAX_FETCH_ATTEMPTS): Promise<T> {
     let lastError: unknown;
     for (let attempt = 1; attempt <= maxAttempts; attempt++) {
         try {
             return await fn();
         } catch (err) {
             lastError = err;
-            if (attempt < maxAttempts) {
-                const delay = RETRY_BASE_DELAY_MS * attempt;
-                console.warn(
-                    `[asset-loader] ${label}: attempt ${attempt}/${maxAttempts} failed, retrying in ${delay}ms:`,
-                    err
-                );
-                await sleep(delay);
-            }
+            if (!isRetryable(err) || attempt === maxAttempts) break;
+            const delay = RETRY_BASE_DELAY_MS * attempt;
+            console.warn(`[asset-loader] ${label}: attempt ${attempt}/${maxAttempts} failed, retrying in ${delay}ms:`, err);
+            await sleep(delay);
         }
     }
     throw lastError;
 }
 
-/**
- * Run `tasks` with at most `limit` running concurrently, preserving order in
- * the returned array (task i's result lands at index i regardless of finish
- * order).
- */
+/** Runs task(i) for i in [0, count) with at most `limit` in flight; results keep index order. */
 async function mapWithConcurrency<T>(count: number, limit: number, task: (index: number) => Promise<T>): Promise<T[]> {
     const results: T[] = new Array(count);
     let next = 0;
@@ -81,12 +98,13 @@ async function mapWithConcurrency<T>(count: number, limit: number, task: (index:
 }
 
 function mimeTypeForUrl(url: string): string {
-    const lowerUrl = url.toLowerCase();
-    if (lowerUrl.includes('.wasm')) return 'application/wasm';
-    if (lowerUrl.includes('.js')) return 'application/javascript';
-    if (lowerUrl.includes('.ttf')) return 'font/ttf';
-    if (lowerUrl.includes('.otf')) return 'font/otf';
-    if (lowerUrl.includes('.woff2')) return 'font/woff2';
+    const path = url.split('?')[0].toLowerCase();
+    if (path.endsWith('.gz')) return 'application/gzip';
+    if (path.includes('.wasm')) return 'application/wasm';
+    if (path.endsWith('.js') || path.endsWith('.mjs')) return 'application/javascript';
+    if (path.endsWith('.ttf')) return 'font/ttf';
+    if (path.endsWith('.otf')) return 'font/otf';
+    if (path.endsWith('.woff2')) return 'font/woff2';
     return 'application/octet-stream';
 }
 
@@ -95,108 +113,198 @@ function isRealContentEncoding(headers: Headers): boolean {
     return !!encoding && encoding.toLowerCase() !== 'identity';
 }
 
-// Large single fetches (the LibreOffice WASM/data files are 100-150MB) are
-// where "net::ERR_FAILED, 200 OK" has been reported from local dev - a single
-// multi-hundred-megabyte connection is simply a bigger target for anything
-// that can interrupt a long-lived transfer. Splitting into modest, independently
-// retryable range requests (the server already advertises "Accept-Ranges: bytes")
-// means a hiccup costs one small re-fetch instead of restarting the whole file,
-// and no single request stays open anywhere near as long.
-const RANGE_CHUNK_SIZE = 10 * 1024 * 1024; // 10MB
-const RANGE_CONCURRENCY = 4;
-const RANGE_MIN_TOTAL_SIZE = RANGE_CHUNK_SIZE * 2; // not worth ranging smaller files
+function sum(values: number[]): number {
+    return values.reduce((a, b) => a + b, 0);
+}
 
-/**
- * Fetch a same-origin URL in small Range-request pieces when the server
- * supports it and the file is large enough to benefit, falling back to a
- * single retried fetch otherwise (small file, or a server/proxy that doesn't
- * pass Range/Accept-Ranges through).
- */
-async function fetchDirectAsset(url: string, onProgress?: ProgressCallback): Promise<Blob> {
-    let totalBytes = 0;
-    let acceptsRanges = false;
-    let isContentEncoded = false;
+// ---------------------------------------------------------------------------------------------
+// Cache Storage (parts + metadata)
+// ---------------------------------------------------------------------------------------------
+
+interface CachedAssetMeta {
+    totalBytes: number;
+    partSize: number;
+    parts: number;
+    complete: boolean;
+}
+
+function withParam(url: string, name: string, value: string | number): string {
+    return `${url}${url.includes('?') ? '&' : '?'}${name}=${value}`;
+}
+
+function baseHref(): string {
+    return typeof location !== 'undefined' ? location.href : 'http://localhost/';
+}
+
+/** The asset a cache key belongs to, ignoring the part/metadata markers. */
+function assetIdentity(url: string): string {
+    const parsed = new URL(url, baseHref());
+    parsed.searchParams.delete(PART_PARAM);
+    parsed.searchParams.delete(META_PARAM);
+    return `${parsed.pathname}${parsed.search}`;
+}
+
+let legacyCleanupStarted = false;
+
+async function openAssetCache(): Promise<Cache | null> {
+    if (typeof caches === 'undefined') return null;
     try {
-        const headRes = await fetch(url, { method: 'HEAD' });
-        if (headRes.ok) {
-            totalBytes = parseInt(headRes.headers.get('content-length') || '0', 10);
-            acceptsRanges = headRes.headers.get('accept-ranges') === 'bytes';
-            isContentEncoded = isRealContentEncoding(headRes.headers);
+        const cache = await caches.open(CACHE_NAME);
+        if (!legacyCleanupStarted) {
+            legacyCleanupStarted = true;
+            for (const legacy of LEGACY_CACHE_NAMES) caches.delete(legacy).catch(() => {});
         }
-    } catch (err) {
-        console.debug(`[asset-loader] HEAD check failed for ${url}, falling back to a single fetch:`, err);
+        return cache;
+    } catch (e) {
+        console.warn('[asset-loader] Cache Storage unavailable:', e);
+        return null;
     }
+}
 
-    // Range applies to the on-the-wire (encoded) representation, not the
-    // decoded one (RFC 9110 §14.4) - a transparently gzip-encoded resource
-    // (e.g. nginx's `gzip_static` serving a precompressed .gz sibling for the
-    // LibreOffice WASM/data files) can't be sliced this way: each requested
-    // byte range would land on an arbitrary, independently-undecodable
-    // fragment of the gzip stream rather than a piece of the real WASM bytes.
-    // Skip straight to one whole-file fetch, which the browser decodes correctly.
-    if (isContentEncoded || !acceptsRanges || totalBytes < RANGE_MIN_TOTAL_SIZE) {
-        return fetchWholeAsset(url, onProgress);
-    }
+function partSizeAt(meta: CachedAssetMeta, index: number): number {
+    return index < meta.parts - 1 ? meta.partSize : meta.totalBytes - meta.partSize * (meta.parts - 1);
+}
 
-    const numChunks = Math.ceil(totalBytes / RANGE_CHUNK_SIZE);
-    const chunkLoaded = new Array(numChunks).fill(0);
-    const reportProgress = () => {
-        onProgress?.({ loadedBytes: chunkLoaded.reduce((a, b) => a + b, 0), totalBytes });
-    };
-    onProgress?.({ loadedBytes: 0, totalBytes });
-
+async function readMeta(cache: Cache, url: string): Promise<CachedAssetMeta | null> {
     try {
-        const parts = await mapWithConcurrency(numChunks, RANGE_CONCURRENCY, (i) => {
-            const start = i * RANGE_CHUNK_SIZE;
-            const end = Math.min(start + RANGE_CHUNK_SIZE, totalBytes) - 1;
-            const expectedLength = end - start + 1;
+        const res = await cache.match(withParam(url, META_PARAM, 1));
+        if (!res) return null;
+        const meta = (await res.json()) as CachedAssetMeta;
+        return Number.isFinite(meta?.totalBytes) && meta.partSize > 0 && meta.parts > 0 ? meta : null;
+    } catch {
+        return null;
+    }
+}
 
-            return withRetry(`${url} [range ${i + 1}/${numChunks}]`, async () => {
-                chunkLoaded[i] = 0;
-                const res = await fetch(url, { headers: { Range: `bytes=${start}-${end}` } });
-                if (res.status !== 206 && res.status !== 200) {
-                    throw new Error(`Range request failed for ${url}: HTTP ${res.status}`);
-                }
-                const buf = await res.arrayBuffer();
-                if (buf.byteLength !== expectedLength) {
-                    throw new Error(
-                        `Incomplete range for ${url} [${start}-${end}]: got ${buf.byteLength} of ${expectedLength} bytes`
-                    );
-                }
-                chunkLoaded[i] = buf.byteLength;
-                reportProgress();
-                return new Uint8Array(buf);
-            });
-        });
+async function readCachedParts(cache: Cache, url: string, meta: CachedAssetMeta): Promise<Map<number, Blob>> {
+    const found = new Map<number, Blob>();
+    await Promise.all(
+        Array.from({ length: meta.parts }, async (_, i) => {
+            try {
+                const res = await cache.match(withParam(url, PART_PARAM, i));
+                if (!res) return;
+                const blob = await res.blob();
+                if (blob.size === partSizeAt(meta, i)) found.set(i, blob);
+            } catch {
+                /* treat as missing */
+            }
+        })
+    );
+    return found;
+}
 
-        return new Blob(parts as unknown as BlobPart[], { type: mimeTypeForUrl(url) });
+/** Writes parts/metadata for one asset; stops caching (but not downloading) after the first failure. */
+class PartCacheWriter {
+    private disabled = false;
+
+    constructor(private readonly cache: Cache | null, private readonly url: string) {}
+
+    async put(index: number, data: Blob): Promise<void> {
+        if (!this.cache || this.disabled) return;
+        try {
+            await this.cache.put(
+                withParam(this.url, PART_PARAM, index),
+                new Response(data, { headers: { 'Content-Type': 'application/octet-stream' } })
+            );
+        } catch (e) {
+            this.fail(e);
+        }
+    }
+
+    async meta(meta: CachedAssetMeta): Promise<void> {
+        if (!this.cache || this.disabled) return;
+        try {
+            await this.cache.put(
+                withParam(this.url, META_PARAM, 1),
+                new Response(JSON.stringify(meta), { headers: { 'Content-Type': 'application/json' } })
+            );
+        } catch (e) {
+            this.fail(e);
+        }
+    }
+
+    private fail(e: unknown) {
+        this.disabled = true;
+        console.warn(`[asset-loader] Could not cache ${this.url}, continuing without caching:`, e);
+    }
+}
+
+function ordered(parts: Map<number, Blob>, count: number): Blob[] {
+    return Array.from({ length: count }, (_, i) => parts.get(i) as Blob);
+}
+
+/** Removes every cached part and the metadata entry of one asset. */
+export async function deleteCachedAsset(url: string): Promise<void> {
+    const cache = await openAssetCache();
+    if (!cache) return;
+    const target = assetIdentity(url);
+    const keys = await cache.keys();
+    await Promise.all(keys.filter((req) => assetIdentity(req.url) === target).map((req) => cache.delete(req)));
+}
+
+/** Deletes cached entries whose URL matches `shouldDelete`; returns how many were removed. */
+export async function pruneCachedAssets(shouldDelete: (url: URL) => boolean): Promise<number> {
+    const cache = await openAssetCache();
+    if (!cache) return 0;
+    const keys = await cache.keys();
+    const stale = keys.filter((req) => shouldDelete(new URL(req.url, baseHref())));
+    await Promise.all(stale.map((req) => cache.delete(req)));
+    return stale.length;
+}
+
+// ---------------------------------------------------------------------------------------------
+// Network
+// ---------------------------------------------------------------------------------------------
+
+interface AssetProbe {
+    status: number;
+    totalBytes: number;
+    acceptsRanges: boolean;
+    encoded: boolean;
+}
+
+async function probeAsset(url: string): Promise<AssetProbe | null> {
+    try {
+        const res = await fetch(url, { method: 'HEAD' });
+        return {
+            status: res.status,
+            totalBytes: res.ok ? parseInt(res.headers.get('content-length') || '0', 10) || 0 : 0,
+            acceptsRanges: res.headers.get('accept-ranges') === 'bytes',
+            encoded: isRealContentEncoding(res.headers),
+        };
     } catch (err) {
-        console.warn(`[asset-loader] Ranged fetch failed for ${url}, falling back to a single whole-file fetch:`, err);
-        return fetchWholeAsset(url, onProgress);
+        console.debug(`[asset-loader] HEAD check failed for ${url}:`, err);
+        return null;
+    }
+}
+
+async function fetchManifest(url: string): Promise<ChunkManifest | null> {
+    const [baseUrl, query] = url.split('?');
+    try {
+        const res = await fetch(`${baseUrl}.manifest.json${query ? `?${query}` : ''}`);
+        if (!res.ok) return null;
+        const manifest = (await res.json()) as ChunkManifest;
+        return manifest?.chunks > 0 && manifest.totalSize > 0 && manifest.chunkSize > 0 ? manifest : null;
+    } catch {
+        return null;
     }
 }
 
 /**
- * Fetch a URL as one request (no Range splitting), retrying on transient
- * failures and rejecting a response that's shorter than its declared
- * Content-Length (see MAX_FETCH_ATTEMPTS / the truncation note below).
+ * Fetch a URL as one request, retrying transient failures and rejecting a response shorter
+ * than its declared Content-Length.
  */
 async function fetchWholeAsset(url: string, onProgress?: ProgressCallback): Promise<Blob> {
     return withRetry(url, async () => {
         onProgress?.({ loadedBytes: 0, totalBytes: 0 });
 
         const res = await fetch(url);
-        if (!res.ok) {
-            throw new Error(`Failed to fetch asset: ${url} (HTTP ${res.status})`);
-        }
+        if (!res.ok) throw new AssetHttpError(res.status, url);
 
-        const contentLength = res.headers.get('content-length');
-        const totalBytes = contentLength ? parseInt(contentLength, 10) : 0;
-        // Content-Length reflects the on-the-wire (possibly gzip-encoded) size,
-        // but fetch() transparently decodes the body before handing it to us -
-        // a fully successful transfer of a compressed resource will legitimately
-        // deliver more bytes than that header says. Only trust it as a
-        // completeness check when the response isn't content-encoded.
+        const totalBytes = parseInt(res.headers.get('content-length') || '0', 10) || 0;
+        // Content-Length is the on-the-wire (possibly gzip-encoded) size, but fetch() decodes the
+        // body before we see it - a complete transfer of an encoded response legitimately yields
+        // more bytes. Only trust it as a completeness check for identity-encoded responses.
         const canVerifyLength = totalBytes > 0 && !isRealContentEncoding(res.headers);
 
         if (!res.body || totalBytes === 0 || !onProgress) {
@@ -211,7 +319,6 @@ async function fetchWholeAsset(url: string, onProgress?: ProgressCallback): Prom
         const reader = res.body.getReader();
         let loadedBytes = 0;
         const chunks: Uint8Array[] = [];
-
         while (true) {
             const { done, value } = await reader.read();
             if (done) break;
@@ -222,76 +329,20 @@ async function fetchWholeAsset(url: string, onProgress?: ProgressCallback): Prom
             }
         }
 
-        // A local proxy/interceptor ending a large transfer early can leave the
-        // reader loop exiting cleanly (no thrown error) with fewer bytes than
-        // promised. Catch that here so it surfaces as a retryable failure
-        // instead of silently handing back a truncated asset.
+        // An interrupted transfer can end the reader loop cleanly with fewer bytes than promised;
+        // surface that as a retryable failure instead of handing back a truncated asset.
         if (canVerifyLength && loadedBytes !== totalBytes) {
             throw new Error(`Incomplete download for ${url}: got ${loadedBytes} of ${totalBytes} bytes`);
         }
-
-        return new Blob(chunks as unknown as BlobPart[], { type: mimeTypeForUrl(url) });
+        return new Blob(chunks as BlobPart[], { type: mimeTypeForUrl(url) });
     });
 }
 
-/**
- * Check if the asset is in browser Cache Storage.
- */
-async function getCachedBlob(url: string): Promise<Blob | null> {
-    if (typeof caches === 'undefined') return null;
-    try {
-        const cache = await caches.open(CACHE_NAME);
-        const cachedResponse = await cache.match(url);
-        if (cachedResponse) {
-            console.log(`[asset-loader] Cache hit for ${url}`);
-            return await cachedResponse.blob();
-        }
-    } catch (e) {
-        console.warn(`[asset-loader] Failed to read from Cache Storage:`, e);
-    }
-    return null;
-}
-
-/**
- * Cache the asset in browser Cache Storage.
- */
-async function putCachedBlob(url: string, blob: Blob): Promise<void> {
-    if (typeof caches === 'undefined') return;
-    try {
-        const cache = await caches.open(CACHE_NAME);
-        await cache.put(
-            url,
-            new Response(blob, {
-                headers: {
-                    'Content-Type': blob.type,
-                    'Content-Length': blob.size.toString(),
-                    'Cache-Control': 'public, max-age=31536000, immutable',
-                },
-            })
-        );
-        console.log(`[asset-loader] Cached ${url} successfully (${(blob.size / 1024 / 1024).toFixed(1)}MB)`);
-    } catch (e) {
-        console.warn(`[asset-loader] Failed to write to Cache Storage:`, e);
-    }
-}
-
-/**
- * Fetch a file/chunk and stream its contents to track progress, once.
- */
-async function fetchWithProgressOnce(
-    url: string,
-    onProgress?: (loaded: number) => void
-): Promise<ArrayBuffer> {
+async function fetchWithProgressOnce(url: string, onProgress?: (loaded: number) => void): Promise<ArrayBuffer> {
     const res = await fetch(url);
-    if (!res.ok) {
-        throw new Error(`Failed to fetch chunk: ${url} (HTTP ${res.status})`);
-    }
+    if (!res.ok) throw new AssetHttpError(res.status, url);
 
-    const contentLength = res.headers.get('content-length');
-    const total = contentLength ? parseInt(contentLength, 10) : 0;
-    // See the matching note in fetchWholeAsset: Content-Length is the
-    // on-the-wire size, which won't match the decoded byte count fetch()
-    // delivers for a content-encoded response even on full success.
+    const total = parseInt(res.headers.get('content-length') || '0', 10) || 0;
     const canVerifyLength = total > 0 && !isRealContentEncoding(res.headers);
 
     if (!res.body || !onProgress) {
@@ -305,7 +356,6 @@ async function fetchWithProgressOnce(
     const reader = res.body.getReader();
     let loaded = 0;
     const chunks: Uint8Array[] = [];
-
     while (true) {
         const { done, value } = await reader.read();
         if (done) break;
@@ -315,11 +365,6 @@ async function fetchWithProgressOnce(
             onProgress(loaded);
         }
     }
-
-    // A local antivirus/VPN proxy intercepting a large localhost transfer can
-    // end the stream early without the reader ever throwing - the response
-    // still reads as 200 OK, just short. Catch that here so it surfaces as a
-    // retryable error instead of silently handing back a truncated asset.
     if (canVerifyLength && loaded !== total) {
         throw new Error(`Incomplete download for ${url}: got ${loaded} of ${total} bytes`);
     }
@@ -330,105 +375,167 @@ async function fetchWithProgressOnce(
         assembled.set(chunk, offset);
         offset += chunk.length;
     }
-
     return assembled.buffer;
 }
 
-/**
- * Helper to fetch a file/chunk and stream its contents to track progress,
- * retrying a couple of times on transient failures (see MAX_FETCH_ATTEMPTS).
- */
-async function fetchWithProgress(
-    url: string,
-    onProgress?: (loaded: number) => void
-): Promise<ArrayBuffer> {
+function fetchWithProgress(url: string, onProgress?: (loaded: number) => void): Promise<ArrayBuffer> {
     return withRetry(url, () => {
-        // Reset progress to 0 at the start of each attempt so the UI reflects
-        // what's actually been received on the current (possibly restarted) try.
         onProgress?.(0);
         return fetchWithProgressOnce(url, onProgress);
     });
 }
 
-/**
- * Fetches an asset, potentially reassembling it from chunks if a manifest exists.
- * Bypasses the network if the asset is already present in Cache Storage.
- * 
- * @param url The base URL of the asset (e.g., /libreoffice-wasm/soffice.wasm)
- * @param onProgress Optional callback to track the loading progress in bytes
- * @returns A Blob containing the reassembled or directly fetched asset
- */
-export async function fetchAssembledBlob(
+async function downloadRanged(
     url: string,
-    onProgress?: ProgressCallback
+    totalBytes: number,
+    cache: Cache | null,
+    onProgress: ProgressCallback | undefined,
+    existing: Map<number, Blob>
 ): Promise<Blob> {
-    // 1. Check Cache Storage first
-    const cached = await getCachedBlob(url);
-    if (cached) {
-        onProgress?.({ loadedBytes: cached.size, totalBytes: cached.size });
-        return cached;
-    }
+    const parts = Math.ceil(totalBytes / PART_SIZE);
+    const writer = new PartCacheWriter(cache, url);
+    const loaded = Array.from({ length: parts }, (_, i) => existing.get(i)?.size ?? 0);
+    const report = () => onProgress?.({ loadedBytes: sum(loaded), totalBytes });
+    report();
+    await writer.meta({ totalBytes, partSize: PART_SIZE, parts, complete: false });
 
-    // Determine the manifest URL by stripping query parameters and appending .manifest.json
+    const blobs = await mapWithConcurrency(parts, RANGE_CONCURRENCY, async (i) => {
+        const cached = existing.get(i);
+        if (cached) return cached;
+
+        const start = i * PART_SIZE;
+        const end = Math.min(start + PART_SIZE, totalBytes) - 1;
+        const expected = end - start + 1;
+        const blob = await withRetry(`${url} [part ${i + 1}/${parts}]`, async () => {
+            loaded[i] = 0;
+            const res = await fetch(url, { headers: { Range: `bytes=${start}-${end}` } });
+            if (res.status === 200) {
+                res.body?.cancel().catch(() => {});
+                throw new RangeNotSupportedError(url);
+            }
+            if (res.status !== 206) throw new AssetHttpError(res.status, url);
+            const buf = await res.arrayBuffer();
+            if (buf.byteLength !== expected) {
+                throw new Error(`Incomplete part ${i + 1}/${parts} of ${url}: got ${buf.byteLength} of ${expected} bytes`);
+            }
+            return new Blob([buf]);
+        });
+        loaded[i] = blob.size;
+        report();
+        await writer.put(i, blob);
+        return blob;
+    });
+
+    await writer.meta({ totalBytes, partSize: PART_SIZE, parts, complete: true });
+    return new Blob(blobs, { type: mimeTypeForUrl(url) });
+}
+
+async function downloadFromManifest(
+    url: string,
+    manifest: ChunkManifest,
+    cache: Cache | null,
+    onProgress: ProgressCallback | undefined,
+    existing: Map<number, Blob>
+): Promise<Blob> {
+    console.log(`[asset-loader] Manifest found for ${manifest.filename}. Reassembling from ${manifest.chunks} chunks...`);
     const [baseUrl, query] = url.split('?');
     const queryString = query ? `?${query}` : '';
-    const manifestUrl = `${baseUrl}.manifest.json${queryString}`;
-    
-    let manifest: ChunkManifest | null = null;
-    const isDev = process.env.NODE_ENV === 'development';
-    if (!isDev) {
+    const writer = new PartCacheWriter(cache, url);
+    const meta = { totalBytes: manifest.totalSize, partSize: manifest.chunkSize, parts: manifest.chunks };
+    const loaded = Array.from({ length: manifest.chunks }, (_, i) => existing.get(i)?.size ?? 0);
+    const report = () => onProgress?.({ loadedBytes: sum(loaded), totalBytes: manifest.totalSize });
+    report();
+    await writer.meta({ ...meta, complete: false });
+
+    const blobs = await mapWithConcurrency(manifest.chunks, RANGE_CONCURRENCY, async (i) => {
+        const cached = existing.get(i);
+        if (cached) return cached;
+        const buf = await fetchWithProgress(`${baseUrl}.part_${i}${queryString}`, (n) => {
+            loaded[i] = n;
+            report();
+        });
+        loaded[i] = buf.byteLength;
+        report();
+        const blob = new Blob([buf]);
+        await writer.put(i, blob);
+        return blob;
+    });
+
+    await writer.meta({ ...meta, complete: true });
+    return new Blob(blobs, { type: mimeTypeForUrl(url) });
+}
+
+async function cacheWholeBlob(cache: Cache | null, url: string, blob: Blob): Promise<void> {
+    if (!cache) return;
+    const writer = new PartCacheWriter(cache, url);
+    const parts = Math.max(1, Math.ceil(blob.size / PART_SIZE));
+    const meta = { totalBytes: blob.size, partSize: PART_SIZE, parts };
+    await writer.meta({ ...meta, complete: false });
+    for (let i = 0; i < parts; i++) {
+        await writer.put(i, blob.slice(i * PART_SIZE, Math.min(blob.size, (i + 1) * PART_SIZE)));
+    }
+    await writer.meta({ ...meta, complete: true });
+}
+
+/**
+ * Fetches an asset - from the part cache when complete, resuming a partial download when
+ * possible, via a chunk manifest when the host splits files, otherwise directly.
+ *
+ * @throws AssetHttpError when the asset does not exist (HTTP 404) or the server refuses it.
+ */
+export async function fetchAssembledBlob(url: string, onProgress?: ProgressCallback): Promise<Blob> {
+    const cache = await openAssetCache();
+    let meta = cache ? await readMeta(cache, url) : null;
+    let cachedParts = new Map<number, Blob>();
+
+    if (cache && meta) {
+        cachedParts = await readCachedParts(cache, url, meta);
+        if (meta.complete && cachedParts.size === meta.parts) {
+            console.log(`[asset-loader] Cache hit for ${url}`);
+            onProgress?.({ loadedBytes: meta.totalBytes, totalBytes: meta.totalBytes });
+            return new Blob(ordered(cachedParts, meta.parts), { type: mimeTypeForUrl(url) });
+        }
+    }
+
+    const reusable = (totalBytes: number, partSize: number) => {
+        if (!meta || cachedParts.size === 0) return new Map<number, Blob>();
+        if (meta.totalBytes === totalBytes && meta.partSize === partSize) {
+            console.log(`[asset-loader] Resuming ${url}: ${cachedParts.size}/${meta.parts} parts already cached`);
+            return cachedParts;
+        }
+        return new Map<number, Blob>();
+    };
+    const discardStale = async (totalBytes: number) => {
+        if (meta && meta.totalBytes !== totalBytes) {
+            await deleteCachedAsset(url);
+            meta = null;
+            cachedParts = new Map();
+        }
+    };
+
+    const probe = await probeAsset(url);
+
+    // Hosts with a per-file size limit ship <file>.manifest.json + <file>.part_N instead of <file>.
+    if (probe?.status === 404) {
+        const manifest = await fetchManifest(url);
+        if (!manifest) throw new AssetHttpError(404, url);
+        await discardStale(manifest.totalSize);
+        return downloadFromManifest(url, manifest, cache, onProgress, reusable(manifest.totalSize, manifest.chunkSize));
+    }
+
+    // Range applies to the on-the-wire (encoded) representation (RFC 9110 §14.4), so a resource
+    // the server transparently gzip-encodes can't be sliced into parts - use one request instead.
+    const canRange = !!probe && probe.status >= 200 && probe.status < 300 && probe.acceptsRanges && !probe.encoded && probe.totalBytes > PART_SIZE;
+    if (canRange && probe) {
+        await discardStale(probe.totalBytes);
         try {
-            const manifestRes = await fetch(manifestUrl);
-            if (manifestRes.ok) {
-                manifest = await manifestRes.json();
-            }
+            return await downloadRanged(url, probe.totalBytes, cache, onProgress, reusable(probe.totalBytes, PART_SIZE));
         } catch (err) {
-            console.debug(`[asset-loader] Manifest check skipped for ${url}:`, err);
+            console.warn(`[asset-loader] Ranged download failed for ${url}, falling back to a single request:`, err);
         }
     }
 
-    let resultBlob: Blob;
-
-    // 2. Fetch and assemble from either chunks or directly
-    if (manifest) {
-        console.log(`[asset-loader] Manifest found for ${manifest.filename}. Reassembling from ${manifest.chunks} chunks...`);
-        
-        const chunkBytesLoaded = new Array(manifest.chunks).fill(0);
-        const totalSize = manifest.totalSize;
-
-        const reportOverallProgress = () => {
-            if (!onProgress) return;
-            const loadedBytes = chunkBytesLoaded.reduce((a, b) => a + b, 0);
-            onProgress({ loadedBytes, totalBytes: totalSize });
-        };
-
-        // Fetch chunks in parallel, reporting combined progress
-        const chunkPromises: Promise<ArrayBuffer>[] = [];
-        for (let i = 0; i < manifest.chunks; i++) {
-            const chunkUrl = `${baseUrl}.part_${i}${queryString}`;
-            chunkPromises.push(
-                fetchWithProgress(chunkUrl, (loaded) => {
-                    chunkBytesLoaded[i] = loaded;
-                    reportOverallProgress();
-                }).then(buf => {
-                    chunkBytesLoaded[i] = buf.byteLength;
-                    reportOverallProgress();
-                    return buf;
-                })
-            );
-        }
-
-        const chunks = await Promise.all(chunkPromises);
-        resultBlob = new Blob(chunks as unknown as BlobPart[], { type: mimeTypeForUrl(url) });
-    } else {
-        // Fallback: no pre-built chunk manifest (the normal case in local dev,
-        // and any deployment without the Cloudflare-oriented chunking step) -
-        // fetch the file ourselves, splitting large ones into retryable Range
-        // requests. See fetchDirectAsset / RANGE_CHUNK_SIZE above.
-        resultBlob = await fetchDirectAsset(url, onProgress);
-    }
-
-    // 3. Cache the final Blob persistently
-    await putCachedBlob(url, resultBlob);
-    return resultBlob;
+    const blob = await fetchWholeAsset(url, onProgress);
+    await cacheWholeBlob(cache, url, blob);
+    return blob;
 }

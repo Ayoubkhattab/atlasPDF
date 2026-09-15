@@ -1,23 +1,28 @@
 /**
  * LibreOffice WASM Converter
- * 
+ *
  * Uses @matbee/libreoffice-converter WorkerBrowserConverter for document conversion.
- * 
+ *
  * Key design decisions:
  * 1. Uses WorkerBrowserConverter instead of BrowserConverter — runs WASM in a
  *    dedicated Web Worker, avoiding main-thread blocking and eliminating the need
  *    for fragile loadModule patches / Cloudflare Rocket Loader workarounds
- * 2. Uses uncompressed paths (soffice.wasm / soffice.data) — works natively with
- *    all servers (Next.js dev, Vercel, Netlify, etc.). For Nginx production,
- *    gzip_static automatically serves the .gz version when available.
+ * 2. Downloads the engine as the committed soffice.wasm.bin.gz / soffice.data.bin.gz and
+ *    decompresses them in the browser (./gzip.ts). Every host serves those as plain bytes, so
+ *    no gzip_static / Content-Encoding / MIME setup is involved, and byte ranges map onto the
+ *    file, so downloads resume and cache in parts (../utils/asset-loader.ts). Deployments that
+ *    only ship the decompressed .bin files still work (fallback); Tauri streams .bin directly.
  * 3. Specifies browserWorkerJs for the library's internal worker communication
- * 4. Checks SharedArrayBuffer support upfront — fails fast with a clear error
- * 
+ * 4. Checks SharedArrayBuffer and the Content-Security-Policy upfront — fails fast with a clear
+ *    error before downloading anything
+ * 5. The ?v= cache key is generated from the asset contents (./asset-version.ts), so a changed
+ *    engine can never be served under a URL browsers already cached as immutable
+ *
  * IMPORTANT: The browser.worker.global.js in public/libreoffice-wasm/ MUST match
  * the version from @matbee/libreoffice-converter/dist/. Do NOT modify it — the
  * library's WorkerBrowserConverter expects an unmodified worker script. If you
  * need CJK font support, fonts must be pre-baked into soffice.data.
- * 
+ *
  * How pthreads work:
  * - soffice.js (Emscripten glue) creates 4 pthread Workers via
  *   new Worker(Module["mainScriptUrlOrBlob"]) — loading soffice.js itself
@@ -27,19 +32,64 @@
  */
 
 import { WorkerBrowserConverter } from '@matbee/libreoffice-converter/browser';
-import { fetchAssembledBlob } from '../utils/asset-loader';
+import {
+    AssetHttpError,
+    deleteCachedAsset,
+    fetchAssembledBlob,
+    pruneCachedAssets,
+    type FetchProgress,
+} from '../utils/asset-loader';
 import { withBasePath } from '../utils/path';
 import { isTauri } from '../tauri-bridge';
+import { LIBREOFFICE_ASSET_VERSION } from './asset-version';
+import { detectLibreOfficeCspBlockers } from './csp-probe';
+import { gunzipBlobIfNeeded } from './gzip';
 
 const LIBREOFFICE_PATH = withBasePath('/libreoffice-wasm/');
-const ASSET_VERSION = '20240212-4';
-// Request uncompressed names. In production, nginx gzip_static serves the .gz variant
-// with correct Content-Encoding and MIME headers (required for WebAssembly streaming).
+/** Content-derived; regenerate with `node scripts/libreoffice-asset-version.mjs --write`. */
+const ASSET_VERSION = LIBREOFFICE_ASSET_VERSION;
+// Decompressed engine files: streamed directly under Tauri, and a fallback for deployments
+// that ship only these.
 const SOFFICE_WASM_FILE = 'soffice.wasm.bin';
 const SOFFICE_DATA_FILE = 'soffice.data.bin';
+// What browsers download: the committed gzip files, decompressed client-side.
+const SOFFICE_WASM_GZ = `${SOFFICE_WASM_FILE}.gz`;
+const SOFFICE_DATA_GZ = `${SOFFICE_DATA_FILE}.gz`;
+const FONT_PATH = '/fonts/NotoSansSC-Regular.ttf';
+/** The worker used to hang forever if the engine never reported ready; bound it. */
+const ENGINE_START_TIMEOUT_MS = 5 * 60 * 1000;
+const MB = 1024 * 1024;
+
+interface EngineFile {
+    label: string;
+    gz: string;
+    raw: string;
+    type: string;
+    estimatedBytes: number;
+}
+
+const ENGINE_FILES: EngineFile[] = [
+    { label: 'soffice.wasm', gz: SOFFICE_WASM_GZ, raw: SOFFICE_WASM_FILE, type: 'application/wasm', estimatedBytes: 48 * MB },
+    { label: 'soffice.data', gz: SOFFICE_DATA_GZ, raw: SOFFICE_DATA_FILE, type: 'application/octet-stream', estimatedBytes: 28 * MB },
+];
+const FONT_ESTIMATED_BYTES = 16.4 * MB;
 
 function normalizeBasePath(path: string): string {
     return path.endsWith('/') ? path : `${path}/`;
+}
+
+function isLibreOfficeAssetUrl(url: URL): boolean {
+    return url.pathname.includes('/libreoffice-wasm/') || url.pathname.endsWith(FONT_PATH);
+}
+
+function withTimeout<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    return Promise.race([
+        promise.finally(() => clearTimeout(timer)),
+        new Promise<never>((_, reject) => {
+            timer = setTimeout(() => reject(new Error(message)), ms);
+        }),
+    ]);
 }
 
 export interface LoadProgress {
@@ -58,8 +108,10 @@ export class LibreOfficeConverter {
     private initialized = false;
     private initPromise: Promise<void> | null = null;
     private basePath: string;
-    /** Total size of all WASM assets in MB, computed during environment check */
+    /** Total size of the engine downloads in MB, computed during environment check */
     private totalAssetSizeMB = 0;
+    /** Once the downloads are done, progress refers to the worker starting the engine */
+    private downloadsComplete = false;
     /** Replaceable progress callback — allows late-binding when preload started without one */
     private progressCallback?: ProgressCallback;
     /** Track Blob URLs for cleanup */
@@ -91,26 +143,55 @@ export class LibreOfficeConverter {
     }
 
     /**
-     * Build a human-readable progress message.
-     * When totalAssetSizeMB is known, shows "Downloading: X MB / Y MB".
+     * Build a human-readable progress message for the engine start-up phase.
      */
     private buildProgressMessage(info: { percent: number }): string {
+        if (info.percent >= 95 && info.percent < 100) {
+            return 'Initializing conversion engine...';
+        }
+        if (this.downloadsComplete) {
+            return `Starting conversion engine (${Math.round(info.percent)}%)...`;
+        }
         if (this.totalAssetSizeMB > 0 && info.percent < 95) {
             const downloadedMB = (info.percent / 100 * this.totalAssetSizeMB).toFixed(1);
             const totalMB = this.totalAssetSizeMB.toFixed(1);
             return `Downloading: ${downloadedMB} MB / ${totalMB} MB`;
         }
-        if (info.percent >= 95 && info.percent < 100) {
-            return 'Initializing conversion engine...';
-        }
         return `Loading conversion engine (${Math.round(info.percent)}%)...`;
+    }
+
+    /**
+     * Downloads one engine file (the .gz, or the decompressed .bin on older deployments) and
+     * returns its decompressed bytes.
+     */
+    private async fetchEngineFile(file: EngineFile, onProgress: (p: FetchProgress) => void): Promise<Blob> {
+        let sourceUrl = `${this.basePath}${file.gz}?v=${ASSET_VERSION}`;
+        let blob: Blob;
+        try {
+            blob = await fetchAssembledBlob(sourceUrl, onProgress);
+        } catch (e) {
+            if (!(e instanceof AssetHttpError && e.status === 404)) throw e;
+            sourceUrl = `${this.basePath}${file.raw}?v=${ASSET_VERSION}`;
+            console.warn(`[LibreOffice] ${file.gz} not found, falling back to ${file.raw}`);
+            blob = await fetchAssembledBlob(sourceUrl, onProgress);
+        }
+
+        this.progressCallback?.({ phase: 'loading', percent: 91, message: 'Decompressing conversion engine...' });
+        try {
+            return await gunzipBlobIfNeeded(blob, file.type);
+        } catch (e) {
+            // A corrupt cached copy (e.g. storage evicted mid-write): drop it and download once more.
+            console.warn(`[LibreOffice] ${file.label} failed to decompress, downloading it again:`, e);
+            await deleteCachedAsset(sourceUrl);
+            return gunzipBlobIfNeeded(await fetchAssembledBlob(sourceUrl, onProgress), file.type);
+        }
     }
 
     private async _doInitialize(): Promise<void> {
         try {
             this.progressCallback?.({ phase: 'loading', percent: 0, message: 'Checking environment...' });
 
-            // Fail fast if SharedArrayBuffer / COOP+COEP is missing
+            // Fail fast if SharedArrayBuffer / COOP+COEP / CSP is not in place
             await this.checkEnvironment();
 
             const totalInfo = this.totalAssetSizeMB > 0
@@ -138,38 +219,35 @@ export class LibreOfficeConverter {
                 sofficeDataUrl = `${this.basePath}${SOFFICE_DATA_FILE}?v=${ASSET_VERSION}`;
 
                 this.progressCallback?.({ phase: 'loading', percent: 15, message: 'Loading fonts...' });
-                const fontRes = await fetch(withBasePath(`/fonts/NotoSansSC-Regular.ttf?v=${ASSET_VERSION}`));
+                const fontRes = await fetch(withBasePath(`${FONT_PATH}?v=${ASSET_VERSION}`));
                 if (!fontRes.ok) {
                     throw new Error(`Failed to load font: ${fontRes.statusText}`);
                 }
                 fontArrayBuffer = await fontRes.arrayBuffer();
             } else {
-                const filesToFetch = [
-                    { name: 'soffice.wasm.bin', url: `${this.basePath}${SOFFICE_WASM_FILE}?v=${ASSET_VERSION}`, estSize: 147 * 1024 * 1024 },
-                    { name: 'soffice.data.bin', url: `${this.basePath}${SOFFICE_DATA_FILE}?v=${ASSET_VERSION}`, estSize: 99 * 1024 * 1024 },
-                    { name: 'NotoSansSC-Regular.ttf', url: withBasePath(`/fonts/NotoSansSC-Regular.ttf?v=${ASSET_VERSION}`), estSize: 16.4 * 1024 * 1024 }
-                ];
-
-                const totalBytesEst = filesToFetch.reduce((sum, f) => sum + f.estSize, 0);
-                const loadedBytesMap: { [key: string]: number } = {};
-
-                const reportProgress = () => {
-                    const currentLoaded = Object.values(loadedBytesMap).reduce((a, b) => a + b, 0);
-                    const pct = Math.min(90, Math.round((currentLoaded / totalBytesEst) * 90));
+                const loaded: Record<string, number> = {};
+                const totals: Record<string, number> = {
+                    [ENGINE_FILES[0].label]: ENGINE_FILES[0].estimatedBytes,
+                    [ENGINE_FILES[1].label]: ENGINE_FILES[1].estimatedBytes,
+                    font: FONT_ESTIMATED_BYTES,
+                };
+                const track = (key: string) => (p: FetchProgress) => {
+                    loaded[key] = p.loadedBytes;
+                    if (p.totalBytes > 0) totals[key] = p.totalBytes;
+                    const total = Object.values(totals).reduce((a, b) => a + b, 0);
+                    const done = Object.values(loaded).reduce((a, b) => a + b, 0);
                     this.progressCallback?.({
                         phase: 'loading',
-                        percent: pct,
-                        message: this.buildProgressMessage({ percent: pct }),
+                        percent: Math.min(90, Math.round((done / total) * 90)),
+                        message: `Downloading: ${(done / MB).toFixed(1)} MB / ${(total / MB).toFixed(1)} MB`,
                     });
                 };
 
-                // Fetch and reassemble assets (handles chunking on Cloudflare Pages)
-                const [sofficeWasmBlob, sofficeDataBlob, fontBlob] = await Promise.all(
-                    filesToFetch.map(f => fetchAssembledBlob(f.url, (p) => {
-                        loadedBytesMap[f.name] = p.loadedBytes;
-                        reportProgress();
-                    }))
-                );
+                const [sofficeWasmBlob, sofficeDataBlob, fontBlob] = await Promise.all([
+                    this.fetchEngineFile(ENGINE_FILES[0], track(ENGINE_FILES[0].label)),
+                    this.fetchEngineFile(ENGINE_FILES[1], track(ENGINE_FILES[1].label)),
+                    fetchAssembledBlob(withBasePath(`${FONT_PATH}?v=${ASSET_VERSION}`), track('font')),
+                ]);
 
                 sofficeWasmUrl = URL.createObjectURL(sofficeWasmBlob);
                 sofficeDataUrl = URL.createObjectURL(sofficeDataBlob);
@@ -177,7 +255,10 @@ export class LibreOfficeConverter {
                 fontArrayBuffer = await fontBlob.arrayBuffer();
             }
 
-            this.converter = new WorkerBrowserConverter({
+            this.downloadsComplete = true;
+            this.progressCallback?.({ phase: 'initializing', percent: 92, message: 'Starting conversion engine...' });
+
+            const converter = new WorkerBrowserConverter({
                 sofficeJs: `${this.basePath}soffice.js?v=${ASSET_VERSION}`,
                 sofficeWasm: sofficeWasmUrl,
                 sofficeData: sofficeDataUrl,
@@ -204,10 +285,20 @@ export class LibreOfficeConverter {
                     console.error('[LibreOffice] Error:', error);
                 },
             });
+            this.converter = converter;
 
             console.log('[LibreOffice] Starting initialization via WorkerBrowserConverter...');
             const initStart = performance.now();
-            await this.converter.initialize();
+            try {
+                await withTimeout(
+                    converter.initialize(),
+                    ENGINE_START_TIMEOUT_MS,
+                    'The conversion engine did not finish starting within 5 minutes. The device may be low on memory; reload the page to try again.'
+                );
+            } catch (e) {
+                converter.destroy().catch(() => {});
+                throw e;
+            }
             const initDuration = Math.round(performance.now() - initStart);
             console.log(`[LibreOffice] Initialization completed in ${initDuration}ms`);
 
@@ -218,15 +309,26 @@ export class LibreOfficeConverter {
 
             // Null out the callback to prevent any late-firing progress updates
             this.progressCallback = undefined;
+
+            // Free the storage used by engine builds that are no longer served.
+            void pruneCachedAssets((url) => isLibreOfficeAssetUrl(url) && url.searchParams.get('v') !== ASSET_VERSION)
+                .then((removed) => {
+                    if (removed > 0) console.warn(`[LibreOffice] Removed ${removed} cached entries from previous engine versions`);
+                })
+                .catch(() => {});
         } catch (e) {
             this.converter = null;
             this.initialized = false;
+            this.downloadsComplete = false;
+            this.blobUrls.forEach(url => URL.revokeObjectURL(url));
+            this.blobUrls = [];
             throw e;
         }
     }
 
     /**
-     * Diagnose environment issues — fail fast if SharedArrayBuffer is not available.
+     * Diagnose environment issues — fail fast if SharedArrayBuffer is not available or the
+     * Content-Security-Policy would block the engine.
      * SharedArrayBuffer requires Cross-Origin Isolation (COOP + COEP headers).
      */
     private async checkEnvironment(): Promise<void> {
@@ -294,58 +396,58 @@ export class LibreOfficeConverter {
             );
         }
 
-        // 3. Check file connectivity (parallel for speed) & accumulate total size
-        const files = [
-            SOFFICE_WASM_FILE,
-            SOFFICE_DATA_FILE,
-            'soffice.js',
-            'soffice.worker.js',
-            'browser.worker.global.js',
+        // 3. Content-Security-Policy — probed here because inside the worker it only fails after
+        //    the whole engine has been downloaded, and then as an unhelpful EvalError/fetch error.
+        const cspBlockers = await detectLibreOfficeCspBlockers();
+        if (cspBlockers.length > 0) {
+            const message =
+                `The server's Content-Security-Policy blocks the conversion engine: ${cspBlockers.join('; ')}. ` +
+                'Update the Content-Security-Policy header (see DEPLOYMENT.md) and reload the page.';
+            console.error(`[LibreOffice] ${message}`);
+            throw new Error(message);
+        }
+
+        // 4. Check file connectivity (parallel for speed) & accumulate the download size
+        const checks: Array<{ label: string; candidates: string[]; engine: boolean }> = [
+            ...ENGINE_FILES.map((f) => ({
+                label: f.gz,
+                candidates: [f.gz, `${f.gz}.manifest.json`, f.raw],
+                engine: true,
+            })),
+            { label: 'soffice.js', candidates: ['soffice.js'], engine: false },
+            { label: 'soffice.worker.js', candidates: ['soffice.worker.js'], engine: false },
+            { label: 'browser.worker.global.js', candidates: ['browser.worker.global.js'], engine: false },
         ];
-        let totalBytes = 0;
-        await Promise.all(files.map(async (file) => {
-            const url = `${this.basePath}${file}?v=${ASSET_VERSION}`;
-            try {
-                const start = performance.now();
-                // Check for the file itself or its chunk manifest
-                let res = await fetch(url, { method: 'HEAD' });
-                
-                if (!res.ok) {
-                    const manifestUrl = `${this.basePath}${file}.manifest.json?v=${ASSET_VERSION}`;
-                    const mRes = await fetch(manifestUrl, { method: 'HEAD' });
-                    if (mRes.ok) {
-                        res = mRes;
-                        console.warn(`[LibreOffice] ${file}: Found chunk manifest instead of raw file.`);
-                    }
+        let engineBytes = 0;
+        await Promise.all(checks.map(async ({ label, candidates, engine }) => {
+            const start = performance.now();
+            let lastStatus = 0;
+            for (const candidate of candidates) {
+                let res: Response;
+                try {
+                    res = await fetch(`${this.basePath}${candidate}?v=${ASSET_VERSION}`, { method: 'HEAD' });
+                } catch (e) {
+                    console.error(`[LibreOffice] ${label}: NETWORK ERROR`, e);
+                    throw new Error(`Cannot fetch ${label}: ${e}`);
                 }
-
-                const duration = Math.round(performance.now() - start);
-
                 if (res.ok) {
-                    const size = res.headers.get('content-length');
-                    const type = res.headers.get('content-type');
-                    // Note: manifest size is small, so totalAssetSizeMB will be undercounted 
-                    // if files are chunked, but that's acceptable for an environment check.
-                    const sizeNum = size ? parseInt(size) : 0;
-                    if (sizeNum > 0) totalBytes += sizeNum;
-                    const sizeMb = sizeNum > 0 ? (sizeNum / 1024 / 1024).toFixed(2) + 'MB' : 'unknown size';
+                    const size = parseInt(res.headers.get('content-length') || '0', 10) || 0;
+                    if (engine && !candidate.endsWith('.manifest.json')) engineBytes += size;
                     console.warn(
-                        `[LibreOffice] ${file}: OK (${res.status}) ${duration}ms | ${sizeMb} | type=${type}`
+                        `[LibreOffice] ${label}: OK via ${candidate} (${res.status}) ${Math.round(performance.now() - start)}ms | ` +
+                        `${(size / MB).toFixed(2)}MB | type=${res.headers.get('content-type')}`
                     );
-                } else {
-                    console.error(`[LibreOffice] ${file}: FAILED (${res.status} ${res.statusText})`);
-                    throw new Error(`Required file ${file} returned HTTP ${res.status}`);
+                    return;
                 }
-            } catch (e) {
-                if (e instanceof Error && e.message.startsWith('Required file')) throw e;
-                console.error(`[LibreOffice] ${file}: NETWORK ERROR`, e);
-                throw new Error(`Cannot fetch ${file}: ${e}`);
+                lastStatus = res.status;
             }
+            console.error(`[LibreOffice] ${label}: FAILED (HTTP ${lastStatus})`);
+            throw new Error(`Required file ${label} returned HTTP ${lastStatus}`);
         }));
 
-        this.totalAssetSizeMB = totalBytes / (1024 * 1024);
+        this.totalAssetSizeMB = engineBytes / MB;
         if (this.totalAssetSizeMB > 0) {
-            console.warn(`[LibreOffice] Total asset size: ${this.totalAssetSizeMB.toFixed(1)} MB`);
+            console.warn(`[LibreOffice] Engine download size: ${this.totalAssetSizeMB.toFixed(1)} MB`);
         }
         console.warn('[LibreOffice] === Environment Check Passed ✅ ===');
     }
@@ -412,13 +514,14 @@ export class LibreOfficeConverter {
         if (this.converter) {
             await this.converter.destroy();
         }
-        
+
         // Revoke Blob URLs to release memory
         this.blobUrls.forEach(url => URL.revokeObjectURL(url));
         this.blobUrls = [];
-        
+
         this.converter = null;
         this.initialized = false;
+        this.downloadsComplete = false;
     }
 }
 

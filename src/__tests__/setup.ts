@@ -16,6 +16,9 @@ if (typeof URL.revokeObjectURL === 'undefined') {
   URL.revokeObjectURL = vi.fn();
 }
 
+// Browser-only mocks. Skipped for test files that opt into `@vitest-environment node`
+// (e.g. code relying on Node's native Blob/Response/DecompressionStream).
+if (typeof window !== 'undefined') {
 // Mock window.matchMedia for responsive tests
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
@@ -88,4 +91,5 @@ if (typeof window.PointerEvent === 'undefined') {
     writable: true,
     value: MockPointerEvent,
   });
+}
 }
