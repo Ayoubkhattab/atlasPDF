@@ -30,7 +30,10 @@ vi.mock('@/lib/pdf/loader-legacy', () => {
         }),
       };
     }),
-    SVGGraphics: vi.fn().mockImplementation(() => {
+    // The processor calls `new SVGGraphics(...)`, and Vitest refuses to
+    // construct a mock whose implementation is an arrow function, so this has
+    // to stay a plain function expression.
+    SVGGraphics: vi.fn().mockImplementation(function () {
       return {
         getSVG: vi.fn().mockResolvedValue(mockSVGElement),
       };

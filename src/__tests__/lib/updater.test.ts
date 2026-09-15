@@ -123,9 +123,22 @@ describe('Software Updater', () => {
   });
 
   describe('settings and checkUpdate', () => {
-    it('checks shouldCheckUpdate frequency correctly', () => {
-      expect(shouldCheckUpdate()).toBe(true);
+    it('keeps auto update checks off until they are explicitly enabled', () => {
+      // Network isolation guardrail: with nothing stored, autoCheck defaults to
+      // false and no release endpoint may be contacted. See
+      // docs/PROJECT_STUDY.md §9 and the comment in getUpdateSettings.
+      expect(shouldCheckUpdate()).toBe(false);
 
+      saveUpdateSettings({
+        autoCheck: false,
+        checkFrequencyHours: 24,
+        lastCheckedTimestamp: 0,
+        ignoredVersions: [],
+      });
+      expect(shouldCheckUpdate()).toBe(false);
+    });
+
+    it('checks shouldCheckUpdate frequency correctly', () => {
       const now = Date.now();
       saveUpdateSettings({
         autoCheck: true,
