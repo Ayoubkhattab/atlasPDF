@@ -16,8 +16,15 @@
   Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Resource-Policy: cross-origin
   # Network isolation: every tool runs client-side against same-origin assets only
-  # (see docs/PROJECT_STUDY.md §9). This makes that a browser-enforced guarantee.
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';
+  # (see docs/PROJECT_STUDY.md §9). That guarantee lives in default-src/connect-src
+  # 'self' (plus blob: - the LibreOffice WASM converter fetches its own blob: object
+  # URLs, created from the downloaded soffice.wasm/data, from inside its worker;
+  # without connect-src allowing blob: those fetches are silently blocked, surfacing
+  # as an unexplained net::ERR_FAILED on the wasm/data download). script-src keeps
+  # 'unsafe-inline' because the static export ships its React Flight payload as
+  # inline <script> blocks and cannot hydrate without them — see security-headers.conf
+  # for the full reasoning.
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self' blob:; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';
 
 # HTML pages - no cache, always revalidate
 /*.html
@@ -86,18 +93,22 @@
   Content-Type: application/wasm
 
 # LibreOffice WASM data files
-/libreoffice-wasm/soffice.wasm.gz
+# The converter requests the uncompressed names below directly (see
+# src/lib/libreoffice/converter.ts) - these are the actual on-disk/requested
+# filenames (they used to be soffice.wasm.gz / soffice.data.gz, which don't
+# exist and never matched anything, leaving these two files to fall back to
+# Cloudflare/Netlify's default Content-Type for an unrecognized .bin
+# extension instead of the application/wasm streaming instantiation needs).
+/libreoffice-wasm/soffice.wasm.bin
   Cache-Control: public, max-age=31536000, immutable
   Content-Type: application/wasm
-  Content-Encoding: gzip
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Resource-Policy: cross-origin
 
-/libreoffice-wasm/soffice.data.gz
+/libreoffice-wasm/soffice.data.bin
   Cache-Control: public, max-age=31536000, immutable
   Content-Type: application/octet-stream
-  Content-Encoding: gzip
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Resource-Policy: cross-origin
