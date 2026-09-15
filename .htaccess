@@ -91,8 +91,11 @@ AddType application/vnd.ms-fontobject .eot
     Header always set Cross-Origin-Embedder-Policy "require-corp"
     Header always set Cross-Origin-Resource-Policy "cross-origin"
     # Network isolation: every tool runs client-side against same-origin assets only
-    # (see docs/PROJECT_STUDY.md §9). This makes that a browser-enforced guarantee.
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
+    # (see docs/PROJECT_STUDY.md §9). This makes that a browser-enforced guarantee,
+    # carried by default-src/connect-src 'self'. script-src keeps 'unsafe-inline'
+    # because the static export ships its React Flight payload as inline scripts
+    # and cannot hydrate without them — see security-headers.conf.
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; worker-src 'self' blob:; frame-src 'self' blob: data:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';"
 
     # --- Cache-Control ---
     <FilesMatch "\.(js|css|mjs|woff|woff2|ttf|eot|png|jpg|jpeg|gif|ico|svg|webp|avif|wasm)$">
