@@ -11,6 +11,7 @@ import type {
 } from '@/types/pdf';
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
+import { isCrossOriginIsolated } from '@/lib/utils/cross-origin-isolated';
 
 /** Maximum file size: 50 MB */
 const MAX_FILE_SIZE = 50 * 1024 * 1024;
@@ -83,6 +84,17 @@ export class PPTXToPDFProcessor extends BasePDFProcessor {
                 PDFErrorCode.INVALID_OPTIONS,
                 `File is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum supported size is ${MAX_FILE_SIZE / 1024 / 1024} MB.`,
                 `File size: ${file.size} bytes, limit: ${MAX_FILE_SIZE} bytes`
+            );
+        }
+
+        // PowerPoint conversion has no fallback engine - it always needs LibreOffice
+        // WASM, which needs SharedArrayBuffer. Fail fast with an actionable message
+        // instead of spending a ~250MB download attempt on a doomed conversion.
+        if (!isCrossOriginIsolated()) {
+            return this.createErrorOutput(
+                PDFErrorCode.PROCESSING_FAILED,
+                'PowerPoint conversion requires LibreOffice, which needs Cross-Origin Isolation on your server.',
+                'Your host must send Cross-Origin-Opener-Policy: same-origin and Cross-Origin-Embedder-Policy: require-corp on all HTML responses.'
             );
         }
 
