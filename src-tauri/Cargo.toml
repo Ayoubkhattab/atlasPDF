@@ -1,6 +1,6 @@
 [package]
 name = "atlaspdf"
-version = "0.1.0"
+version = "1.0.0"
 description = "AtlasPDF Desktop Application"
 authors = ["AtlasPDF"]
 edition = "2021"
