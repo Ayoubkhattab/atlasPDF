@@ -48,6 +48,7 @@ import { isTauri } from '../tauri-bridge';
 import { LIBREOFFICE_ASSET_VERSION } from './asset-version';
 import { detectLibreOfficeCspBlockers } from './csp-probe';
 import { describeWorkerSupport } from './worker-probe';
+import { forceArabicFont } from './arabic-font';
 import { gunzipBlobIfNeeded } from './gzip';
 
 const LIBREOFFICE_PATH = withBasePath('/libreoffice-wasm/');
@@ -60,7 +61,24 @@ const SOFFICE_DATA_FILE = 'soffice.data.bin';
 // What browsers download: the committed gzip files, decompressed client-side.
 const SOFFICE_WASM_GZ = `${SOFFICE_WASM_FILE}.gz`;
 const SOFFICE_DATA_GZ = `${SOFFICE_DATA_FILE}.gz`;
-const FONT_PATH = '/fonts/NotoSansSC-Regular.ttf';
+/**
+ * Fonts written into the engine's own font directory before LibreOfficeKit starts. The engine
+ * already bundles 137 of them — Liberation/Carlito/Caladea for the Office metrics, and Amiri,
+ * Alef, Scheherazade, Noto Naskh/Kufi/Sans Arabic for Arabic — but nothing for CJK and nothing
+ * from this project, so a document asking for Qomra was silently substituted. Keep the list
+ * short: every entry is read before the engine can start.
+ */
+const INJECTED_FONTS: ReadonlyArray<{ path: string; estimatedBytes: number }> = [
+    { path: '/fonts/NotoSansSC-Regular.ttf', estimatedBytes: 16.4 * 1024 * 1024 },
+    // "itf Qomra Arabic" (Regular + Bold is one family); the other three weights are families of
+    // their own, so a document naming any of them resolves only if all five are here.
+    { path: '/fonts/itfQomraArabic-Regular.ttf', estimatedBytes: 86 * 1024 },
+    { path: '/fonts/itfQomraArabic-Bold.ttf', estimatedBytes: 86 * 1024 },
+    { path: '/fonts/itfQomraArabic-Light.ttf', estimatedBytes: 87 * 1024 },
+    { path: '/fonts/itfQomraArabic-Medium.ttf', estimatedBytes: 86 * 1024 },
+    { path: '/fonts/itfQomraArabic-Black.ttf', estimatedBytes: 88 * 1024 },
+];
+const fontFileName = (path: string) => path.slice(path.lastIndexOf('/') + 1);
 /**
  * The worker used to hang forever if the engine never reported ready; bound it — but stay above
  * the worker's own budget (10 minutes, patched in by scripts/sync-libreoffice-assets.js), so its
@@ -92,14 +110,15 @@ const ENGINE_FILES: EngineFile[] = [
     { label: 'soffice.wasm', gz: SOFFICE_WASM_GZ, raw: SOFFICE_WASM_FILE, type: 'application/wasm', estimatedBytes: 48 * MB },
     { label: 'soffice.data', gz: SOFFICE_DATA_GZ, raw: SOFFICE_DATA_FILE, type: 'application/octet-stream', estimatedBytes: 28 * MB },
 ];
-const FONT_ESTIMATED_BYTES = 16.4 * MB;
+
 
 function normalizeBasePath(path: string): string {
     return path.endsWith('/') ? path : `${path}/`;
 }
 
 function isLibreOfficeAssetUrl(url: URL): boolean {
-    return url.pathname.includes('/libreoffice-wasm/') || url.pathname.endsWith(FONT_PATH);
+    return url.pathname.includes('/libreoffice-wasm/')
+        || INJECTED_FONTS.some((font) => url.pathname.endsWith(font.path));
 }
 
 function withTimeout<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
@@ -295,7 +314,7 @@ export class LibreOfficeConverter {
             const totals: Record<string, number> = {
                 [ENGINE_FILES[0].label]: ENGINE_FILES[0].estimatedBytes,
                 [ENGINE_FILES[1].label]: ENGINE_FILES[1].estimatedBytes,
-                font: FONT_ESTIMATED_BYTES,
+                ...Object.fromEntries(INJECTED_FONTS.map((f) => [f.path, f.estimatedBytes])),
             };
             const track = this.trackProgress(totals, fromAppBundle ? 'Reading engine' : 'Downloading');
             const fromFetch = (key: string) => (p: FetchProgress) => track(key)(p.loadedBytes, p.totalBytes);
@@ -304,20 +323,25 @@ export class LibreOfficeConverter {
             // The desktop bundle always ships the decompressed engine — scripts/decompress-wasm.mjs
             // fails a Tauri build that cannot produce it — so read the .bin straight out of the app:
             // no .gz, no Range requests and no part cache, none of which a local file needs.
-            const [sofficeWasmBlob, sofficeDataBlob, fontBlob] = fromAppBundle
+            const [sofficeWasmBlob, sofficeDataBlob, ...fontBlobs] = fromAppBundle
                 ? await Promise.all([
                     this.readBundledFile(`${this.basePath}${SOFFICE_WASM_FILE}?v=${ASSET_VERSION}`, SOFFICE_WASM_FILE, track(ENGINE_FILES[0].label)),
                     this.readBundledFile(`${this.basePath}${SOFFICE_DATA_FILE}?v=${ASSET_VERSION}`, SOFFICE_DATA_FILE, track(ENGINE_FILES[1].label)),
-                    this.readBundledFile(withBasePath(`${FONT_PATH}?v=${ASSET_VERSION}`), 'the engine font', track('font')),
+                    ...INJECTED_FONTS.map((font) => this.readBundledFile(
+                        withBasePath(`${font.path}?v=${ASSET_VERSION}`), fontFileName(font.path), track(font.path),
+                    )),
                 ])
                 : await Promise.all([
                     this.fetchEngineFile(ENGINE_FILES[0], fromFetch(ENGINE_FILES[0].label)),
                     this.fetchEngineFile(ENGINE_FILES[1], fromFetch(ENGINE_FILES[1].label)),
-                    fetchAssembledBlob(withBasePath(`${FONT_PATH}?v=${ASSET_VERSION}`), fromFetch('font')),
+                    ...INJECTED_FONTS.map((font) => fetchAssembledBlob(
+                        withBasePath(`${font.path}?v=${ASSET_VERSION}`), fromFetch(font.path),
+                    )),
                 ]);
 
             const readSeconds = (performance.now() - readStartedAt) / 1000;
-            const readMB = (sofficeWasmBlob.size + sofficeDataBlob.size + fontBlob.size) / MB;
+            const readMB = (sofficeWasmBlob.size + sofficeDataBlob.size
+                + fontBlobs.reduce((total, blob) => total + blob.size, 0)) / MB;
             console.warn(
                 `[LibreOffice] Engine bytes ready: ${readMB.toFixed(1)} MB in ${readSeconds.toFixed(1)}s ` +
                 `(${(readMB / Math.max(readSeconds, 0.001)).toFixed(1)} MB/s)`
@@ -326,7 +350,10 @@ export class LibreOfficeConverter {
             const sofficeWasmUrl = URL.createObjectURL(sofficeWasmBlob);
             const sofficeDataUrl = URL.createObjectURL(sofficeDataBlob);
             this.blobUrls = [sofficeWasmUrl, sofficeDataUrl];
-            const fontArrayBuffer = await fontBlob.arrayBuffer();
+            const fonts = await Promise.all(fontBlobs.map(async (blob, i) => ({
+                filename: fontFileName(INJECTED_FONTS[i].path),
+                data: await blob.arrayBuffer(),
+            })));
 
             // Every pthread the engine starts is created as `new Worker(sofficeJs)` from inside the
             // library's worker — soffice.js does `pthreadMainJs = Module.mainScriptUrlOrBlob`. On the
@@ -353,9 +380,7 @@ export class LibreOfficeConverter {
                 sofficeWorkerJs: `${this.basePath}soffice.worker.js?v=${ASSET_VERSION}`,
                 browserWorkerJs: `${this.basePath}browser.worker.global.js?v=${ASSET_VERSION}`,
                 verbose: false,
-                fonts: [
-                    { filename: 'NotoSansSC-Regular.ttf', data: fontArrayBuffer }
-                ],
+                fonts,
                 onProgress: (info: { phase: string; percent: number; message: string }) => {
                     // Use this.progressCallback so a late-arriving callback from the UI gets picked up
                     if (this.progressCallback && !this.initialized) {
@@ -596,10 +621,20 @@ export class LibreOfficeConverter {
 
         try {
             const arrayBuffer = await file.arrayBuffer();
-            const uint8Array = new Uint8Array(arrayBuffer);
+            let uint8Array = new Uint8Array(arrayBuffer);
             const ext = file.name.split('.').pop()?.toLowerCase() || '';
 
             console.log(`[LibreOffice] Detected format from extension: ${ext}`);
+
+            // Arabic glyphs come from the complex-script font slot, and a document asking for a
+            // Latin-only font (Arial, Calibri) leaves that slot pointing at something with no
+            // Arabic in it — the glyphs then fall through to DejaVu Sans and look nothing like the
+            // original. ./arabic-font.ts points that one attribute at the font this project ships.
+            const withArabicFont = await forceArabicFont(uint8Array, ext);
+            if (withArabicFont) {
+                console.log(`[LibreOffice] Arabic text set to the bundled font (${uint8Array.length} → ${withArabicFont.length} bytes)`);
+                uint8Array = withArabicFont;
+            }
 
             const startTime = Date.now();
             const result = await this.converter.convert(uint8Array, {
