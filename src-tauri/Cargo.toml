@@ -14,3 +14,8 @@ tauri-plugin-dialog = "2"
 tauri-plugin-fs = "2"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+
+# Off by default so CI/public release builds never ship an inspectable webview.
+# Enable only for a one-off local build with: npx tauri build -f devtools
+[features]
+devtools = ["tauri/devtools"]
