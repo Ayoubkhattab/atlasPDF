@@ -4,4 +4,4 @@
 // Regenerate with: node scripts/libreoffice-asset-version.mjs --write
 
 export const LIBREOFFICE_PACKAGE_VERSION = '2.7.2';
-export const LIBREOFFICE_ASSET_VERSION = '2.7.2-9cfdb5bcbc3c';
+export const LIBREOFFICE_ASSET_VERSION = '2.7.2-7f52061f74e3';

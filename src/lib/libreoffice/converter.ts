@@ -20,9 +20,12 @@
  *    engine can never be served under a URL browsers already cached as immutable
  *
  * IMPORTANT: The browser.worker.global.js in public/libreoffice-wasm/ MUST match
- * the version from @matbee/libreoffice-converter/dist/. Do NOT modify it — the
- * library's WorkerBrowserConverter expects an unmodified worker script. If you
- * need CJK font support, fonts must be pre-baked into soffice.data.
+ * the version from @matbee/libreoffice-converter/dist/, with exactly one sanctioned
+ * change that scripts/sync-libreoffice-assets.js re-applies on every install: the
+ * engine start-up timeout, which 2.7.0 cut from 5 minutes to 2 — too little for the
+ * desktop build. Do NOT modify anything else — the library's WorkerBrowserConverter
+ * expects an otherwise unmodified worker script. If you need CJK font support, fonts
+ * must be pre-baked into soffice.data.
  *
  * How pthreads work:
  * - soffice.js (Emscripten glue) creates 4 pthread Workers via
@@ -58,8 +61,12 @@ const SOFFICE_DATA_FILE = 'soffice.data.bin';
 const SOFFICE_WASM_GZ = `${SOFFICE_WASM_FILE}.gz`;
 const SOFFICE_DATA_GZ = `${SOFFICE_DATA_FILE}.gz`;
 const FONT_PATH = '/fonts/NotoSansSC-Regular.ttf';
-/** The worker used to hang forever if the engine never reported ready; bound it. */
-const ENGINE_START_TIMEOUT_MS = 5 * 60 * 1000;
+/**
+ * The worker used to hang forever if the engine never reported ready; bound it — but stay above
+ * the worker's own budget (10 minutes, patched in by scripts/sync-libreoffice-assets.js), so its
+ * specific message wins instead of this generic one.
+ */
+const ENGINE_START_TIMEOUT_MS = 12 * 60 * 1000;
 /** getRegistrations() can hang on a custom protocol (Tauri) instead of rejecting. */
 const SERVICE_WORKER_PROBE_TIMEOUT_MS = 5 * 1000;
 /** A blocked blob: fetch rejects immediately; only a stuck protocol handler takes this long. */
@@ -374,7 +381,7 @@ export class LibreOfficeConverter {
                 await withTimeout(
                     converter.initialize(),
                     ENGINE_START_TIMEOUT_MS,
-                    'The conversion engine did not finish starting within 5 minutes. The device may be low on memory; reload the page to try again.'
+                    'The conversion engine did not finish starting within 12 minutes. The device may be low on memory; reload the page to try again.'
                 );
             } catch (e) {
                 converter.destroy().catch(() => {});

@@ -13,7 +13,7 @@
  * - GitHub Pages: Serves decompressed originals (but lacks COOP/COEP headers)
  */
 
-import { createReadStream, createWriteStream, readdirSync, existsSync, statSync, unlinkSync } from 'fs';
+import { createReadStream, createWriteStream, readdirSync, existsSync, readFileSync, statSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { createGunzip } from 'zlib';
 import { pipeline } from 'stream/promises';
@@ -104,6 +104,21 @@ async function main() {
     // The desktop app streams the decompressed engine straight out of the bundle
     // (src/lib/libreoffice/converter.ts), so a missing .bin cannot be papered over by the
     // browser's .gz fallback — it would ship an exe whose converter never starts. Fail loudly.
+    // An unpatched worker (see scripts/sync-libreoffice-assets.js) gives the engine 2 minutes to
+    // start, which is not enough inside the desktop app. Never ship that silently.
+    const workerPath = join(WASM_DIR, 'browser.worker.global.js');
+    if (existsSync(workerPath)) {
+        const worker = readFileSync(workerPath, 'utf8');
+        const timeout = worker.match(/new Error\("WASM initialization timeout"\)\),\s*([\d.e+]+)\)/);
+        if (timeout && Number(timeout[1]) < 5 * 60 * 1000) {
+            console.error(
+                `[postbuild] browser.worker.global.js still allows only ${timeout[1]}ms for the engine to ` +
+                'start; the desktop build needs the patched worker. Run node scripts/sync-libreoffice-assets.js.'
+            );
+            process.exit(1);
+        }
+    }
+
     const required = ['soffice.wasm.bin', 'soffice.data.bin'];
     const missing = required.filter((f) => !existsSync(join(WASM_DIR, f)));
     if (missing.length > 0) {

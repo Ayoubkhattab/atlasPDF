@@ -32,7 +32,7 @@
  * - or manually: node scripts/sync-libreoffice-assets.js
  */
 
-import { copyFileSync, createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, statSync } from 'fs';
+import { copyFileSync, createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'fs';
 import { createHash } from 'crypto';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
@@ -48,8 +48,37 @@ const PKG_DIST = 'node_modules/@matbee/libreoffice-converter/dist';
 const PKG_WASM = 'node_modules/@matbee/libreoffice-converter/wasm';
 const DEST_DIR = 'public/libreoffice-wasm';
 
+/**
+ * The one sanctioned change to a vendored file, applied on every sync so no `npm ci` can drop it.
+ *
+ * The worker gives the engine a fixed budget to finish starting, and 2.7.0 cut it from 5 minutes
+ * (30e4) to 2 (12e4). Inside the desktop app start-up does not fit in 2 minutes — that budget also
+ * covers every pthread in the pool reporting back through the app's own protocol — so the build
+ * dies with "WASM initialization timeout". Upstream's exe works precisely because it still ships
+ * 2.6.0 and its 5 minutes. Everything else in this file must stay byte-identical to the package:
+ * it speaks a private message protocol with the WorkerBrowserConverter bundled from node_modules.
+ */
+const WORKER_INIT_TIMEOUT_MS = 10 * 60 * 1000;
+const INIT_TIMEOUT_PATTERN = /(new Error\("WASM initialization timeout"\)\),)\s*([\d.e+]+)(\))/;
+
+function patchWorkerInitTimeout(source) {
+    const text = source.toString('utf8');
+    const match = text.match(INIT_TIMEOUT_PATTERN);
+    if (!match) {
+        console.warn(
+            '⚠️  browser.worker.global.js no longer contains the init timeout this sync patches. ' +
+            'Re-check the library before shipping a desktop build: an unpatched worker is what ' +
+            '"WASM initialization timeout" in the exe was.'
+        );
+        return source;
+    }
+    if (Number(match[2]) === WORKER_INIT_TIMEOUT_MS) return source;
+    console.log(`  ↳ init timeout ${match[2]}ms → ${WORKER_INIT_TIMEOUT_MS}ms (desktop start-up needs it)`);
+    return Buffer.from(text.replace(INIT_TIMEOUT_PATTERN, `$1${WORKER_INIT_TIMEOUT_MS}$3`), 'utf8');
+}
+
 const plainCopies = [
-    { src: `${PKG_DIST}/browser.worker.global.js`, dest: `${DEST_DIR}/browser.worker.global.js`, name: 'browser.worker.global.js' },
+    { src: `${PKG_DIST}/browser.worker.global.js`, dest: `${DEST_DIR}/browser.worker.global.js`, name: 'browser.worker.global.js', transform: patchWorkerInitTimeout },
     { src: `${PKG_WASM}/soffice.js`, dest: `${DEST_DIR}/soffice.js`, name: 'soffice.js (Emscripten glue)' },
     { src: `${PKG_WASM}/soffice.worker.js`, dest: `${DEST_DIR}/soffice.worker.js`, name: 'soffice.worker.js' },
 ];
@@ -109,11 +138,12 @@ async function main() {
             continue;
         }
         try {
-            if (existsSync(destPath) && sameText(readFileSync(srcPath), readFileSync(destPath))) {
+            const source = file.transform ? file.transform(readFileSync(srcPath)) : readFileSync(srcPath);
+            if (existsSync(destPath) && sameText(source, readFileSync(destPath))) {
                 console.log(`✓ ${file.name} already up to date`);
                 continue;
             }
-            copyFileSync(srcPath, destPath);
+            writeFileSync(destPath, source);
             console.log(`✓ Copied ${file.name}`);
         } catch (error) {
             console.error(`✗ Failed to copy ${file.name}:`, error.message);
