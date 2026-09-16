@@ -63,8 +63,13 @@ const ENGINE_START_TIMEOUT_MS = 5 * 60 * 1000;
 const SERVICE_WORKER_PROBE_TIMEOUT_MS = 5 * 1000;
 /** A blocked blob: fetch rejects immediately; only a stuck protocol handler takes this long. */
 const CSP_PROBE_TIMEOUT_MS = 5 * 1000;
-/** Reading ~250MB out of the app bundle: generous, but it must end in an error, not a freeze. */
-const BUNDLE_READ_TIMEOUT_MS = 3 * 60 * 1000;
+/**
+ * Bounds the *stall*, not the total: reading ~250MB out of the app bundle is as slow as the
+ * platform's asset protocol is, and on the desktop build that is slow enough to matter — the
+ * engine start-up it used to sit inside had a 120s budget and blew it. A total cap would just
+ * move that failure here, so the read may take as long as it likes provided bytes keep arriving.
+ */
+const BUNDLE_STALL_TIMEOUT_MS = 60 * 1000;
 const MB = 1024 * 1024;
 
 interface EngineFile {
@@ -202,7 +207,10 @@ export class LibreOfficeConverter {
         label: string,
         onProgress: (loadedBytes: number, totalBytes: number) => void,
     ): Promise<Blob> {
-        const res = await fetch(url);
+        const stalled = (what: string) =>
+            `Reading ${label} from the app bundle stalled: ${what} for ` +
+            `${BUNDLE_STALL_TIMEOUT_MS / 1000}s. Restart the app and try again.`;
+        const res = await withTimeout(fetch(url), BUNDLE_STALL_TIMEOUT_MS, stalled('no response'));
         if (!res.ok) {
             throw new Error(`The app bundle did not return ${label} (HTTP ${res.status}).`);
         }
@@ -216,7 +224,11 @@ export class LibreOfficeConverter {
         const chunks: BlobPart[] = [];
         let loaded = 0;
         for (;;) {
-            const { done, value } = await reader.read();
+            const { done, value } = await withTimeout(
+                reader.read(),
+                BUNDLE_STALL_TIMEOUT_MS,
+                stalled(`no data after ${(loaded / MB).toFixed(1)}MB`),
+            );
             if (done) break;
             chunks.push(value as BlobPart);
             loaded += value.byteLength;
@@ -285,15 +297,11 @@ export class LibreOfficeConverter {
             // fails a Tauri build that cannot produce it — so read the .bin straight out of the app:
             // no .gz, no Range requests and no part cache, none of which a local file needs.
             const [sofficeWasmBlob, sofficeDataBlob, fontBlob] = fromAppBundle
-                ? await withTimeout(
-                    Promise.all([
-                        this.readBundledFile(`${this.basePath}${SOFFICE_WASM_FILE}?v=${ASSET_VERSION}`, SOFFICE_WASM_FILE, track(ENGINE_FILES[0].label)),
-                        this.readBundledFile(`${this.basePath}${SOFFICE_DATA_FILE}?v=${ASSET_VERSION}`, SOFFICE_DATA_FILE, track(ENGINE_FILES[1].label)),
-                        this.readBundledFile(withBasePath(`${FONT_PATH}?v=${ASSET_VERSION}`), 'the engine font', track('font')),
-                    ]),
-                    BUNDLE_READ_TIMEOUT_MS,
-                    'Reading the conversion engine out of the app bundle stalled. Restart the app and try again.',
-                )
+                ? await Promise.all([
+                    this.readBundledFile(`${this.basePath}${SOFFICE_WASM_FILE}?v=${ASSET_VERSION}`, SOFFICE_WASM_FILE, track(ENGINE_FILES[0].label)),
+                    this.readBundledFile(`${this.basePath}${SOFFICE_DATA_FILE}?v=${ASSET_VERSION}`, SOFFICE_DATA_FILE, track(ENGINE_FILES[1].label)),
+                    this.readBundledFile(withBasePath(`${FONT_PATH}?v=${ASSET_VERSION}`), 'the engine font', track('font')),
+                ])
                 : await Promise.all([
                     this.fetchEngineFile(ENGINE_FILES[0], fromFetch(ENGINE_FILES[0].label)),
                     this.fetchEngineFile(ENGINE_FILES[1], fromFetch(ENGINE_FILES[1].label)),
