@@ -57,7 +57,8 @@
       "rotateAllLeft": "تدوير الكل لليسار",
       "rotateAllRight": "تدوير الكل لليمين",
       "confirm": "تأكيد",
-      "add": "إضافة"
+      "add": "إضافة",
+      "saved": "تم الحفظ"
     },
     "status": {
       "idle": "جاهز",

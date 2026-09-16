@@ -10,6 +10,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import {
   type RecentFile,
+  RECENT_FILES_CHANGED,
   getRecentFiles,
   addRecentFile,
   removeRecentFile,
@@ -28,10 +29,19 @@ export function useRecentFiles(): UseRecentFilesReturn {
   const [recentFiles, setRecentFiles] = useState<RecentFile[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load recent files on mount
+  // Load on mount, then follow the store: files are recorded by whatever saved them —
+  // DownloadButton writes straight to storage — so polling the state once is not enough.
   useEffect(() => {
-    setRecentFiles(getRecentFiles());
+    const sync = () => setRecentFiles(getRecentFiles());
+    sync();
     setIsLoading(false);
+    window.addEventListener(RECENT_FILES_CHANGED, sync);
+    // Another window of the same app writing the same key.
+    window.addEventListener('storage', sync);
+    return () => {
+      window.removeEventListener(RECENT_FILES_CHANGED, sync);
+      window.removeEventListener('storage', sync);
+    };
   }, []);
 
   const addFile = useCallback(

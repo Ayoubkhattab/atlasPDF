@@ -7,9 +7,29 @@ vi.mock('next-intl', () => ({
   useTranslations: () => (key: string) => {
     const translations: Record<string, string> = {
       'buttons.download': 'Download',
+      'buttons.saved': 'Saved',
     };
     return translations[key] || key;
   },
+}));
+
+// The desktop bridge: the browser path must keep working when isTauri() is false, and the save
+// dialog must be what runs when it is true.
+// vi.mock factories are hoisted above plain declarations, so the doubles have to be hoisted too.
+const { mockIsTauri, mockSaveFile, mockWriteFileBytes, mockAddRecentFile } = vi.hoisted(() => ({
+  mockIsTauri: vi.fn(() => false),
+  mockSaveFile: vi.fn(async (name: string, _filters?: unknown) => `C:\\Users\\test\\Documents\\${name}`),
+  mockWriteFileBytes: vi.fn(async (_path: string, _data: Uint8Array) => undefined),
+  mockAddRecentFile: vi.fn(),
+}));
+vi.mock('@/lib/tauri-bridge', () => ({
+  isTauri: () => mockIsTauri(),
+  saveFile: (name: string, filters: unknown) => mockSaveFile(name, filters),
+  writeFileBytes: (path: string, data: Uint8Array) => mockWriteFileBytes(path, data),
+}));
+
+vi.mock('@/lib/storage/recent-files', () => ({
+  addRecentFile: (...args: unknown[]) => mockAddRecentFile(...args),
 }));
 
 // Store original URL methods
@@ -36,7 +56,15 @@ afterEach(() => {
  * Create a mock Blob
  */
 function createMockBlob(content: string, type: string = 'application/pdf'): Blob {
-  return new Blob([content], { type });
+  const blob = new Blob([content], { type });
+  // jsdom ships a Blob without arrayBuffer(), which the desktop save path legitimately uses
+  // to get the bytes it writes. Fill the gap here rather than bending the component around it.
+  if (typeof blob.arrayBuffer !== 'function') {
+    Object.defineProperty(blob, 'arrayBuffer', {
+      value: async () => new TextEncoder().encode(content).buffer,
+    });
+  }
+  return blob;
 }
 
 describe('DownloadButton', () => {
@@ -317,6 +345,65 @@ describe('DownloadButton', () => {
       
       // Should have revoked the first URL
       expect(mockRevokeObjectURL).toHaveBeenCalled();
+    });
+  });
+
+  describe('Desktop save', () => {
+    beforeEach(() => {
+      mockIsTauri.mockReturnValue(true);
+    });
+
+    afterEach(() => {
+      mockIsTauri.mockReturnValue(false);
+    });
+
+    it('asks where to put the file instead of dropping it in the download folder', async () => {
+      const mockBlob = createMockBlob('test content');
+      render(<DownloadButton file={mockBlob} filename="report.pdf" toolSlug="word-to-pdf" />);
+
+      fireEvent.click(screen.getByRole('button'));
+
+      await waitFor(() => expect(mockSaveFile).toHaveBeenCalled());
+      expect(mockSaveFile.mock.calls[0][0]).toBe('report.pdf');
+      // The dialog should offer the right file type.
+      expect(mockSaveFile.mock.calls[0][1]).toEqual([{ name: 'PDF', extensions: ['pdf'] }]);
+      await waitFor(() => expect(mockWriteFileBytes).toHaveBeenCalled());
+      expect(mockWriteFileBytes.mock.calls[0][0]).toContain('report.pdf');
+    });
+
+    it('says where the file went, since the desktop app has no download bar', async () => {
+      const mockBlob = createMockBlob('test content');
+      render(<DownloadButton file={mockBlob} filename="report.pdf" />);
+
+      fireEvent.click(screen.getByRole('button'));
+
+      const saved = await screen.findByRole('button', { name: /Saved/i });
+      expect(saved).toHaveAttribute('title', expect.stringContaining('report.pdf'));
+    });
+
+    it('records the file in the history that the UI reads', async () => {
+      const mockBlob = createMockBlob('test content');
+      render(<DownloadButton file={mockBlob} filename="report.pdf" toolSlug="word-to-pdf" toolName="Word to PDF" />);
+
+      fireEvent.click(screen.getByRole('button'));
+
+      await waitFor(() => expect(mockAddRecentFile).toHaveBeenCalledWith(
+        'report.pdf', mockBlob.size, 'word-to-pdf', 'Word to PDF',
+      ));
+    });
+
+    it('treats a dismissed dialog as a decision, not a failure', async () => {
+      mockSaveFile.mockRejectedValueOnce(new Error('No file selected'));
+      const onComplete = vi.fn();
+      const mockBlob = createMockBlob('test content');
+      render(<DownloadButton file={mockBlob} filename="report.pdf" onDownloadComplete={onComplete} />);
+
+      fireEvent.click(screen.getByRole('button'));
+
+      await waitFor(() => expect(mockSaveFile).toHaveBeenCalled());
+      expect(mockWriteFileBytes).not.toHaveBeenCalled();
+      expect(onComplete).not.toHaveBeenCalled();
+      expect(screen.queryByRole('button', { name: /Saved/i })).not.toBeInTheDocument();
     });
   });
 });

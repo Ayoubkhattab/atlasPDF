@@ -6,6 +6,7 @@ import { Button, type ButtonProps } from '../ui/Button';
 import { addRecentFile } from '@/lib/storage/recent-files';
 import { useToolContext } from '@/lib/contexts/ToolContext';
 import { sanitizeFilename } from '@/lib/utils/sanitize';
+import { isTauri, saveFile, writeFileBytes } from '@/lib/tauri-bridge';
 
 export interface DownloadButtonProps extends Omit<ButtonProps, 'onClick' | 'children'> {
   /** Blob data to download */
@@ -67,6 +68,8 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
   const t = useTranslations('common');
   const [blobUrl, setBlobUrl] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  /** Where the desktop app last wrote the file — the browser has its own download UI, we don't. */
+  const [savedPath, setSavedPath] = useState<string | null>(null);
   
   // Get tool info from context if not provided via props
   const toolContext = useToolContext();
@@ -91,14 +94,42 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
   /**
    * Handle download click
    */
-  const handleDownload = useCallback(() => {
+  const handleDownload = useCallback(async () => {
     if (!file || !blobUrl || isDownloading) return;
 
     setIsDownloading(true);
     onDownloadStart?.();
+    setSavedPath(null);
 
     // Sanitize filename to prevent path traversal
     const safeFilename = sanitizeFilename(filename, 'download.pdf');
+
+    if (isTauri()) {
+      // Left to the webview, the desktop app drops the file into the OS download folder with no
+      // dialog and nothing on screen — people cannot tell whether anything happened. Ask where it
+      // should go, write it there, and say so.
+      try {
+        const extension = safeFilename.includes('.') ? safeFilename.split('.').pop()! : '';
+        const path = await saveFile(safeFilename, extension
+          ? [{ name: extension.toUpperCase(), extensions: [extension] }]
+          : []);
+        if (path) {
+          await writeFileBytes(path, new Uint8Array(await file.arrayBuffer()));
+          setSavedPath(path);
+          onDownloadComplete?.();
+          if (toolSlug) addRecentFile(filename, file.size, toolSlug, toolName);
+        }
+      } catch (error) {
+        // Dismissing the save dialog is a decision, not a failure.
+        const message = error instanceof Error ? error.message : String(error);
+        if (!/no file selected/i.test(message)) {
+          console.error('[Download] Could not save the file:', error);
+        }
+      } finally {
+        setIsDownloading(false);
+      }
+      return;
+    }
 
     // Create a temporary anchor element
     const link = document.createElement('a');
@@ -141,7 +172,9 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
   const isDisabled = disabled || !file || !blobUrl;
 
   // Build button text
-  const buttonText = label || t('buttons.download');
+  const buttonText = savedPath
+    ? (t('buttons.saved') || 'Saved')
+    : label || t('buttons.download');
   const fileSizeText = showFileSize && file ? ` (${formatFileSize(file.size)})` : '';
 
   return (
@@ -152,11 +185,19 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
       loading={isDownloading}
       onClick={handleDownload}
       className={className}
-      aria-label={`${buttonText}${fileSizeText}`}
+      // The full destination, for anyone who wants to know exactly where it went.
+      title={savedPath ?? undefined}
+      aria-label={savedPath ? `${buttonText}: ${savedPath}` : `${buttonText}${fileSizeText}`}
       {...buttonProps}
     >
+      {savedPath && !isDownloading && (
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+        </svg>
+      )}
+
       {/* Download icon */}
-      {!isDownloading && (
+      {!isDownloading && !savedPath && (
         <svg
           className="w-5 h-5"
           fill="none"
@@ -175,7 +216,7 @@ export const DownloadButton: React.FC<DownloadButtonProps> = ({
       
       <span>
         {buttonText}
-        {fileSizeText}
+        {savedPath ? '' : fileSizeText}
       </span>
     </Button>
   );

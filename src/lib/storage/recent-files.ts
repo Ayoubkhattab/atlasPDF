@@ -42,6 +42,18 @@ function isLocalStorageAvailable(): boolean {
 /**
  * Get all recent files from localStorage
  */
+/**
+ * Fired on every change so open views update immediately. Without it the history only caught up
+ * on a page reload: the writer here is called directly, not through useRecentFiles, so the hook's
+ * state had no way of knowing a file had been saved.
+ */
+export const RECENT_FILES_CHANGED = 'atlaspdf:recent-files-changed';
+
+function notifyChanged(): void {
+    if (typeof window === 'undefined') return;
+    window.dispatchEvent(new CustomEvent(RECENT_FILES_CHANGED));
+}
+
 export function getRecentFiles(): RecentFile[] {
   if (!isLocalStorageAvailable()) return [];
   
@@ -88,6 +100,7 @@ export function addRecentFile(
     const updated = [newFile, ...filtered].slice(0, MAX_RECENT_FILES);
     
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    notifyChanged();
     return newFile;
   } catch {
     return newFile;
@@ -104,6 +117,7 @@ export function removeRecentFile(id: string): void {
     const files = getRecentFiles();
     const updated = files.filter((f) => f.id !== id);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    notifyChanged();
   } catch {
     // Silently fail
   }
@@ -117,6 +131,7 @@ export function clearRecentFiles(): void {
   
   try {
     localStorage.removeItem(STORAGE_KEY);
+    notifyChanged();
   } catch {
     // Silently fail
   }

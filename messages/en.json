@@ -57,7 +57,8 @@
       "rotateAllLeft": "Rotate All Left",
       "rotateAllRight": "Rotate All Right",
       "confirm": "Confirm",
-      "add": "Add"
+      "add": "Add",
+      "saved": "Saved"
     },
     "status": {
       "idle": "Ready",
