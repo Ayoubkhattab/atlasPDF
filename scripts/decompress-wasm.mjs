@@ -13,12 +13,18 @@
  * - GitHub Pages: Serves decompressed originals (but lacks COOP/COEP headers)
  */
 
-import { createReadStream, createWriteStream, readdirSync, existsSync, statSync } from 'fs';
+import { createReadStream, createWriteStream, readdirSync, existsSync, statSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { createGunzip } from 'zlib';
 import { pipeline } from 'stream/promises';
 
 const targetArg = process.argv[2] || 'out';
+
+/** Same signals scripts/chunk-assets.mjs uses; `tauri build` sets TAURI_ENV_* for its hooks. */
+const IS_DESKTOP_BUILD =
+    process.env.TAURI_ENV === 'true' ||
+    process.env.BUILDING_TAURI === 'true' ||
+    Boolean(process.env.TAURI_ENV_PLATFORM || process.env.TAURI_PLATFORM);
 
 const BASE_PATH = process.env.BASE_PATH || process.env.NEXT_PUBLIC_BASE_PATH || '';
 const CLEAN_BASE_PATH = BASE_PATH.startsWith('/') ? BASE_PATH.slice(1) : BASE_PATH;
@@ -92,10 +98,37 @@ async function main() {
     }
 
     console.log('[postbuild] WASM decompression complete.');
+
+    if (!IS_DESKTOP_BUILD || targetArg === 'public') return;
+
+    // The desktop app streams the decompressed engine straight out of the bundle
+    // (src/lib/libreoffice/converter.ts), so a missing .bin cannot be papered over by the
+    // browser's .gz fallback — it would ship an exe whose converter never starts. Fail loudly.
+    const required = ['soffice.wasm.bin', 'soffice.data.bin'];
+    const missing = required.filter((f) => !existsSync(join(WASM_DIR, f)));
+    if (missing.length > 0) {
+        console.error(
+            `[postbuild] Desktop build is missing the decompressed engine: ${missing.join(', ')}. ` +
+            'The bundled app would have no working document converter, so the build stops here.'
+        );
+        process.exit(1);
+    }
+
+    // Both copies of a 150MB engine would be embedded in the executable, and the desktop build
+    // never reads the .gz — drop them so the exe stops carrying ~77MB it can never use.
+    for (const gzFile of files) {
+        try {
+            unlinkSync(join(WASM_DIR, gzFile));
+            console.log(`[postbuild]   Removed ${gzFile} (desktop streams the .bin directly).`);
+        } catch (err) {
+            console.warn(`[postbuild]   Could not remove ${gzFile}: ${err.message}`);
+        }
+    }
 }
 
 main().catch(err => {
     console.error('[postbuild] Error:', err);
-    // Don't fail the build if decompression fails
-    process.exit(0);
+    // A web deployment can still serve the .gz, so don't fail that build. A desktop build has no
+    // such fallback — see the check at the end of main().
+    process.exit(IS_DESKTOP_BUILD ? 1 : 0);
 });

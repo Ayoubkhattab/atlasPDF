@@ -11,7 +11,8 @@
  *    decompresses them in the browser (./gzip.ts). Every host serves those as plain bytes, so
  *    no gzip_static / Content-Encoding / MIME setup is involved, and byte ranges map onto the
  *    file, so downloads resume and cache in parts (../utils/asset-loader.ts). Deployments that
- *    only ship the decompressed .bin files still work (fallback); Tauri streams .bin directly.
+ *    only ship the decompressed .bin files still work (fallback). The desktop build skips all of
+ *    that and reads the bundled .bin: a file inside the app needs no ranges and no part cache.
  * 3. Specifies browserWorkerJs for the library's internal worker communication
  * 4. Checks SharedArrayBuffer and the Content-Security-Policy upfront — fails fast with a clear
  *    error before downloading anything
@@ -58,6 +59,12 @@ const SOFFICE_DATA_GZ = `${SOFFICE_DATA_FILE}.gz`;
 const FONT_PATH = '/fonts/NotoSansSC-Regular.ttf';
 /** The worker used to hang forever if the engine never reported ready; bound it. */
 const ENGINE_START_TIMEOUT_MS = 5 * 60 * 1000;
+/** getRegistrations() can hang on a custom protocol (Tauri) instead of rejecting. */
+const SERVICE_WORKER_PROBE_TIMEOUT_MS = 5 * 1000;
+/** A blocked blob: fetch rejects immediately; only a stuck protocol handler takes this long. */
+const CSP_PROBE_TIMEOUT_MS = 5 * 1000;
+/** Reading ~250MB out of the app bundle: generous, but it must end in an error, not a freeze. */
+const BUNDLE_READ_TIMEOUT_MS = 3 * 60 * 1000;
 const MB = 1024 * 1024;
 
 interface EngineFile {
@@ -145,7 +152,14 @@ export class LibreOfficeConverter {
     /**
      * Build a human-readable progress message for the engine start-up phase.
      */
-    private buildProgressMessage(info: { percent: number }): string {
+    private buildProgressMessage(info: { percent: number; message?: string }): string {
+        // The worker says what it is actually doing — "Compiling WebAssembly module...",
+        // "Setting up filesystem...", "Initializing LibreOfficeKit...". Keep it: when start-up
+        // stalls, the phase on screen is the only clue a build without devtools can give.
+        const reported = info.message?.trim();
+        if (this.downloadsComplete && reported) {
+            return `${reported} (${Math.round(info.percent)}%)`;
+        }
         if (info.percent >= 95 && info.percent < 100) {
             return 'Initializing conversion engine...';
         }
@@ -158,6 +172,57 @@ export class LibreOfficeConverter {
             return `Downloading: ${downloadedMB} MB / ${totalMB} MB`;
         }
         return `Loading conversion engine (${Math.round(info.percent)}%)...`;
+    }
+
+    /**
+     * Aggregated byte progress across the engine files, mapped onto the 0-90% loading band.
+     */
+    private trackProgress(totals: Record<string, number>, verb: string) {
+        const loaded: Record<string, number> = {};
+        return (key: string) => (loadedBytes: number, totalBytes: number) => {
+            loaded[key] = loadedBytes;
+            if (totalBytes > 0) totals[key] = totalBytes;
+            const total = Object.values(totals).reduce((a, b) => a + b, 0);
+            const done = Object.values(loaded).reduce((a, b) => a + b, 0);
+            this.progressCallback?.({
+                phase: 'loading',
+                percent: Math.min(90, Math.round((done / total) * 90)),
+                message: `${verb}: ${(done / MB).toFixed(1)} MB / ${(total / MB).toFixed(1)} MB`,
+            });
+        };
+    }
+
+    /**
+     * Reads a file the desktop bundle ships, reporting progress as it arrives. Deliberately plain:
+     * a file inside the app needs no Range requests, no part cache and no gzip step, and each of
+     * those would cost another full copy of a 150MB file inside the WebView.
+     */
+    private async readBundledFile(
+        url: string,
+        label: string,
+        onProgress: (loadedBytes: number, totalBytes: number) => void,
+    ): Promise<Blob> {
+        const res = await fetch(url);
+        if (!res.ok) {
+            throw new Error(`The app bundle did not return ${label} (HTTP ${res.status}).`);
+        }
+        const declared = Number(res.headers.get('content-length')) || 0;
+        if (!res.body) {
+            const whole = await res.blob();
+            onProgress(whole.size, whole.size);
+            return whole;
+        }
+        const reader = res.body.getReader();
+        const chunks: BlobPart[] = [];
+        let loaded = 0;
+        for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value as BlobPart);
+            loaded += value.byteLength;
+            onProgress(loaded, declared);
+        }
+        return new Blob(chunks);
     }
 
     /**
@@ -199,61 +264,53 @@ export class LibreOfficeConverter {
                 : '';
             this.progressCallback?.({ phase: 'loading', percent: 5, message: `Loading conversion engine${totalInfo}...` });
 
-            let sofficeWasmUrl: string;
-            let sofficeDataUrl: string;
-            let fontArrayBuffer: ArrayBuffer;
+            // Both paths end at blob: URLs, because the library's worker starts a 120 second
+            // initialization timeout *before* Emscripten fetches the engine — so whatever is still
+            // on the wire then is spending that budget. On the desktop build, moving ~250MB through
+            // the app's own protocol consumed all of it and start-up died as "WASM initialization
+            // timeout". Reading the bytes here leaves that budget for what it is meant to cover,
+            // compiling the module and starting its threads, and turns a frozen percentage into a
+            // progress bar with real numbers.
+            const fromAppBundle = isTauri();
+            const totals: Record<string, number> = {
+                [ENGINE_FILES[0].label]: ENGINE_FILES[0].estimatedBytes,
+                [ENGINE_FILES[1].label]: ENGINE_FILES[1].estimatedBytes,
+                font: FONT_ESTIMATED_BYTES,
+            };
+            const track = this.trackProgress(totals, fromAppBundle ? 'Reading engine' : 'Downloading');
+            const fromFetch = (key: string) => (p: FetchProgress) => track(key)(p.loadedBytes, p.totalBytes);
+            const readStartedAt = performance.now();
 
-            let useDirectStreaming = false;
-            if (isTauri()) {
-                try {
-                    const testRes = await fetch(`${this.basePath}${SOFFICE_WASM_FILE}?v=${ASSET_VERSION}`, { method: 'HEAD' });
-                    useDirectStreaming = testRes.ok;
-                } catch {
-                    useDirectStreaming = false;
-                }
-            }
-
-            if (useDirectStreaming) {
-                console.log('[LibreOffice] Running in Tauri environment with unchunked assets: using direct asset URLs for zero-copy streaming');
-                sofficeWasmUrl = `${this.basePath}${SOFFICE_WASM_FILE}?v=${ASSET_VERSION}`;
-                sofficeDataUrl = `${this.basePath}${SOFFICE_DATA_FILE}?v=${ASSET_VERSION}`;
-
-                this.progressCallback?.({ phase: 'loading', percent: 15, message: 'Loading fonts...' });
-                const fontRes = await fetch(withBasePath(`${FONT_PATH}?v=${ASSET_VERSION}`));
-                if (!fontRes.ok) {
-                    throw new Error(`Failed to load font: ${fontRes.statusText}`);
-                }
-                fontArrayBuffer = await fontRes.arrayBuffer();
-            } else {
-                const loaded: Record<string, number> = {};
-                const totals: Record<string, number> = {
-                    [ENGINE_FILES[0].label]: ENGINE_FILES[0].estimatedBytes,
-                    [ENGINE_FILES[1].label]: ENGINE_FILES[1].estimatedBytes,
-                    font: FONT_ESTIMATED_BYTES,
-                };
-                const track = (key: string) => (p: FetchProgress) => {
-                    loaded[key] = p.loadedBytes;
-                    if (p.totalBytes > 0) totals[key] = p.totalBytes;
-                    const total = Object.values(totals).reduce((a, b) => a + b, 0);
-                    const done = Object.values(loaded).reduce((a, b) => a + b, 0);
-                    this.progressCallback?.({
-                        phase: 'loading',
-                        percent: Math.min(90, Math.round((done / total) * 90)),
-                        message: `Downloading: ${(done / MB).toFixed(1)} MB / ${(total / MB).toFixed(1)} MB`,
-                    });
-                };
-
-                const [sofficeWasmBlob, sofficeDataBlob, fontBlob] = await Promise.all([
-                    this.fetchEngineFile(ENGINE_FILES[0], track(ENGINE_FILES[0].label)),
-                    this.fetchEngineFile(ENGINE_FILES[1], track(ENGINE_FILES[1].label)),
-                    fetchAssembledBlob(withBasePath(`${FONT_PATH}?v=${ASSET_VERSION}`), track('font')),
+            // The desktop bundle always ships the decompressed engine — scripts/decompress-wasm.mjs
+            // fails a Tauri build that cannot produce it — so read the .bin straight out of the app:
+            // no .gz, no Range requests and no part cache, none of which a local file needs.
+            const [sofficeWasmBlob, sofficeDataBlob, fontBlob] = fromAppBundle
+                ? await withTimeout(
+                    Promise.all([
+                        this.readBundledFile(`${this.basePath}${SOFFICE_WASM_FILE}?v=${ASSET_VERSION}`, SOFFICE_WASM_FILE, track(ENGINE_FILES[0].label)),
+                        this.readBundledFile(`${this.basePath}${SOFFICE_DATA_FILE}?v=${ASSET_VERSION}`, SOFFICE_DATA_FILE, track(ENGINE_FILES[1].label)),
+                        this.readBundledFile(withBasePath(`${FONT_PATH}?v=${ASSET_VERSION}`), 'the engine font', track('font')),
+                    ]),
+                    BUNDLE_READ_TIMEOUT_MS,
+                    'Reading the conversion engine out of the app bundle stalled. Restart the app and try again.',
+                )
+                : await Promise.all([
+                    this.fetchEngineFile(ENGINE_FILES[0], fromFetch(ENGINE_FILES[0].label)),
+                    this.fetchEngineFile(ENGINE_FILES[1], fromFetch(ENGINE_FILES[1].label)),
+                    fetchAssembledBlob(withBasePath(`${FONT_PATH}?v=${ASSET_VERSION}`), fromFetch('font')),
                 ]);
 
-                sofficeWasmUrl = URL.createObjectURL(sofficeWasmBlob);
-                sofficeDataUrl = URL.createObjectURL(sofficeDataBlob);
-                this.blobUrls = [sofficeWasmUrl, sofficeDataUrl];
-                fontArrayBuffer = await fontBlob.arrayBuffer();
-            }
+            const readSeconds = (performance.now() - readStartedAt) / 1000;
+            const readMB = (sofficeWasmBlob.size + sofficeDataBlob.size + fontBlob.size) / MB;
+            console.warn(
+                `[LibreOffice] Engine bytes ready: ${readMB.toFixed(1)} MB in ${readSeconds.toFixed(1)}s ` +
+                `(${(readMB / Math.max(readSeconds, 0.001)).toFixed(1)} MB/s)`
+            );
+
+            const sofficeWasmUrl = URL.createObjectURL(sofficeWasmBlob);
+            const sofficeDataUrl = URL.createObjectURL(sofficeDataBlob);
+            this.blobUrls = [sofficeWasmUrl, sofficeDataUrl];
+            const fontArrayBuffer = await fontBlob.arrayBuffer();
 
             this.downloadsComplete = true;
             this.progressCallback?.({ phase: 'initializing', percent: 92, message: 'Starting conversion engine...' });
@@ -327,6 +384,25 @@ export class LibreOfficeConverter {
     }
 
     /**
+     * Drops Service Workers that would intercept or corrupt local asset loading. On the web the
+     * coi-serviceworker is kept: it is what provides cross-origin isolation there. Under Tauri
+     * the headers come from the native side (app.security.headers), so nothing is worth keeping.
+     */
+    private async cleanupServiceWorkers(): Promise<void> {
+        const inTauri = isTauri();
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        for (const reg of registrations) {
+            const scriptUrl = reg.active?.scriptURL || reg.waiting?.scriptURL || reg.installing?.scriptURL || '';
+            if (!inTauri && scriptUrl.includes('coi-serviceworker')) {
+                console.log(`[LibreOffice] Preserving coi-serviceworker for cross-origin isolation: ${scriptUrl}`);
+                continue;
+            }
+            await reg.unregister();
+            console.warn(`[LibreOffice] Unregistered conflicting Service Worker: ${reg.scope}`);
+        }
+    }
+
+    /**
      * Diagnose environment issues — fail fast if SharedArrayBuffer is not available or the
      * Content-Security-Policy would block the engine.
      * SharedArrayBuffer requires Cross-Origin Isolation (COOP + COEP headers).
@@ -339,18 +415,14 @@ export class LibreOfficeConverter {
         // or corrupting local asset loading.
         // In browser environments, preserve coi-serviceworker for cross-origin isolation.
         if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+            // Bounded: on a custom protocol (Tauri) getRegistrations() can stay pending forever,
+            // and a pending promise is not something the catch below would ever see.
             try {
-                const inTauri = isTauri();
-                const registrations = await navigator.serviceWorker.getRegistrations();
-                for (const reg of registrations) {
-                    const scriptUrl = reg.active?.scriptURL || reg.waiting?.scriptURL || reg.installing?.scriptURL || '';
-                    if (!inTauri && scriptUrl.includes('coi-serviceworker')) {
-                        console.log(`[LibreOffice] Preserving coi-serviceworker for cross-origin isolation: ${scriptUrl}`);
-                        continue;
-                    }
-                    await reg.unregister();
-                    console.warn(`[LibreOffice] Unregistered conflicting Service Worker: ${reg.scope}`);
-                }
+                await withTimeout(
+                    this.cleanupServiceWorkers(),
+                    SERVICE_WORKER_PROBE_TIMEOUT_MS,
+                    'Service Worker check timed out',
+                );
             } catch (e) {
                 console.warn('[LibreOffice] Failed to check Service Worker:', e);
             }
@@ -398,7 +470,16 @@ export class LibreOfficeConverter {
 
         // 3. Content-Security-Policy — probed here because inside the worker it only fails after
         //    the whole engine has been downloaded, and then as an unhelpful EvalError/fetch error.
-        const cspBlockers = await detectLibreOfficeCspBlockers();
+        // Bounded like the probe above: a policy violation rejects at once, so a probe that
+        // hangs says nothing about the policy — and must not take initialization down with it.
+        const cspBlockers = await withTimeout(
+            detectLibreOfficeCspBlockers(),
+            CSP_PROBE_TIMEOUT_MS,
+            'Content-Security-Policy probe timed out',
+        ).catch((e) => {
+            console.warn('[LibreOffice] CSP probe did not finish, continuing without it:', e);
+            return [] as string[];
+        });
         if (cspBlockers.length > 0) {
             const message =
                 `The server's Content-Security-Policy blocks the conversion engine: ${cspBlockers.join('; ')}. ` +
@@ -407,7 +488,17 @@ export class LibreOfficeConverter {
             throw new Error(message);
         }
 
-        // 4. Check file connectivity (parallel for speed) & accumulate the download size
+        // 4. Under Tauri every asset is bundled inside the executable, so the 404 / wrong-MIME
+        //    failures this sweep exists to catch cannot happen — and each probe is ruinous there:
+        //    the tauri:// protocol builds the full response body whatever the method, so HEADing
+        //    soffice.wasm.bin.gz + soffice.data.bin.gz alone decompresses ~77MB in the WebView.
+        if (isTauri()) {
+            this.totalAssetSizeMB = 0;
+            console.warn('[LibreOffice] === Environment Check Passed ✅ (desktop: bundled assets, probes skipped) ===');
+            return;
+        }
+
+        // 5. Check file connectivity (parallel for speed) & accumulate the download size
         const checks: Array<{ label: string; candidates: string[]; engine: boolean }> = [
             ...ENGINE_FILES.map((f) => ({
                 label: f.gz,
