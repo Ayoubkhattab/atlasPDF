@@ -15,6 +15,7 @@ import type {
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
 import { loadPdfLib } from '../loader';
+import { withBasePath } from '@/lib/utils/path';
 
 /**
  * Page size presets in points (72 points = 1 inch)
@@ -52,16 +53,17 @@ export const AVAILABLE_FONTS = [
   { id: 'helvetica', name: 'Helvetica (Sans-serif)', type: 'standard' },
   { id: 'times', name: 'Times (Serif)', type: 'standard' },
   { id: 'courier', name: 'Courier (Monospace)', type: 'standard' },
-  // Noto fonts for international support
-  { id: 'noto-sans', name: 'Noto Sans (Latin/Cyrillic)', type: 'noto', url: 'https://raw.githack.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSans/NotoSans-Regular.ttf' },
-  { id: 'noto-sans-sc', name: 'Noto Sans SC (简体中文)', type: 'noto', url: 'https://raw.githack.com/googlefonts/noto-cjk/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf' },
-  { id: 'noto-sans-tc', name: 'Noto Sans TC (繁體中文)', type: 'noto', url: 'https://raw.githack.com/googlefonts/noto-cjk/main/Sans/OTF/TraditionalChinese/NotoSansCJKtc-Regular.otf' },
-  { id: 'noto-sans-jp', name: 'Noto Sans JP (日本語)', type: 'noto', url: 'https://raw.githack.com/googlefonts/noto-cjk/main/Sans/OTF/Japanese/NotoSansCJKjp-Regular.otf' },
-  { id: 'noto-sans-kr', name: 'Noto Sans KR (한국어)', type: 'noto', url: 'https://raw.githack.com/googlefonts/noto-cjk/main/Sans/OTF/Korean/NotoSansCJKkr-Regular.otf' },
-  { id: 'noto-sans-arabic', name: 'Noto Sans Arabic (العربية)', type: 'noto', url: 'https://raw.githack.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSansArabic/NotoSansArabic-Regular.ttf' },
-  { id: 'noto-sans-hebrew', name: 'Noto Sans Hebrew (עברית)', type: 'noto', url: 'https://raw.githack.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSansHebrew/NotoSansHebrew-Regular.ttf' },
-  { id: 'noto-sans-thai', name: 'Noto Sans Thai (ไทย)', type: 'noto', url: 'https://raw.githack.com/googlefonts/noto-fonts/main/hinted/ttf/NotoSansThai/NotoSansThai-Regular.ttf' },
-  { id: 'noto-sans-devanagari', name: 'Noto Sans Devanagari (हिन्दी)', type: 'noto', url: 'https://raw.githack.com/googlefonts/noto-fonts/main/unhinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Regular.ttf' },
+  // Noto fonts for international support (bundled locally under public/fonts/ — no CDN fetch)
+  { id: 'noto-sans', name: 'Noto Sans (Latin/Cyrillic)', type: 'noto', url: withBasePath('/fonts/NotoSans-Regular.ttf') },
+  { id: 'noto-sans-sc', name: 'Noto Sans SC (简体中文)', type: 'noto', url: withBasePath('/fonts/NotoSansSC-Regular.ttf') },
+  { id: 'noto-sans-tc', name: 'Noto Sans TC (繁體中文)', type: 'noto', url: withBasePath('/fonts/NotoSansCJKtc-Regular.otf') },
+  { id: 'noto-sans-jp', name: 'Noto Sans JP (日本語)', type: 'noto', url: withBasePath('/fonts/NotoSansCJKjp-Regular.otf') },
+  { id: 'noto-sans-kr', name: 'Noto Sans KR (한국어)', type: 'noto', url: withBasePath('/fonts/NotoSansCJKkr-Regular.otf') },
+  // Arabic uses the project's own Qomra font instead of Noto.
+  { id: 'qomra-arabic', name: 'Qomra Arabic (العربية)', type: 'qomra', url: withBasePath('/fonts/itfQomraArabic-Regular.ttf') },
+  { id: 'noto-sans-hebrew', name: 'Noto Sans Hebrew (עברית)', type: 'noto', url: withBasePath('/fonts/NotoSansHebrew-Regular.ttf') },
+  { id: 'noto-sans-thai', name: 'Noto Sans Thai (ไทย)', type: 'noto', url: withBasePath('/fonts/NotoSansThai-Regular.ttf') },
+  { id: 'noto-sans-devanagari', name: 'Noto Sans Devanagari (हिन्दी)', type: 'noto', url: withBasePath('/fonts/NotoSansDevanagari-Regular.ttf') },
 ] as const;
 
 export type FontId = typeof AVAILABLE_FONTS[number]['id'];
