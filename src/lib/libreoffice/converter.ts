@@ -44,6 +44,7 @@ import { withBasePath } from '../utils/path';
 import { isTauri } from '../tauri-bridge';
 import { LIBREOFFICE_ASSET_VERSION } from './asset-version';
 import { detectLibreOfficeCspBlockers } from './csp-probe';
+import { describeWorkerSupport } from './worker-probe';
 import { gunzipBlobIfNeeded } from './gzip';
 
 const LIBREOFFICE_PATH = withBasePath('/libreoffice-wasm/');
@@ -320,11 +321,26 @@ export class LibreOfficeConverter {
             this.blobUrls = [sofficeWasmUrl, sofficeDataUrl];
             const fontArrayBuffer = await fontBlob.arrayBuffer();
 
+            // Every pthread the engine starts is created as `new Worker(sofficeJs)` from inside the
+            // library's worker — soffice.js does `pthreadMainJs = Module.mainScriptUrlOrBlob`. On the
+            // desktop build that URL belongs to the app's own protocol, and a nested worker created
+            // through it never reports back, so soffice.js keeps its "loading-workers" run dependency
+            // forever: start-up idles at zero CPU until the library's 120s timeout, which is what
+            // "WASM initialization timeout" was. A blob: URL keeps thread creation in memory, where no
+            // protocol handler is involved. The parent worker (browserWorkerJs) stays a real URL —
+            // nested creation breaks the other way round (see the note at the top of this file).
+            let sofficeJsUrl = `${this.basePath}soffice.js?v=${ASSET_VERSION}`;
+            if (fromAppBundle) {
+                const glue = await this.readBundledFile(sofficeJsUrl, 'soffice.js', () => {});
+                sofficeJsUrl = URL.createObjectURL(new Blob([glue], { type: 'text/javascript' }));
+                this.blobUrls.push(sofficeJsUrl);
+            }
+
             this.downloadsComplete = true;
             this.progressCallback?.({ phase: 'initializing', percent: 92, message: 'Starting conversion engine...' });
 
             const converter = new WorkerBrowserConverter({
-                sofficeJs: `${this.basePath}soffice.js?v=${ASSET_VERSION}`,
+                sofficeJs: sofficeJsUrl,
                 sofficeWasm: sofficeWasmUrl,
                 sofficeData: sofficeDataUrl,
                 sofficeWorkerJs: `${this.basePath}soffice.worker.js?v=${ASSET_VERSION}`,
@@ -387,6 +403,14 @@ export class LibreOfficeConverter {
             this.downloadsComplete = false;
             this.blobUrls.forEach(url => URL.revokeObjectURL(url));
             this.blobUrls = [];
+
+            // The desktop build ships without devtools, so a bare "timeout" leaves nothing to go on.
+            // Name the capability that actually decides whether the engine can start.
+            if (isTauri()) {
+                const support = await describeWorkerSupport();
+                console.error(`[LibreOffice] Worker support: ${support}`);
+                throw new Error(`${e instanceof Error ? e.message : String(e)} — ${support}`);
+            }
             throw e;
         }
     }
