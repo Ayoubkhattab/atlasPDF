@@ -1,8 +1,9 @@
 /**
  * PDF to DOCX Processor
- * 
+ *
  * Converts PDF files to Word documents (DOCX).
- * Uses Pyodide via a Web Worker to avoid blocking the UI and to handle WASM loading correctly.
+ * Uses Pyodide via a shared Web Worker (./pdf-to-docx-worker.ts) to avoid blocking the UI
+ * and to avoid paying the ~50MB Pyodide/pdf2docx init cost on every single conversion.
  */
 
 import type {
@@ -12,79 +13,41 @@ import type {
 } from '@/types/pdf';
 import { PDFErrorCode } from '@/types/pdf';
 import { BasePDFProcessor } from '../processor';
+import { cancelPdfToDocxConversion, convertPdfToDocx } from '../pdf-to-docx-worker';
+
+/** Matches the limit every other document-conversion processor (word/pptx/rtf/excel-to-pdf)
+ *  already enforces. This file was previously the one exception with no size guard at all. */
+const MAX_FILE_SIZE = 50 * 1024 * 1024;
 
 /**
- * PDF to DOCX options
+ * PDF to DOCX options (none yet — kept as a type so the signature matches the other
+ * *-to-pdf/docx processors, which all take an options object).
  */
-export interface PDFToDocxOptions {
-    /** Unused options for consistency */
-}
+export type PDFToDocxOptions = Record<string, never>;
 
 /**
  * PDF to DOCX Processor
- * Converts PDF files to DOCX using a Web Worker.
+ * Converts PDF files to DOCX via the shared pdf-to-docx worker.
  */
 export class PDFToDocxProcessor extends BasePDFProcessor {
-    private worker: Worker | null = null;
-    private workerReady = false;
-
-    /**
-     * Initialize the worker
-     */
-    private async initWorker(): Promise<void> {
-        if (this.worker) return;
-
-        return new Promise((resolve, reject) => {
-            try {
-                this.worker = new Worker('/workers/pdf-to-docx.worker.js', { type: 'module' });
-
-                const handleMessage = (event: MessageEvent) => {
-                    const { type, error, message } = event.data;
-
-                    if (type === 'init-complete') {
-                        this.workerReady = true;
-                        resolve();
-                    } else if (type === 'status') {
-                        this.updateProgress(0, message);
-                    } else if (type === 'error') {
-                        reject(new Error(error || 'Worker initialization failed'));
-                    }
-                };
-
-                this.worker.addEventListener('message', handleMessage);
-                this.worker.addEventListener('error', (err) => {
-                    reject(new Error('Worker connection failed'));
-                });
-
-                // Send init message
-                this.worker.postMessage({
-                    type: 'init',
-                    id: 'init-' + Date.now(),
-                    data: {}
-                });
-
-            } catch (err) {
-                reject(err);
-            }
-        });
-    }
-
-    /**
-     * Terminate the worker
-     */
-    private terminateWorker() {
-        if (this.worker) {
-            this.worker.terminate();
-            this.worker = null;
-            this.workerReady = false;
-        }
-    }
-
     /**
      * Reset processor state
      */
     protected reset(): void {
         super.reset();
+    }
+
+    /**
+     * Stops the in-flight conversion for real, not just cooperatively. The base class's
+     * cancel() only flips a flag this.checkCancelled() reads between awaits — nothing was
+     * ever checking it *during* the Pyodide call, so a "cancelled" conversion used to keep
+     * running to completion in the background regardless. cancelPdfToDocxConversion()
+     * terminates the shared worker outright; see its doc comment for why that, rather than a
+     * cooperative interrupt, is the only reliable way to actually stop pdf2docx mid-flight.
+     */
+    cancel(): void {
+        super.cancel();
+        cancelPdfToDocxConversion();
     }
 
     /**
@@ -119,19 +82,16 @@ export class PDFToDocxProcessor extends BasePDFProcessor {
             );
         }
 
-        try {
-            this.updateProgress(10, 'Initializing converter...');
+        if (file.size > MAX_FILE_SIZE) {
+            return this.createErrorOutput(
+                PDFErrorCode.INVALID_OPTIONS,
+                `File is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum supported size is ${MAX_FILE_SIZE / 1024 / 1024} MB.`,
+                `File size: ${file.size} bytes, limit: ${MAX_FILE_SIZE} bytes`
+            );
+        }
 
-            try {
-                await this.initWorker();
-            } catch (err) {
-                console.error('Failed to initialize worker:', err);
-                return this.createErrorOutput(
-                    PDFErrorCode.WORKER_FAILED,
-                    'Failed to initialize conversion worker.',
-                    err instanceof Error ? err.message : String(err)
-                );
-            }
+        try {
+            this.updateProgress(2, 'Starting conversion...');
 
             if (this.checkCancelled()) {
                 return this.createErrorOutput(
@@ -140,63 +100,8 @@ export class PDFToDocxProcessor extends BasePDFProcessor {
                 );
             }
 
-            this.updateProgress(30, 'Converting PDF to DOCX...');
-
-            // process conversion via worker
-            const docxBlob = await new Promise<Blob>((resolve, reject) => {
-                if (!this.worker) {
-                    reject(new Error('Worker not initialized'));
-                    return;
-                }
-
-                const msgId = 'convert-' + Date.now();
-
-                const handleMessage = (event: MessageEvent) => {
-                    const { type, id, result, error, message, percent } = event.data;
-
-                    if (type === 'status') {
-                        this.updateProgress(this.progress, message);
-                        return;
-                    }
-
-                    if (type === 'progress') {
-                        // Per-page progress from Python logging handler
-                        const progressValue = typeof percent === 'number' ? percent : this.progress;
-                        this.updateProgress(progressValue, message);
-                        return;
-                    }
-
-                    if (id !== msgId) return;
-
-                    if (type === 'convert-complete') {
-                        cleanup();
-                        resolve(result);
-                    } else if (type === 'error') {
-                        cleanup();
-                        reject(new Error(error || 'Conversion failed'));
-                    }
-                };
-
-                const handleError = (error: ErrorEvent) => {
-                    cleanup();
-                    reject(new Error('Worker error: ' + error.message));
-                };
-
-                const cleanup = () => {
-                    this.worker?.removeEventListener('message', handleMessage);
-                    this.worker?.removeEventListener('error', handleError);
-                };
-
-                this.worker.addEventListener('message', handleMessage);
-                this.worker.addEventListener('error', handleError);
-
-                this.worker.postMessage({
-                    type: 'convert',
-                    id: msgId,
-                    data: {
-                        file: file
-                    }
-                });
+            const docxBlob = await convertPdfToDocx(file, (progress) => {
+                this.updateProgress(progress.percent, progress.message);
             });
 
             if (this.checkCancelled()) {
@@ -220,15 +125,13 @@ export class PDFToDocxProcessor extends BasePDFProcessor {
         } catch (error) {
             console.error('Conversion error:', error);
 
-            // Only terminate the worker if it actually crashed (e.g., OOM, WASM trap).
-            // Regular conversion errors (bad PDF, Python exception) leave the worker
-            // intact so we can reuse it without re-installing all packages.
-            const isFatalCrash = error instanceof Error && (
-                error.message.includes('Worker error:') ||
-                error.message.includes('Worker not initialized')
-            );
-            if (isFatalCrash) {
-                this.terminateWorker();
+            // cancel() terminates the worker, which surfaces here as a rejected promise —
+            // report it as a cancellation, not a generic failure.
+            if (this.checkCancelled()) {
+                return this.createErrorOutput(
+                    PDFErrorCode.PROCESSING_CANCELLED,
+                    'Processing was cancelled.'
+                );
             }
 
             return this.createErrorOutput(

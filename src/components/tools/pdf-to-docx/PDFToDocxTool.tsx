@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { FileText, Trash2, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
 import { FileUploader } from '../FileUploader';
@@ -8,7 +8,8 @@ import { ProcessingProgress, ProcessingStatus } from '../ProcessingProgress';
 import { DownloadButton } from '../DownloadButton';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import { pdfToDocx } from '@/lib/pdf/processors/pdf-to-docx';
+import { createPDFToDocxProcessor, type PDFToDocxProcessor } from '@/lib/pdf/processors/pdf-to-docx';
+import { preloadPdfToDocxWorker } from '@/lib/pdf/pdf-to-docx-worker';
 import type { UploadedFile, ProcessOutput } from '@/types/pdf';
 
 /**
@@ -42,6 +43,20 @@ export function PDFToDocxTool({ className = '' }: PDFToDocxToolProps) {
 
     // Ref for cancellation
     const cancelledRef = useRef(false);
+    // Holds the processor for whatever conversion is currently running, so handleCancel can
+    // reach it. The old code called the pdfToDocx() free function with no way to get back to
+    // the processor it created internally, so there was nothing for a "Cancel" click to call.
+    const processorRef = useRef<PDFToDocxProcessor | null>(null);
+
+    // Warm up the shared Pyodide/pdf2docx worker as soon as this tool is open, the same way
+    // the LibreOffice-based tools preload their engine on mount. A failure here is silently
+    // ignored — handleConvert's own call pays the init cost again and surfaces a real error
+    // if the problem persists, so this is purely a head start, never a requirement.
+    useEffect(() => {
+        preloadPdfToDocxWorker().catch(() => {
+            // Intentionally ignored — see comment above.
+        });
+    }, []);
 
     /**
      * Handle file selected from uploader
@@ -94,10 +109,12 @@ export function PDFToDocxTool({ className = '' }: PDFToDocxToolProps) {
         setError(null);
         setResult(null);
 
+        const processor = createPDFToDocxProcessor();
+        processorRef.current = processor;
+
         try {
-            const output: ProcessOutput = await pdfToDocx(
-                file.file,
-                {},
+            const output: ProcessOutput = await processor.process(
+                { files: [file.file], options: {} },
                 (prog, message) => {
                     if (!cancelledRef.current) {
                         setProgress(prog);
@@ -123,6 +140,8 @@ export function PDFToDocxTool({ className = '' }: PDFToDocxToolProps) {
                 setError(err instanceof Error ? err.message : t('errors.unexpectedError') || 'An unexpected error occurred.');
                 setStatus('error');
             }
+        } finally {
+            processorRef.current = null;
         }
     }, [file, t, tTools]);
 
@@ -133,6 +152,10 @@ export function PDFToDocxTool({ className = '' }: PDFToDocxToolProps) {
         cancelledRef.current = true;
         setStatus('idle');
         setProgress(0);
+        // Actually stops the Pyodide worker instead of just hiding the progress bar while it
+        // keeps converting unseen — see PDFToDocxProcessor.cancel()'s doc comment.
+        processorRef.current?.cancel();
+        processorRef.current = null;
     }, []);
 
     /**
